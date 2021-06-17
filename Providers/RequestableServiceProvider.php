@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Core\Traits\CanPublishConfiguration;
 use Modules\Core\Events\BuildingSidebar;
 use Modules\Core\Events\LoadingBackendTranslations;
+use Illuminate\Support\Arr;
 use Modules\Requestable\Events\Handlers\RegisterRequestableSidebar;
 
 class RequestableServiceProvider extends ServiceProvider
@@ -29,7 +30,7 @@ class RequestableServiceProvider extends ServiceProvider
         $this->app['events']->listen(BuildingSidebar::class, RegisterRequestableSidebar::class);
 
         $this->app['events']->listen(LoadingBackendTranslations::class, function (LoadingBackendTranslations $event) {
-            $event->load('requestables', array_dot(trans('requestable::requestables')));
+            $event->load('requestables', Arr::dot(trans('requestable::requestables')));
             // append translations
 
 

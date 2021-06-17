@@ -2,10 +2,10 @@
 
 namespace Modules\Requestable\Transformers;
 
-use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Iprofile\Transformers\UserTransformer;
 
-class RequestableTransformer extends Resource
+class RequestableTransformer extends JsonResource
 {
   public function toArray($request)
   {
