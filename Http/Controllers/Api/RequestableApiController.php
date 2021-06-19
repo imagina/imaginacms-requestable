@@ -141,13 +141,14 @@ class RequestableApiController extends BaseApiController
       $eventPath = $requestConfig["events"]["create"] ?? null;
 
       $data["status"] = $defaultStatus;
-      $data["created_by"] = $params->user->id;
+      $data["created_by"] = $data["created_by"] ?? $params->user->id;
       
+ 
       //Create item
       $model = $this->service->create($data);
-   
+
       if ($model && $eventPath)
-        event(new $eventPath($model, $requestConfig, $params->user));
+        event($event = new $eventPath($model, $requestConfig, $model->createdByUser));
       
       //Response
       $response = ["data" => new RequestableTransformer($model)];
@@ -199,7 +200,7 @@ class RequestableApiController extends BaseApiController
       $eventPath = $requestConfig["events"]["update"] ?? null;
       
       if (isset($data["status"]) && $oldRequest->status != $data["status"]) {
-        
+ 
           list($response, $newRequest) = $this->updateOrDelete($data["status"], "status", $criteria, $data, $params, $oldRequest, $requestConfig);
 
           // dispatch status event
@@ -207,7 +208,7 @@ class RequestableApiController extends BaseApiController
      
          // dd($eventStatusPath);
           if ($eventStatusPath)
-            event(new $eventStatusPath($newRequest, $oldRequest, $requestConfig, $params->user));
+            event(new $eventStatusPath($newRequest, $oldRequest, $requestConfig, $oldRequest->createdByUser));
         
       } else {
         //Request to Repository
@@ -223,12 +224,12 @@ class RequestableApiController extends BaseApiController
           $eventETAPath = $requestConfig["etaEvent"] ?? null;
           
           if ($eventETAPath)
-            event(new $eventETAPath($newRequest, $oldRequest, $requestConfig, $params->user));
+            event(new $eventETAPath($newRequest, $oldRequest, $requestConfig, $oldRequest->createdByUser));
         }
       }
       
       if ($eventPath)
-        event(new $eventPath($newRequest, $oldRequest, $requestConfig, $params->user));
+        event(new $eventPath($newRequest, $oldRequest, $requestConfig, $newRequest->createdByUser ?? $oldRequest->createdByUser ));
       
       //Response
       //$response = ["data" => 'Item Updated'];

@@ -153,8 +153,8 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
   {
     $model = $this->findByAttributes([
       "type" => $data["type"],
-      "requestable_id" => $data["requestable_id"],
-      "requestable_type" => $data["requestable_type"],
+      "requestable_id" => $data["requestable_id"] ?? null,
+      "requestable_type" => $data["requestable_type"] ?? null,
       "created_by" => $data["created_by"],
     ]);
     if(!$model)

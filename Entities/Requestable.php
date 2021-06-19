@@ -30,7 +30,7 @@ class Requestable extends Model
   
   public function createdByUser()
   {
-    return $this->belongsTo(User::class, 'created_by');
+    return $this->belongsTo(User::class,'created_by');
   }
   
   
