@@ -2,13 +2,26 @@
 
 namespace Modules\Requestable\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Modules\Core\Internationalisation\BaseFormRequest;
 
 class UpdateRequestableRequest extends BaseFormRequest
 {
-    public function rules()
+  private $requestableRepository;
+  
+  
+  public function rules()
     {
-        return [];
+  
+      $this->requestableRepository = app("Modules\Requestable\Repositories\RequestableRepository");
+      $requestableConfig = collect($this->requestableRepository->moduleConfigs());
+  
+      return [
+        'type' => [
+          "required",
+          Rule::in($requestableConfig->pluck("type")->toArray()),
+        ]
+      ];
     }
 
     public function translationRules()
@@ -23,7 +36,10 @@ class UpdateRequestableRequest extends BaseFormRequest
 
     public function messages()
     {
-        return [];
+      return [
+        'type.in' => "The type is not in the default types defined",
+        'type.required' => "The type is required"
+      ];
     }
 
     public function translationMessages()

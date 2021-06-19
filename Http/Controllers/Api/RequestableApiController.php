@@ -99,7 +99,7 @@ class RequestableApiController extends BaseApiController
       
       //Request to Repository
       $newRequest = $this->service->getItem($criteria, $params);
-      
+
       //Break if no found item
       if (!$newRequest) throw new \Exception('Item not found', 404);
       
@@ -128,13 +128,18 @@ class RequestableApiController extends BaseApiController
     try {
       //Get data
       $data = $request->input('attributes');
-      
+
       $params = $this->getParamsRequest($request);
       //Validate Request
       $this->validateRequestApi(new CreateRequestableRequest((array)$data));
+  
       
-      list($requestConfig, $defaultStatus, $eventPath) = $this->getConfig($data);
-      
+      $requestableConfigs = collect($this->service->moduleConfigs())->keyBy("type");
+  
+      $requestConfig = $requestableConfigs[$data["type"]];
+      $defaultStatus = $requestConfig["defaultStatus"] ?? 0; // 0 = pending
+      $eventPath = $requestConfig["events"]["create"] ?? null;
+
       $data["status"] = $defaultStatus;
       $data["created_by"] = $params->user->id;
       
@@ -174,7 +179,7 @@ class RequestableApiController extends BaseApiController
   
       //Validate Request
       $this->validateRequestApi(new UpdateRequestableRequest((array)$data));
-      
+
       //Get Parameters from URL.
       $params = $this->getParamsRequest($request);
       $data["reviewed_by"] = $params->user->id;
@@ -187,24 +192,22 @@ class RequestableApiController extends BaseApiController
       $data["type"] = $oldRequest->type;
       
     //getting update request config
-      list($requestConfig, $defaultStatus, $eventPath) = $this->getConfig($data, "update");
-
-      if (isset($data["status"])) {
+      $requestableConfigs = collect($this->service->moduleConfigs())->keyBy("type");
+  
+      $requestConfig = $requestableConfigs[$data["type"]];
+      $defaultStatus = $requestConfig["defaultStatus"] ?? 0; // 0 = pending
+      $eventPath = $requestConfig["events"]["update"] ?? null;
+      
+      if (isset($data["status"]) && $oldRequest->status != $data["status"]) {
         
-  
-        //if are changing status
-        if ($oldRequest->status != $data["status"]) {
-  
-          list($response, $newRequest) = $this->updateOrDelete($data["status"], "status", $criteria, $data, $params, $oldRequest);
+          list($response, $newRequest) = $this->updateOrDelete($data["status"], "status", $criteria, $data, $params, $oldRequest, $requestConfig);
 
           // dispatch status event
-          $eventStatusPath = $requestConfig->statusEvents->{$data["status"]} ?? null;
+          $eventStatusPath = $requestConfig["statusEvents"][$data["status"]] ?? null;
      
          // dd($eventStatusPath);
           if ($eventStatusPath)
             event(new $eventStatusPath($newRequest, $oldRequest, $requestConfig, $params->user));
-          
-        }
         
       } else {
         //Request to Repository
@@ -217,7 +220,7 @@ class RequestableApiController extends BaseApiController
       if (isset($data["eta"])) {
         
         if ($oldRequest->eta != $data["eta"]) {
-          $eventETAPath = $requestConfig->etaEvent ?? null;
+          $eventETAPath = $requestConfig["etaEvent"] ?? null;
           
           if ($eventETAPath)
             event(new $eventETAPath($newRequest, $oldRequest, $requestConfig, $params->user));
@@ -241,24 +244,24 @@ class RequestableApiController extends BaseApiController
     return response()->json($response ?? ["data" => "Item Updated"], $status ?? 200);
   }
   
-  private function updateOrDelete($value, $field, $criteria, $data, $params, $oldRequest)
+  private function updateOrDelete($value, $field, $criteria, $data, $params, $oldRequest, $requestConfig)
   {
 
     //get deleteWhen Code
     switch ($field) {
       case 'status':
-        $deleteWhen = config('asgard.requestable.config.deleteWhenStatus') ?? false;
+        $deleteWhen = $requestConfig["deleteWhenStatus"] ?? false;
         if ($deleteWhen) {
           $deleteWhen = $deleteWhen[$value];
         }
         break;
       
       case 'eta':
-        $deleteWhen = config('asgard.requestable.config.deleteWhenStatus') ?? false;
+        $deleteWhen = $requestConfig["deleteWhenStatus"] ?? false;
         break;
     }
 
-    
+    // if must be deleted
     if ($deleteWhen) {
       $permission = $params->permissions['requestable.requestables.destroy'] ?? false;
       
@@ -287,56 +290,5 @@ class RequestableApiController extends BaseApiController
       $newRequest
     ];
   }
-  
-  /**
-   * DELETE A ITEM
-   *
-   * @param $criteria
-   * @return mixed
-   */
-  public function delete($criteria, Request $request)
-  {
-    \DB::beginTransaction();
-    try {
-      //Get params
-      $params = $this->getParamsRequest($request);
-      
-      //call Method delete
-      $this->service->deleteBy($criteria, $params);
-      
-      //Response
-      $response = ["data" => ""];
-      \DB::commit();//Commit to Data Base
-    } catch (\Exception $e) {
-      \DB::rollback();//Rollback to Data Base
-      $status = $this->getStatusError($e->getCode());
-      $response = ["errors" => $e->getMessage()];
-    }
-    
-    //Return response
-    return response()->json($response, $status ?? 200);
-  }
-  
-  private function getConfig($data, $event = "create")
-  {
-    $defaultStatus = config('asgard.requestable.config.defaultStatus') ?? 0;
-    
-    $requestsConfig = collect(config('asgard.requestable.config.requests'));
-    
-    $requestsConfig = $requestsConfig->keyBy("type");
-    
-    if (isset($requestsConfig[$data["type"]])) {
-      $requestConfig = json_decode(json_encode($requestsConfig[$data["type"]]));
-      if (isset($requestConfig->defaultStatus))
-        $defaultStatus = $requestConfig->defaultStatus;
-    } else {
-      throw new \Exception('Invalid Request', 400); //Bad request
-    }
-    
-    return [
-      $requestConfig,
-      $defaultStatus,
-      $requestConfig->events->{$event} ?? null
-    ];
-  }
+
 }

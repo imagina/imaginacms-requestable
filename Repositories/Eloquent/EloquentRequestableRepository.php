@@ -237,4 +237,24 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
       
     }
   }
+  
+  public function moduleConfigs(){
+  
+    $module = app('modules');
+    $enabledModules = $module->allEnabled();
+
+    if (is_string($enabledModules)) {
+      return config('asgard.' . strtolower($enabledModules) . ".config.requestable");
+    }
+  
+    $modulesWithConfigs = [];
+    foreach ($enabledModules as $module) {
+      if ($moduleConfigs = config('asgard.' . strtolower($module->getName()) . ".config.requestable")) {
+        $modulesWithConfigs = array_merge($modulesWithConfigs, $moduleConfigs);
+      }
+    }
+    
+    return $modulesWithConfigs;
+    
+  }
 }

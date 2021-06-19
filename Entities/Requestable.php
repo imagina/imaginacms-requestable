@@ -54,12 +54,10 @@ class Requestable extends Model
    */
   public function getConfigAttribute()
   {
-    $requests = config('asgard.requestable.config.requests');
-    
-    foreach ($requests as $request){
-      if($request["type"] == $this->attributes['type'])
-        return $request;
-    }
+    $service = app("Modules\Requestable\Repositories\RequestableRepository");
+    $requestableConfigs = collect($service->moduleConfigs())->keyBy("type");
+  
+    return $requestableConfigs[$this->type];
     
   }
   

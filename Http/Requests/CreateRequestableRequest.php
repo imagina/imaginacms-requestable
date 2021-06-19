@@ -7,11 +7,19 @@ use Modules\Core\Internationalisation\BaseFormRequest;
 
 class CreateRequestableRequest extends BaseFormRequest
 {
+  
+  private $requestableRepository;
+  
+  
     public function rules()
     {
+      $this->requestableRepository = app("Modules\Requestable\Repositories\RequestableRepository");
+      $requestableConfig = collect($this->requestableRepository->moduleConfigs());
+      
         return [
           'type' => [
-            Rule::in(["joinToTeamRequest"]),
+            "required",
+            Rule::in($requestableConfig->pluck("type")->toArray()),
           ]
         ];
     }
@@ -29,7 +37,8 @@ class CreateRequestableRequest extends BaseFormRequest
     public function messages()
     {
       return [
-        'type' => "The type is not in the default types defined"
+        'type.in' => "The type is not in the default types defined",
+        'type.required' => "The type is required"
       ];
     }
 

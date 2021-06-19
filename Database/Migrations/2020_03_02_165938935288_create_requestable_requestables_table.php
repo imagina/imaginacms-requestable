@@ -17,8 +17,8 @@ class CreateRequestableRequestablesTable extends Migration
       
       $table->increments('id');
       
-      $table->string('requestable_type');
-      $table->string('requestable_id');
+      $table->string('requestable_type')->nullable();
+      $table->string('requestable_id')->nullable();
       
       $table->string('type');
       $table->integer('status')->default(0)->unsigned();
