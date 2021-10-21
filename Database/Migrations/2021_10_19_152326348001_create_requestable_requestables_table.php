@@ -21,20 +21,13 @@ class CreateRequestableRequestablesTable extends Migration
       $table->string('requestable_id')->nullable();
       
       $table->string('type');
-      $table->integer('status')->default(0)->unsigned();
+      $table->integer('status_id')->default(1)->unsigned();
+      $table->foreign('status_id')->references('id')->on('requestable__statuses')->onDelete('cascade');
   
-      $table->text('fields')->nullable();
+      $table->integer('category_id')->unsigned();
+      $table->foreign('category_id')->references('id')->on('requestable__categories')->onDelete('restrict');
       
       $table->timestamp('eta')->nullable(); //estimated time of accomplishment
-      
-      $table->integer('created_by')
-        ->unsigned()
-        ->nullable();
-      
-      $table->foreign('created_by')
-        ->references('id')
-        ->on(config('auth.table', 'users'))
-        ->onDelete('restrict');
       
       $table->integer('reviewed_by')
         ->unsigned()
@@ -45,8 +38,10 @@ class CreateRequestableRequestablesTable extends Migration
         ->on(config('auth.table', 'users'))
         ->onDelete('restrict');
       
+      
       // Your fields
       $table->timestamps();
+      $table->auditStamps();
     });
   }
   

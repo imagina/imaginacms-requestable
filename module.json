@@ -5,7 +5,7 @@
     "keywords": [],
     "version": "1.0.0",
 	"active": 1,
-    "priority": 1,
+    "priority": 100,
     "providers": [
         "Modules\\Requestable\\Providers\\RequestableServiceProvider",
         "Modules\\Requestable\\Providers\\RouteServiceProvider"

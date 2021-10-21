@@ -16,6 +16,6 @@ class RequestableDatabaseSeeder extends Seeder
     {
         Model::unguard();
 
-        // $this->call("OthersTableSeeder");
+        $this->call(RequestableTableSeeder::class);
     }
 }

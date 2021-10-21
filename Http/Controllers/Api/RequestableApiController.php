@@ -8,18 +8,20 @@ use Illuminate\Contracts\Foundation\Application;
 use Modules\Ihelpers\Http\Controllers\Api\BaseApiController;
 use Modules\Requestable\Http\Requests\CreateRequestableRequest;
 use Modules\Requestable\Http\Requests\UpdateRequestableRequest;
+use Modules\Requestable\Repositories\FieldRepository;
 use Modules\Requestable\Repositories\RequestableRepository;
 use Modules\Requestable\Transformers\RequestableTransformer;
 
 
 class RequestableApiController extends BaseApiController
 {
-  private $service;
+  private $field;
   
-  public function __construct(RequestableRepository $service)
+  public function __construct(RequestableRepository $service,FieldRepository $field)
   {
     parent::__construct();
     $this->service = $service;
+    $this->field = $field;
     
   }
   
@@ -146,6 +148,15 @@ class RequestableApiController extends BaseApiController
  
       //Create item
       $model = $this->service->create($data);
+  
+      //Create fields
+      if (isset($data["fields"]))
+        foreach ($data["fields"] as $field) {
+          $field['requestable_id'] = $model->id;// Add user Id
+          $this->validateResponseApi(
+            $this->field->create(new Request(['attributes' => (array)$field]))
+          );
+        }
 
       if ($model && $eventPath)
         event($event = new $eventPath($model, $requestConfig, $model->createdByUser));
@@ -198,6 +209,30 @@ class RequestableApiController extends BaseApiController
       $requestConfig = $requestableConfigs[$data["type"]];
       $defaultStatus = $requestConfig["defaultStatus"] ?? 0; // 0 = pending
       $eventPath = $requestConfig["events"]["update"] ?? null;
+  
+      //Create or Update fields
+      if (isset($data["fields"]))
+        foreach ($data["fields"] as $field) {
+          if (is_bool($field["value"]) || (isset($field["value"]) && !empty($field["value"]))) {
+            $field['requestable_id'] = $oldRequest->id;// Add user Id
+            if (!isset($field["id"])) {
+              $this->validateResponseApi(
+                $this->field->create(new Request(['attributes' => (array)$field]))
+              );
+            } else {
+              $this->validateResponseApi(
+                $this->field->update($field["id"], new Request(['attributes' => (array)$field]))
+              );
+            }
+        
+          } else {
+            if (isset($field['id'])) {
+              $this->validateResponseApi(
+                $this->field->delete($field['id'], new Request(['attributes' => (array)$field]))
+              );
+            }
+          }
+        }
       
       if (isset($data["status"]) && $oldRequest->status != $data["status"]) {
  
@@ -227,6 +262,7 @@ class RequestableApiController extends BaseApiController
             event(new $eventETAPath($newRequest, $oldRequest, $requestConfig, $oldRequest->createdByUser));
         }
       }
+      
       
       if ($eventPath)
         event(new $eventPath($newRequest, $oldRequest, $requestConfig, $newRequest->createdByUser ?? $oldRequest->createdByUser ));

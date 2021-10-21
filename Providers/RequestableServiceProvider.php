@@ -70,7 +70,60 @@ class RequestableServiceProvider extends ServiceProvider
                 return new \Modules\Requestable\Repositories\Cache\CacheRequestableDecorator($repository);
             }
         );
+        $this->app->bind(
+            'Modules\Requestable\Repositories\CategoryRepository',
+            function () {
+                $repository = new \Modules\Requestable\Repositories\Eloquent\EloquentCategoryRepository(new \Modules\Requestable\Entities\Category());
+
+                if (! config('app.cache')) {
+                    return $repository;
+                }
+
+                return new \Modules\Requestable\Repositories\Cache\CacheCategoryDecorator($repository);
+            }
+        );
+        $this->app->bind(
+            'Modules\Requestable\Repositories\StatusRepository',
+            function () {
+                $repository = new \Modules\Requestable\Repositories\Eloquent\EloquentStatusRepository(new \Modules\Requestable\Entities\Status());
+
+                if (! config('app.cache')) {
+                    return $repository;
+                }
+
+                return new \Modules\Requestable\Repositories\Cache\CacheStatusDecorator($repository);
+            }
+        );
+        $this->app->bind(
+            'Modules\Requestable\Repositories\FieldRepository',
+            function () {
+                $repository = new \Modules\Requestable\Repositories\Eloquent\EloquentFieldRepository(new \Modules\Requestable\Entities\Field());
+
+                if (! config('app.cache')) {
+                    return $repository;
+                }
+
+                return new \Modules\Requestable\Repositories\Cache\CacheFieldDecorator($repository);
+            }
+        );
+        $this->app->bind(
+            'Modules\Requestable\Repositories\StatusHistoryRepository',
+            function () {
+                $repository = new \Modules\Requestable\Repositories\Eloquent\EloquentStatusHistoryRepository(new \Modules\Requestable\Entities\StatusHistory());
+
+                if (! config('app.cache')) {
+                    return $repository;
+                }
+
+                return new \Modules\Requestable\Repositories\Cache\CacheStatusHistoryDecorator($repository);
+            }
+        );
 // add bindings
+
+
+
+
+
 
 
     }

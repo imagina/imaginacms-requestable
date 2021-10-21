@@ -4,25 +4,17 @@ namespace Modules\Requestable\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Iprofile\Transformers\UserTransformer;
+use Modules\Core\Icrud\Transformers\CrudResource;
 
-class RequestableTransformer extends JsonResource
+class RequestableTransformer extends CrudResource
 {
-  public function toArray($request)
+  /**
+   * Method to merge values with response
+   *
+   * @return array
+   */
+  public function modelAttributes($request)
   {
-    return [
-      'id' => $this->id,
-      'requestableType' => $this->requestable_type,
-      'requestableId' => $this->requestable_id,
-      'type' => $this->type,
-      'config' => $this->config,
-      'status' => $this->status,
-      'fields' => $this->fields,
-      'eta' => $this->eta,
-      'createdBy' => $this->created_by,
-      'reviewedBy' => $this->reviewed_by,
-      'createdByUser' => new UserTransformer($this->whenLoaded('createdByUser')),
-      'createdAt' => $this->created_at,
-      'updatedAt' => $this->updated_at
-    ];
+    return [];
   }
 }

@@ -5,25 +5,26 @@ namespace Modules\Requestable\Entities;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
 use Modules\User\Entities\Sentinel\User;
+use Modules\Core\Icrud\Entities\CrudModel;
 
-class Requestable extends Model
+class Requestable extends CrudModel
 {
   
-  
   protected $table = 'requestable__requestables';
-  
+  public $transformer = 'Modules\Requestable\Transformers\RequestableTransformer';
+  public $requestValidation = [
+    'create' => 'Modules\Requestable\Http\Requests\CreateRequestableRequest',
+    'update' => 'Modules\Requestable\Http\Requests\UpdateRequestableRequest',
+  ];
   protected $fillable = [
     "requestable_type",
     "requestable_id",
     "type",
     "eta",
-    "status",
-    "fields",
-    "created_by",
+    "status_id",
     "reviewed_by"
   ];
-  protected $fakeColumns = ['fields'];
-  
+
   protected $casts = [
     'fields' => 'array'
   ];
@@ -33,6 +34,10 @@ class Requestable extends Model
     return $this->belongsTo(User::class,'created_by');
   }
   
+  public function fields()
+  {
+    return $this->hasMany(Field::class);
+  }
   
   public function requestable()
   {
@@ -44,6 +49,11 @@ class Requestable extends Model
     return json_decode($value);
     
   }
+  
+  public function status() {
+    return $this->belongsTo(Status::class);
+  }
+  
   
   public function setFieldsAttribute($value) {
     $this->attributes['fields'] = json_encode($value);
