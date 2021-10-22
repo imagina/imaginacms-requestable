@@ -4,6 +4,7 @@ namespace Modules\Requestable\Http\Requests;
 
 use Illuminate\Validation\Rule;
 use Modules\Core\Internationalisation\BaseFormRequest;
+use Modules\Requestable\Entities\Category;
 
 class CreateRequestableRequest extends BaseFormRequest
 {
@@ -13,14 +14,13 @@ class CreateRequestableRequest extends BaseFormRequest
   
     public function rules()
     {
-      $this->requestableRepository = app("Modules\Requestable\Repositories\RequestableRepository");
-      $requestableConfig = collect($this->requestableRepository->moduleConfigs());
+      $categories = Category::all();
       
         return [
           'type' => [
             "required",
-            Rule::in($requestableConfig->pluck("type")->toArray()),
-          ]
+            Rule::in($categories->pluck("type")->toArray()),
+          ],
         ];
     }
 

@@ -12,16 +12,7 @@ class UpdateRequestableRequest extends BaseFormRequest
   
   public function rules()
     {
-  
-      $this->requestableRepository = app("Modules\Requestable\Repositories\RequestableRepository");
-      $requestableConfig = collect($this->requestableRepository->moduleConfigs());
-  
-      return [
-        'type' => [
-          "required",
-          Rule::in($requestableConfig->pluck("type")->toArray()),
-        ]
-      ];
+      return [];
     }
 
     public function translationRules()

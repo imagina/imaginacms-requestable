@@ -30,7 +30,7 @@ class RequestableTableSeeder extends Seeder
       "fields" => [],
     ];
     $requestableConfig = $requestableRepository->moduleConfigs();
-
+    
     foreach ($requestableConfig as $config) {
       $params = [
         "filter" => [
@@ -48,9 +48,7 @@ class RequestableTableSeeder extends Seeder
           $category = $categoryRepository->create([
             'type' => $config["type"],
             'time_elapsed_to_cancel' => $config["timeElapsedToCancel"] ?? -1,
-            'default_status' => $config["defaultStatus"] ?? 1,
             'events' => $config["events"] ?? null,
-            'eta_event' => $config["etaEvent"] ?? null,
             'requestable_type' => $config["requestableType"],
             $locale => [
               "title" => trans($config["title"])
@@ -60,34 +58,26 @@ class RequestableTableSeeder extends Seeder
           event(new SyncFormeable($category, ["form_id" => setting($config["formId"], null, null)]));
           
           if (isset($config["useDefaultStatuses"]) && $config["useDefaultStatuses"]) {
-            $defaultStatusList = (new DefaultStatus())->lists();
-            
-            foreach ($defaultStatusList as $key => $status) {
-              $statusRepository->create([
-                  "category_id" => $category->id,
-                  'value' => $key,
-                  'events' => $config["statusEvents"][$key] ?? null,
-                  'delete_request' => $config["deleteWhenStatus"][$key],
-                  $locale => [
-                    "title" => trans($status)
-                  ]
+            $statuses = (new DefaultStatus())->lists();
+          } else {
+            $statuses = $config["statuses"];
+          }
+          
+          foreach ($statuses as $key => $status) {
+       
+            $statusRepository->create([
+                "category_id" => $category->id,
+                'value' => $key,
+                'final' => $status["final"] ?? false,
+                'default' => $status["default"] ?? false,
+                'cancelled_elapsed_time' => $config["statusToSetWhenElapsedTime"] ?? false,
+                'events' => $config["statusEvents"][$key] ?? null,
+                'delete_request' => $config["deleteWhenStatus"][$key] ?? false,
+                $locale => [
+                  "title" => trans($status["title"])
                 ]
-              );
-            }
-          }else{
-            $statuses = $config["statuses"] ?? [];
-            foreach ($statuses as $key => $status){
-              $statusRepository->create([
-                  "category_id" => $category->id,
-                  'value' => $key,
-                  'events' => $config["statusEvents"][$key] ?? null,
-                  'delete_request' => $config["deleteWhenStatus"][$key],
-                  $locale => [
-                    "title" => trans($status)
-                  ]
-                ]
-              );
-            }
+              ]
+            );
           }
         }
       }

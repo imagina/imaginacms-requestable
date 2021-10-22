@@ -16,15 +16,12 @@ class CreateRequestableCategoriesTable extends Migration
       $table->engine = 'InnoDB';
       $table->increments('id');
       // Your fields...
-      $table->string('type');
+      $table->string('type')->unique()->index();
       $table->integer('time_elapsed_to_cancel')->nullable();
-      $table->integer('default_status')->default(1);
       $table->text('events')->nullable();
-      $table->text('eta_event')->nullable();
+      $table->text('options')->nullable();
       $table->text('requestable_type')->nullable();
       
-      $table->integer('form_id')->unsigned()->nullable();
-      $table->foreign('form_id')->references('id')->on('iforms__forms')->onDelete('cascade');
       
       // Audit fields
       $table->timestamps();

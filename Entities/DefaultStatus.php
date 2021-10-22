@@ -21,10 +21,27 @@ class DefaultStatus
     public function __construct()
     {
         $this->statuses = [
-            self::PENDING => trans('requestable::common.status.pending'),
-            self::INPROGRESS => trans('requestable::common.status.inProgress'),
-            self::COMPLETED => trans('requestable::common.status.completed'),
-            self::CANCELLED => trans('requestable::common.status.cancelled'),
+          self::PENDING => [
+            'id' => self::PENDING,
+            'default' => true,
+            'title' => trans('requestable::common.status.pending'),
+            
+          ],
+          self::INPROGRESS => [
+            'id' => self::INPROGRESS,
+            'title' => trans('requestable::common.status.inProgress'),
+          ],
+          self::COMPLETED => [
+            'id' => self::COMPLETED,
+            'final' => true,
+            'title' => trans('requestable::common.status.completed'),
+            
+          ],
+          self::CANCELLED => [
+            'id' => self::CANCELLED,
+            'final' => true,
+            'title' => trans('requestable::common.status.cancelled'),
+          ],
         ];
     }
 

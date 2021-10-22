@@ -103,12 +103,12 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     $query = $this->model->query();
     
     /*== RELATIONSHIPS ==*/
-    if (in_array('*', $params->include)) {//If Request all relationships
+    if (in_array('*', $params->include ?? [])) {//If Request all relationships
       $query->with([]);
     } else {//Especific relationships
       $includeDefault = [];//Default relationships
       if (isset($params->include))//merge relations with default relationships
-        $includeDefault = array_merge($includeDefault, $params->include);
+        $includeDefault = array_merge($includeDefault, $params->include ?? []);
       $query->with($includeDefault);//Add Relationships to query
     }
     
@@ -151,12 +151,14 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
   
   public function create($data)
   {
+
     $model = $this->findByAttributes([
       "type" => $data["type"],
       "requestable_id" => $data["requestable_id"] ?? null,
       "requestable_type" => $data["requestable_type"] ?? null,
-      "created_by" => $data["created_by"],
+      "created_by" => $data["created_by"] ?? \Auth::id() ?? null,
     ]);
+
     if(!$model)
       return $this->model->create($data);
     else
@@ -180,24 +182,10 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     /*== REQUEST ==*/
     $model = $query->where($field ?? 'id', $criteria)->first();
     if($model){
- 
-      $user = $params->user;
-    
+      
       $oldData = $model->toArray();
       $model->update((array)$data);
-    
-      /*
-      event(new AuditEvent(
-        $user, // Auth user
-        $model->getTable(), // table mysql
-        $oldData, // old data
-        $model->toArray(), // new data
-        'update' // type 'create', 'update' or 'delete'
-      ));
-    */
       
-    //  event(new $params->eventPath($user, $model, $oldData, $params->requestConfig));
-    
       return $model;
     }else{
       return false;
@@ -220,7 +208,22 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     
     /*== REQUEST ==*/
     $model = $query->where($field ?? 'id', $criteria)->first();
-    $model ? $model->delete() : false;
+    if(isset($model->id)){
+      $permission = $params->permissions['requestable.requestables.destroy'] ?? false;
+  
+      // solo se permite borrar request si:
+      // se tiene el permiso para eliminar requests
+      // o que el request haya sido creado por el user que está autenticado
+      if ($permission || \Auth::id() == $model->created_by) {
+    
+        //call Method delete
+        $model->delete();
+    
+      } else {
+        throw new \Exception('Permission denied', 401);
+      }
+    }
+    
   }
   
   function validateIndexAllPermission(&$query, $params)

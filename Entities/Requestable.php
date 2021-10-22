@@ -22,6 +22,7 @@ class Requestable extends CrudModel
     "type",
     "eta",
     "status_id",
+    "category_id",
     "reviewed_by"
   ];
 
@@ -37,6 +38,11 @@ class Requestable extends CrudModel
   public function fields()
   {
     return $this->hasMany(Field::class);
+  }
+  
+  public function category()
+  {
+    return $this->belongsTo(Category::class);
   }
   
   public function requestable()

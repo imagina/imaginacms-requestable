@@ -22,6 +22,9 @@ class Status extends CrudModel
     'value',
     'category_id',
     'events',
+    'final',
+    'default',
+    'cancelled_elapsed_time',
     'delete_request'
   ];
   
@@ -30,5 +33,12 @@ class Status extends CrudModel
   protected $casts = [
     'events' => 'array'
   ];
+  
+  public function setDefaultAttribute($value){
+    if($value){
+      Status::where("default",true)->where("category_id",$this->category_id)->update(["default" => false]);
+    }
+    $this->attributes['default'] = $value;
+  }
   
 }

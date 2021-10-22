@@ -22,15 +22,22 @@ class Category extends CrudModel
   protected $fillable = [
     'type',
     'time_elapsed_to_cancel',
-    'default_status',
     'events',
     'eta_event',
     'requestable_type',
+    'options',
     'form_id',
   ];
   
   protected $casts = [
-    'events' => 'array'
+    'events' => 'array',
+    'options' => 'array',
   ];
   
+  public function statuses(){
+    return $this->hasMany(Status::class);
+  }
+  public function defaultStatus(){
+    return $this->statuses->where("default",true)->first();
+  }
 }

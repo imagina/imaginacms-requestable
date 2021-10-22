@@ -13,9 +13,9 @@ interface RequestableRepository extends BaseRepository
   
   public function create($data);
   
-  public function updateBy($criteria, $data, $params);
+  public function updateBy($criteria, $data, $params = false);
   
-  public function deleteBy($criteria, $params);
+  public function deleteBy($criteria, $params = false);
   
   public function moduleConfigs();
 }

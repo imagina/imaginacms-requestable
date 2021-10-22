@@ -17,9 +17,12 @@ class CreateRequestableStatusesTable extends Migration
       $table->increments('id');
       // Your fields...
   
-      $table->integer("value");
+      $table->integer("value")->index();
       $table->text("events")->nullable();
-      $table->boolean("delete_request")->default(0);
+      $table->boolean("final")->default(false);
+      $table->boolean("default")->default(false);
+      $table->boolean("cancelled_elapsed_time")->default(false);
+      $table->boolean("delete_request")->default(false);
       
       $table->integer('category_id')->unsigned();
       $table->foreign('category_id')->references('id')->on('requestable__categories')->onDelete('cascade');
