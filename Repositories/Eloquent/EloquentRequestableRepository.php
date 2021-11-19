@@ -126,6 +126,11 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
         $query->where('requestable_type', $filter->requestableType);
       }
       
+      //by category
+      if (isset($filter->categoryId)) {
+        $query->where('category_id', $filter->categoryId);
+      }
+      
       //by type
       if(isset($filter->type) && $filter->type) {
         if(!is_array($filter->type)) $filter->type = [$filter->type];

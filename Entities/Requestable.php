@@ -6,10 +6,11 @@ use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
 use Modules\User\Entities\Sentinel\User;
 use Modules\Core\Icrud\Entities\CrudModel;
+use Modules\Icomments\Traits\Commentable;
 
 class Requestable extends CrudModel
 {
-  
+  use Commentable;
   protected $table = 'requestable__requestables';
   public $transformer = 'Modules\Requestable\Transformers\RequestableTransformer';
   public $requestValidation = [

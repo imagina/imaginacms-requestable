@@ -164,3 +164,15 @@ Example of data to the service update:
     ]);
 ```
 All the rest of the request configuration is taken from the information obtained from the config with the same type
+
+###Events
+
+The module is very customizable when you need it to execute events, in each type of enabled event different parameters are sent:
+
+
+| Event | Parameters | 
+| ------------- | ------------- 
+| created | $request
+| updated | $updatedRequest - $oldRequest
+| deleted | $deletedRequest
+| etaUpdated | $updatedRequest - $oldRequest

@@ -55,7 +55,8 @@ class RequestableTableSeeder extends Seeder
             ]
           ]);
           
-          event(new SyncFormeable($category, ["form_id" => setting($config["formId"], null, null)]));
+          if(isset($config["formId"]) && !empty($config["formId"]))
+            event(new SyncFormeable($category, ["form_id" => setting($config["formId"], null, null)]));
           
           if (isset($config["useDefaultStatuses"]) && $config["useDefaultStatuses"]) {
             $statuses = (new DefaultStatus())->lists();

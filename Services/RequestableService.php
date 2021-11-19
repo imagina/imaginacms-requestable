@@ -31,8 +31,9 @@ class RequestableService extends BaseApiController
     $this->category = $category;
   }
   
-  public function create($data){
-  
+  public function create($data)
+  {
+    
     $params = [
       "filter" => [
         "field" => "type",
@@ -42,21 +43,21 @@ class RequestableService extends BaseApiController
     ];
     
     $category = $this->category->getItem($data["type"], json_decode(json_encode($params)));
-
+    
     if (!isset($category->id)) throw new \Exception('Request Type not found', 400);
     
     $eventPath = $category->events->create ?? null;
-  
+    
     $data["status_id"] = $category->defaultStatus()->id;
     $data["requestable_type"] = $category->requestable_type;
     $data["category_id"] = $category->id;
-  
+    
     if ($data["requestable_type"] == "Modules\User\Entities\Sentinel\User")
       $data["requestable_id"] = $data["requestable_id"] ?? \Auth::id() ?? null;
-
+    
     //Create item
     $model = $this->requestableRepository->create($data);
-
+    
     //Create fields
     if (isset($data["fields"])) {
       foreach ($data["fields"] as $field) {
@@ -66,31 +67,29 @@ class RequestableService extends BaseApiController
         );
       }
     }
-
+    
     if ($model && $eventPath)
-      event($event = new $eventPath($model, $category, $model->createdByUser));
-  
+      event($event = new $eventPath($model));
+    
     
     return $model;
   }
   
   
-  public function update($criteria, $data){
-  
- 
+  public function update($criteria, $data)
+  {
+    
+    
     //Request to Repository
     $oldRequest = $this->requestableRepository->getItem($criteria);
- 
+    
     if (!isset($oldRequest->id)) throw new \Exception('Item not found', 404);
-  
+    
     $data["type"] = $oldRequest->type;
-  
+    
     //getting update request config
     $category = $oldRequest->category;
     
-    //finding create event
-    $eventPath = $category->events->update ?? null;
- 
     //Create or Update fields
     if (isset($data["fields"]))
       foreach ($data["fields"] as $field) {
@@ -105,7 +104,7 @@ class RequestableService extends BaseApiController
               $this->field->update($field["id"], new Request(['attributes' => (array)$field]))
             );
           }
-        
+          
         } else {
           if (isset($field['id'])) {
             $this->validateResponseApi(
@@ -114,75 +113,72 @@ class RequestableService extends BaseApiController
           }
         }
       }
-  
+    
     //if the status it's updating
-    if (isset($data["status"]) || isset($data["status_id"])){
-
+    if (isset($data["status"]) || isset($data["status_id"])) {
+  
       //if the data has status will be take it in the value of the category statuses
       //else the status will be take it of the id of the category statuses
-      if(isset($data["status"])){
+      if (isset($data["status"])) {
         $status = $category->statuses->where("value", $data["status"])->first();
-      }else{
+      } else {
         $status = $category->statuses->where("id", $data["status_id"])->first();
       }
-      
+  
       //replacing to the real status id
       $data["status_id"] = $status->id;
-      
-      //if the status it's different of the old status in the request
+  
+      //if the status it's different of the old status in the request, will be dispatch the status event if exist
       if ($oldRequest->status_id != $status->id) {
-      
-        //check if the request need to be deleted or just updated
-        list($response, $newRequest) = $this->updateOrDelete($status, "status", $criteria, $data, $oldRequest);
-      
-        // dd($eventStatusPath);
-        if (!empty($status->events)){
+        if (!empty($status->events)) {
           $eventStatusPaths = !is_array($status->events) ? [$status->events] : $status->events;
-          foreach ($eventStatusPaths as $eventStatusPath){
-            event(new $eventStatusPath($newRequest, $oldRequest, $category, $oldRequest->createdByUser));
+          foreach ($eventStatusPaths as $eventStatusPath) {
+            event(new $eventStatusPath($newRequest, $oldRequest, $oldRequest->createdByUser));
           }
         }
       }
-    }else{
-      //if the status doesn't exist in the data just update de request
-      $newRequest = $this->requestableRepository->updateBy($criteria, $data);
-      $response = ["data" => "Item Updated"];
     }
-
+      
+      //check if the request need to be deleted or just updated because some statuses could need to delete the request
+      list($response, $newRequest) = $this->updateOrDelete($criteria, $data,$status ?? null, $oldRequest);
+ 
     // checking eta
     if (isset($data["eta"])) {
-    
+      
       //if the eta it's different of the old eta the event will be dispatched
       if ($oldRequest->eta != $data["eta"]) {
         
         $eventETAPath = $category->events->etaUpdated ?? null;
-
+        
         if ($eventETAPath)
-          event(new $eventETAPath($newRequest, $oldRequest, $category, $oldRequest->createdByUser));
+          event(new $eventETAPath($newRequest, $oldRequest));
       }
     }
   
+    //finding create event
+    $eventPath = $category->events->update ?? null;
+  
     //request update event
     if ($eventPath)
-      event(new $eventPath($newRequest, $oldRequest, $category, $newRequest->createdByUser ?? $oldRequest->createdByUser));
-  
-  
+      event(new $eventPath($newRequest, $oldRequest));
+    
+    
   }
   
-  private function updateOrDelete($status, $field, $criteria, $data, $oldRequest = null)
+  private function updateOrDelete($criteria, $data, $status = null, $oldRequest = null)
   {
-  
+    
     //Get Parameters from URL.
     $params = $this->getParamsRequest(request());
     // if must be deleted
-
+    
     //Request to Repository
     $newRequest = $this->requestableRepository->updateBy($criteria, $data);
     $response = ["data" => "Item Updated"];
     
-    if ($status->delete_request) {
+    if (isset($status->delete_request) && $status->delete_request) {
       $permission = $params->permissions['requestable.requestables.destroy'] ?? false;
-
+      
       // solo se permite borrar request si:
       // se tiene el permiso para eliminar requests
       // o que el request haya sido creado por el user que está autenticado
@@ -190,7 +186,12 @@ class RequestableService extends BaseApiController
         
         //call Method delete
         $this->requestableRepository->deleteBy($criteria);
-  
+        
+        $deletedEvent = $category->events->deleted ?? null;
+        
+        if ($deletedEvent)
+          event(new $deletedEvent($oldRequest));
+        
         $response = ["data" => "Item Deleted"];
         $newRequest = null;
       } else {
