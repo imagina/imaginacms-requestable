@@ -19,6 +19,7 @@ class RequestableTransformer extends CrudResource
 
     return [
       "requestableUrl" => isset($model->url) ? $model->url : "",
+      "statusValue" => $this->status->value,
     ];
   }
 }

@@ -46,7 +46,7 @@ class RequestableService extends BaseApiController
     
     if (!isset($category->id)) throw new \Exception('Request Type not found', 400);
     
-    $eventPath = $category->events->create ?? null;
+    $eventPath = $category->events["create"] ?? null;
     
     $data["status_id"] = $category->defaultStatus()->id;
     $data["requestable_type"] = $category->requestable_type;
@@ -89,7 +89,7 @@ class RequestableService extends BaseApiController
     
     //getting update request config
     $category = $oldRequest->category;
-    
+  
     //Create or Update fields
     if (isset($data["fields"]))
       foreach ($data["fields"] as $field) {
@@ -113,7 +113,7 @@ class RequestableService extends BaseApiController
           }
         }
       }
-    
+   
     //if the status it's updating
     if (isset($data["status"]) || isset($data["status_id"])) {
   
@@ -127,7 +127,6 @@ class RequestableService extends BaseApiController
   
       //replacing to the real status id
       $data["status_id"] = $status->id;
-  
       //if the status it's different of the old status in the request, will be dispatch the status event if exist
       if ($oldRequest->status_id != $status->id) {
         if (!empty($status->events)) {
@@ -148,7 +147,7 @@ class RequestableService extends BaseApiController
       //if the eta it's different of the old eta the event will be dispatched
       if ($oldRequest->eta != $data["eta"]) {
         
-        $eventETAPath = $category->events->etaUpdated ?? null;
+        $eventETAPath = $category->events["etaUpdated"] ?? null;
         
         if ($eventETAPath)
           event(new $eventETAPath($newRequest, $oldRequest));
@@ -156,7 +155,7 @@ class RequestableService extends BaseApiController
     }
   
     //finding create event
-    $eventPath = $category->events->update ?? null;
+    $eventPath = $category->events["update"] ?? null;
   
     //request update event
     if ($eventPath)
@@ -187,7 +186,7 @@ class RequestableService extends BaseApiController
         //call Method delete
         $this->requestableRepository->deleteBy($criteria);
         
-        $deletedEvent = $category->events->deleted ?? null;
+        $deletedEvent = $category->events["deleted"] ?? null;
         
         if ($deletedEvent)
           event(new $deletedEvent($oldRequest));

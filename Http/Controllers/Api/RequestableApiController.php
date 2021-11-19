@@ -170,7 +170,7 @@ class RequestableApiController extends BaseApiController
       
       //Validate Request
       $this->validateRequestApi(new UpdateRequestableRequest((array)$data));
-  
+
       $model = $this->service->update($criteria,$data);
       
       //Response
