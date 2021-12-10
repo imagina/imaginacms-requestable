@@ -6,11 +6,11 @@ use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
 use Modules\User\Entities\Sentinel\User;
 use Modules\Core\Icrud\Entities\CrudModel;
-use Modules\Icomments\Traits\Commentable;
+use Modules\Ifillable\Traits\isFillable;
 
 class Requestable extends CrudModel
 {
-  use Commentable;
+  use isFillable;
   protected $table = 'requestable__requestables';
   public $transformer = 'Modules\Requestable\Transformers\RequestableTransformer';
   public $requestValidation = [
@@ -34,11 +34,6 @@ class Requestable extends CrudModel
   public function createdByUser()
   {
     return $this->belongsTo(User::class,'created_by');
-  }
-  
-  public function fields()
-  {
-    return $this->hasMany(Field::class);
   }
   
   public function category()

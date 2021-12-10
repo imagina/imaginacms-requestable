@@ -36,6 +36,9 @@ config must be an array of arrays and needs to have the following structure:
       // Optional: this form is used to get the fields data of the requestable, need to be a setting name previously charged with the formId
       "formId" => "module::settingNameForm",
         
+      // Optional: This columns has true by default
+      "internal" => false,
+        
       //requestable events to dispatch  
       "events" => [
           "create" => "Modules\\ModuleName\\Events\\EventDispatchedWhenRequestWasCreated",

@@ -59,14 +59,14 @@ class RequestableService extends BaseApiController
     $model = $this->requestableRepository->create($data);
     
     //Create fields
-    if (isset($data["fields"])) {
-      foreach ($data["fields"] as $field) {
-        $field['requestable_id'] = $model->id;// Add user Id
-        $this->validateResponseApi(
-          $this->field->create(new Request(['attributes' => (array)$field]))
-        );
-      }
-    }
+//    if (isset($data["fields"])) {
+//      foreach ($data["fields"] as $field) {
+//        $field['requestable_id'] = $model->id;// Add user Id
+//        $this->validateResponseApi(
+//          $this->field->create(new Request(['attributes' => (array)$field]))
+//        );
+//      }
+//    }
     
     if ($model && $eventPath)
       event($event = new $eventPath($model));

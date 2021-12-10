@@ -23,10 +23,10 @@ class Category extends CrudModel
     'type',
     'time_elapsed_to_cancel',
     'events',
+    'internal',
     'eta_event',
     'requestable_type',
     'options',
-    'form_id',
   ];
   
   protected $casts = [

@@ -49,6 +49,7 @@ class RequestableTableSeeder extends Seeder
             'type' => $config["type"],
             'time_elapsed_to_cancel' => $config["timeElapsedToCancel"] ?? -1,
             'events' => $config["events"] ?? null,
+            'internal' => $config["internal"] ?? 1,
             'requestable_type' => $config["requestableType"],
             $locale => [
               "title" => trans($config["title"])
@@ -56,7 +57,7 @@ class RequestableTableSeeder extends Seeder
           ]);
           
           if(isset($config["formId"]) && !empty($config["formId"]))
-            event(new SyncFormeable($category, ["form_id" => setting($config["formId"], null, null)]));
+            event(new SyncFormeable($category, ["form_id" => is_int($config["formId"]) ? $config["formId"] : setting($config["formId"], null, null)]));
           
           if (isset($config["useDefaultStatuses"]) && $config["useDefaultStatuses"]) {
             $statuses = (new DefaultStatus())->lists();

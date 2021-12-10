@@ -156,7 +156,10 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
   
   public function create($data)
   {
-
+    //Event creating model
+    if (method_exists($this->model, 'creatingCrudModel'))
+      $this->model->creatingCrudModel(['data' => $data]);
+    
     $model = $this->findByAttributes([
       "type" => $data["type"],
       "requestable_id" => $data["requestable_id"] ?? null,
@@ -164,15 +167,27 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
       "created_by" => $data["created_by"] ?? \Auth::id() ?? null,
     ]);
 
-    if(!$model)
-      return $this->model->create($data);
-    else
+    if(!$model){
+  
+      $model =  $this->model->create($data);
+      //Event created model
+      if (method_exists($model, 'createdCrudModel'))
+        $model->createdCrudModel(['data' => $data]);
+      
+      return $model;
+    }else
       return $model;
   }
   
   
   public function updateBy($criteria, $data, $params = false)
   {
+  
+    //Event updating model
+    if (method_exists($this->model, 'updatingCrudModel'))
+      $this->model->updatingCrudModel(['data' => $data, 'params' => $params, 'criteria' => $criteria]);
+  
+    
     /*== initialize query ==*/
     $query = $this->model->query();
     
@@ -190,6 +205,10 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
       
       $oldData = $model->toArray();
       $model->update((array)$data);
+  
+      //Event updated model
+      if (method_exists($model, 'updatedCrudModel'))
+        $model->updatedCrudModel(['data' => $data, 'params' => $params, 'criteria' => $criteria]);
       
       return $model;
     }else{

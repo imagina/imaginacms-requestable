@@ -13,6 +13,8 @@ class CategoryTransformer extends CrudResource
   */
   public function modelAttributes($request)
   {
-    return [];
+    return [
+      "form" => $this->form
+    ];
   }
 }

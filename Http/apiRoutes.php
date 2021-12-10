@@ -10,8 +10,11 @@ $router->group(['prefix' => '/requestable/v1'], function (Router $router) {
     'prefix' => 'categories',
     'controller' => 'CategoryApiController',
     'middleware' => [
-      
-      ]
+      'index' => [],
+      'show' => [],
+      'create' => ['auth:api','auth-can:requestable.categories.create'],
+      'update' => ['auth:api','auth-can:requestable.categories.edit']
+    ]
   ]);
   
   $router->apiCrud([

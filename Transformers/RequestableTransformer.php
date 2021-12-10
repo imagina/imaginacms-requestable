@@ -15,11 +15,13 @@ class RequestableTransformer extends CrudResource
    */
   public function modelAttributes($request)
   {
-    $model = $this->requestable_type::find($this->requestable_id);
-
+    if(!empty($this->requestable_type) && !empty($this->requestable_id)){
+      $model = $this->requestable_type::find($this->requestable_id);
+    }
     return [
       "requestableUrl" => isset($model->url) ? $model->url : "",
       "statusValue" => $this->status->value,
     ];
+    
   }
 }
