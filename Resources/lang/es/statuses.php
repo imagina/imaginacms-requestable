@@ -19,6 +19,9 @@ return [
     ],
     'messages' => [
     ],
+    'comments' => [
+      "statusUpdated" => "Estado Actualizado: de :prevStatus a :postStatus"
+    ],
     'validation' => [
     ],
 ];

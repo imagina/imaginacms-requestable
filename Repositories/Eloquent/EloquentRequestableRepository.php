@@ -4,6 +4,9 @@ namespace Modules\Requestable\Repositories\Eloquent;
 
 use Modules\Requestable\Repositories\RequestableRepository;
 use Modules\Core\Repositories\Eloquent\EloquentBaseRepository;
+use Modules\Ihelpers\Events\CreateMedia;
+use Modules\Ihelpers\Events\DeleteMedia;
+use Modules\Ihelpers\Events\UpdateMedia;
 
 class EloquentRequestableRepository extends EloquentBaseRepository implements RequestableRepository
 {
@@ -173,6 +176,9 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
       //Event created model
       if (method_exists($model, 'createdCrudModel'))
         $model->createdCrudModel(['data' => $data]);
+  
+      //Event to ADD media
+      event(new CreateMedia($model, $data));
       
       return $model;
     }else
@@ -206,6 +212,8 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
       $oldData = $model->toArray();
       $model->update((array)$data);
   
+      event(new UpdateMedia($model, $data));//Event to Update media
+      
       //Event updated model
       if (method_exists($model, 'updatedCrudModel'))
         $model->updatedCrudModel(['data' => $data, 'params' => $params, 'criteria' => $criteria]);
@@ -239,7 +247,8 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
       // se tiene el permiso para eliminar requests
       // o que el request haya sido creado por el user que está autenticado
       if ($permission || \Auth::id() == $model->created_by) {
-    
+  
+        event(new DeleteMedia($model->id, get_class($model)));//Event to Delete media
         //call Method delete
         $model->delete();
     

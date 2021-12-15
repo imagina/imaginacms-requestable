@@ -17,18 +17,21 @@ use Modules\Requestable\Repositories\CategoryRepository;
 use Modules\Requestable\Repositories\FieldRepository;
 use Modules\Requestable\Repositories\RequestableRepository;
 use Modules\Ihelpers\Http\Controllers\Api\BaseApiController;
+use Modules\Icomments\Services\CommentService;
 
 class RequestableService extends BaseApiController
 {
   private $field;
   private $category;
+  private $commentService;
   private $requestableRepository;
   
-  public function __construct(RequestableRepository $requestableRepository, FieldApiController $field, CategoryRepository $category)
+  public function __construct(RequestableRepository $requestableRepository, FieldApiController $field, CategoryRepository $category, CommentService $commentService)
   {
     $this->requestableRepository = $requestableRepository;
     $this->field = $field;
     $this->category = $category;
+    $this->commentService = $commentService;
   }
   
   public function create($data)
@@ -57,16 +60,7 @@ class RequestableService extends BaseApiController
     
     //Create item
     $model = $this->requestableRepository->create($data);
-    
-    //Create fields
-//    if (isset($data["fields"])) {
-//      foreach ($data["fields"] as $field) {
-//        $field['requestable_id'] = $model->id;// Add user Id
-//        $this->validateResponseApi(
-//          $this->field->create(new Request(['attributes' => (array)$field]))
-//        );
-//      }
-//    }
+ 
     
     if ($model && $eventPath)
       event($event = new $eventPath($model));
@@ -89,30 +83,7 @@ class RequestableService extends BaseApiController
     
     //getting update request config
     $category = $oldRequest->category;
-  
-    //Create or Update fields
-    if (isset($data["fields"]))
-      foreach ($data["fields"] as $field) {
-        if (is_bool($field["value"]) || (isset($field["value"]) && !empty($field["value"]))) {
-          $field['requestable_id'] = $oldRequest->id;// Add user Id
-          if (!isset($field["id"])) {
-            $this->validateResponseApi(
-              $this->field->create(new Request(['attributes' => (array)$field]))
-            );
-          } else {
-            $this->validateResponseApi(
-              $this->field->update($field["id"], new Request(['attributes' => (array)$field]))
-            );
-          }
-          
-        } else {
-          if (isset($field['id'])) {
-            $this->validateResponseApi(
-              $this->field->delete($field['id'], new Request(['attributes' => (array)$field]))
-            );
-          }
-        }
-      }
+    
    
     //if the status it's updating
     if (isset($data["status"]) || isset($data["status_id"])) {
@@ -129,6 +100,15 @@ class RequestableService extends BaseApiController
       $data["status_id"] = $status->id;
       //if the status it's different of the old status in the request, will be dispatch the status event if exist
       if ($oldRequest->status_id != $status->id) {
+        
+        //default status updated comment
+        $this->commentService->create($oldRequest,["comment" => trans("requestable::statuses.comments.statusUpdated",["prevStatus" => $oldRequest->status->title,"postStatus" =>  $status->title])]);
+  
+        //custom comment to the status updated
+        if(isset($data["comment"]) && !empty($data["comment"])){
+          $this->commentService->create($oldRequest,["comment" => $data["comment"]]);
+        }
+        
         if (!empty($status->events)) {
           $eventStatusPaths = !is_array($status->events) ? [$status->events] : $status->events;
           foreach ($eventStatusPaths as $eventStatusPath) {

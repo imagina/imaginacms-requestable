@@ -5,6 +5,7 @@ namespace Modules\Requestable\Transformers;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Iprofile\Transformers\UserTransformer;
 use Modules\Core\Icrud\Transformers\CrudResource;
+use Modules\Media\Transformers\NewTransformers\MediaTransformer;
 
 class RequestableTransformer extends CrudResource
 {
@@ -21,6 +22,7 @@ class RequestableTransformer extends CrudResource
     return [
       "requestableUrl" => isset($model->url) ? $model->url : "",
       "statusValue" => $this->status->value,
+      "files" => MediaTransformer::collection($this->whenLoaded('files'))
     ];
     
   }

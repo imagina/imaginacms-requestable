@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\User\Entities\Sentinel\User;
 use Modules\Core\Icrud\Entities\CrudModel;
 use Modules\Ifillable\Traits\isFillable;
+use Modules\Media\Support\Traits\MediaRelation;
+use Modules\Icomments\Traits\Commentable;
 
 class Requestable extends CrudModel
 {
-  use isFillable;
+  use isFillable,MediaRelation,Commentable;
   protected $table = 'requestable__requestables';
   public $transformer = 'Modules\Requestable\Transformers\RequestableTransformer';
   public $requestValidation = [
