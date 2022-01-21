@@ -71,10 +71,10 @@ class RequestableTableSeeder extends Seeder
                 "category_id" => $category->id,
                 'value' => $key,
                 'final' => $status["final"] ?? false,
-                'default' => $status["default"] ?? false,
-                'cancelled_elapsed_time' => $config["statusToSetWhenElapsedTime"] ?? false,
-                'events' => $config["statusEvents"][$key] ?? null,
-                'delete_request' => $config["deleteWhenStatus"][$key] ?? false,
+                'default' => $config["defaultStatus"] ?? $status["default"] ?? false,
+                'cancelled_elapsed_time' => $config["statusToSetWhenElapsedTime"] ?? $status["cancelled_elapsed_time"] ?? false,
+                'events' => $config["eventsWhenStatus"][$key] ?? $status["events"] ?? null,
+                'delete_request' => $config["deleteWhenStatus"][$key] ??  $status["delete_request"] ?? false,
                 $locale => [
                   "title" => trans($status["title"])
                 ]

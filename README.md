@@ -64,7 +64,7 @@ config must be an array of arrays and needs to have the following structure:
             "final" => false, //optional (default false)
             "default" => true,
             "delete_request" => false, //optional (default false)
-            "Cancelled_elapsed_time" => false,
+            "cancelled_elapsed_time" => false,
             "events" => "Modules\\ModuleName\\Events\\RequestInStatus1" //optional (default null)
         ],
         2 => [
@@ -73,7 +73,7 @@ config must be an array of arrays and needs to have the following structure:
             "final" => true,
             "default" => false,
             "delete_request" => true,
-            "Cancelled_elapsed_time" => true,
+            "cancelled_elapsed_time" => true,
             "events" => [ //optional can be multiple too
                 "Modules\\ModuleName\\Events\\RequestInStatus2",
                 "Modules\\ModuleName\\Events\\RequestInStatus2SecondEvent"
@@ -88,7 +88,7 @@ config must be an array of arrays and needs to have the following structure:
             "final" => true/false,
             "default" => true/false,
             "delete_request" => true/false,
-            "Cancelled_elapsed_time" => true/false,
+            "cancelled_elapsed_time" => true/false,
              "events" => [
                 "Modules\\ModuleName\\Events\\RequestInStatusN",
                 "Modules\\ModuleName\\Events\\RequestInStatusNSecondEvent"
