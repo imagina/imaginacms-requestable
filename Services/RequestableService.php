@@ -83,18 +83,20 @@ class RequestableService extends BaseApiController
     
     //getting update request config
     $category = $oldRequest->category;
+  
+    //if the data has status will be take it in the value of the category statuses
+    //else the status will be take it of the id of the category statuses
+    if (isset($data["status"])) {
+      $status = $category->statuses->where("value", $data["status"])->first();
+    } else {
+      $status = $category->statuses->where("id", $data["status_id"])->first();
+    }
     
-   
+    //check if the request need to be deleted or just updated because some statuses could need to delete the request
+    list($response, $newRequest) = $this->updateOrDelete($criteria, $data,$status ?? null, $oldRequest);
+  
     //if the status it's updating
     if (isset($data["status"]) || isset($data["status_id"])) {
-  
-      //if the data has status will be take it in the value of the category statuses
-      //else the status will be take it of the id of the category statuses
-      if (isset($data["status"])) {
-        $status = $category->statuses->where("value", $data["status"])->first();
-      } else {
-        $status = $category->statuses->where("id", $data["status_id"])->first();
-      }
   
       //replacing to the real status id
       $data["status_id"] = $status->id;
@@ -117,10 +119,8 @@ class RequestableService extends BaseApiController
         }
       }
     }
-      
-      //check if the request need to be deleted or just updated because some statuses could need to delete the request
-      list($response, $newRequest) = $this->updateOrDelete($criteria, $data,$status ?? null, $oldRequest);
- 
+    
+   
     // checking eta
     if (isset($data["eta"])) {
       
