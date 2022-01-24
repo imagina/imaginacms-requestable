@@ -170,7 +170,7 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
       "created_by" => $data["created_by"] ?? \Auth::id() ?? null,
     ]);
 
-    if(!$model){
+    if(!isset($model->id) || $model->status->final){
   
       $model =  $this->model->create($data);
       //Event created model
