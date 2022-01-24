@@ -18,6 +18,7 @@ return [
     'form' => [
     ],
     'messages' => [
+      "creatingSameRequestError" => "El usuario ya posee una solicitud en progreso"
     ],
     'validation' => [
     ],

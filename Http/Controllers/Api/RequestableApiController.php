@@ -134,7 +134,6 @@ class RequestableApiController extends BaseApiController
       //Get data
       $data = $request->input('attributes');
       
-      
       //Validate Request
       $this->validateRequestApi(new CreateRequestableRequest((array)$data));
       

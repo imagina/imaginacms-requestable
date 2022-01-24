@@ -2,6 +2,7 @@
 
 namespace Modules\Requestable\Repositories\Eloquent;
 
+use Modules\Requestable\Entities\Status;
 use Modules\Requestable\Repositories\RequestableRepository;
 use Modules\Core\Repositories\Eloquent\EloquentBaseRepository;
 use Modules\Ihelpers\Events\CreateMedia;
@@ -163,13 +164,13 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     if (method_exists($this->model, 'creatingCrudModel'))
       $this->model->creatingCrudModel(['data' => $data]);
     
-    $model = $this->findByAttributes([
-      "type" => $data["type"],
-      "requestable_id" => $data["requestable_id"] ?? null,
-      "requestable_type" => $data["requestable_type"] ?? null,
-      "created_by" => $data["created_by"] ?? \Auth::id() ?? null,
-    ]);
-
+    $model = $this->where("type", $data["type"])
+    ->where("requestable_id", $data["requestable_id"] ?? null)
+    ->where("requestable_type", $data["requestable_type"] ?? null)
+    ->where("created_by", $data["created_by"] ?? \Auth::id() ?? null)
+    ->whereNotIn("status_id",Status::where("final",1)->get()->pluck("id")->toArray())
+      ->first();
+  
     if(!isset($model->id) || $model->status->final){
   
       $model =  $this->model->create($data);
@@ -182,7 +183,7 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
       
       return $model;
     }else
-      return $model;
+      throw new \Exception(trans("requestable::requestables.messages.creatingSameRequestError"), 400);
   }
   
   
