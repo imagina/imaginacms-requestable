@@ -243,7 +243,7 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     $model = $query->where($field ?? 'id', $criteria)->first();
     if(isset($model->id)){
       $permission = $params->permissions['requestable.requestables.destroy'] ?? false;
-  
+
       // solo se permite borrar request si:
       // se tiene el permiso para eliminar requests
       // o que el request haya sido creado por el user que está autenticado

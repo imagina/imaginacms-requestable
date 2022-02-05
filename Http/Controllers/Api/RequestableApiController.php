@@ -147,6 +147,7 @@ class RequestableApiController extends BaseApiController
       \DB::rollback();//Rollback to Data Base
       $status = $this->getStatusError($e->getCode());
       $response = ["errors" => $e->getMessage()];
+    
     }
     //Return response
     return response()->json($response, $status ?? 200);
@@ -163,7 +164,7 @@ class RequestableApiController extends BaseApiController
   public function update($criteria, Request $request)
   {
     \DB::beginTransaction(); //DB Transaction
-    try {
+  //  try {
       //Get data
       $data = $request->input('attributes');
       
@@ -176,11 +177,12 @@ class RequestableApiController extends BaseApiController
       //$response = ["data" => 'Item Updated'];
       
       \DB::commit();//Commit to DataBase
-    } catch (\Exception $e) {
+ /*   } catch (\Exception $e) {
       \DB::rollback();//Rollback to Data Base
       $status = $this->getStatusError($e->getCode());
       $response = ["errors" => $e->getMessage()];
-    }
+  
+    }*/
     
     //Return response
     return response()->json($response ?? ["data" => "Item Updated"], $status ?? 200);

@@ -12,12 +12,20 @@ use Modules\Icomments\Traits\Commentable;
 
 class Requestable extends CrudModel
 {
+  
   use isFillable,MediaRelation,Commentable;
+  
   protected $table = 'requestable__requestables';
+  
   public $transformer = 'Modules\Requestable\Transformers\RequestableTransformer';
+  
   public $requestValidation = [
     'create' => 'Modules\Requestable\Http\Requests\CreateRequestableRequest',
     'update' => 'Modules\Requestable\Http\Requests\UpdateRequestableRequest',
+  ];
+  
+  protected $with = [
+    "fields"
   ];
   protected $fillable = [
     "requestable_type",
@@ -33,34 +41,20 @@ class Requestable extends CrudModel
     'fields' => 'array'
   ];
   
-  public function createdByUser()
-  {
+  public function createdByUser(){
     return $this->belongsTo(User::class,'created_by');
   }
   
-  public function category()
-  {
+  public function category(){
     return $this->belongsTo(Category::class);
   }
   
-  public function requestable()
-  {
+  public function requestable(){
     return $this->morphTo();
   }
   
-  public function getFieldsAttribute($value) {
-    
-    return json_decode($value);
-    
-  }
-  
-  public function status() {
+  public function status(){
     return $this->belongsTo(Status::class);
-  }
-  
-  
-  public function setFieldsAttribute($value) {
-    $this->attributes['fields'] = json_encode($value);
   }
   
   /**
@@ -74,6 +68,5 @@ class Requestable extends CrudModel
     return $requestableConfigs[$this->type];
     
   }
-  
   
 }

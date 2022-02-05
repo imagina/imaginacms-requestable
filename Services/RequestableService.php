@@ -113,6 +113,7 @@ class RequestableService extends BaseApiController
         
         if (!empty($status->events)) {
           $eventStatusPaths = !is_array($status->events) ? [$status->events] : $status->events;
+          
           foreach ($eventStatusPaths as $eventStatusPath) {
             event(new $eventStatusPath($newRequest, $oldRequest, $oldRequest->createdByUser));
           }
@@ -164,12 +165,12 @@ class RequestableService extends BaseApiController
       if ($permission || \Auth::id() == $oldRequest->created_by) {
         
         //call Method delete
-        $this->requestableRepository->deleteBy($criteria);
-        
-        $deletedEvent = $category->events["deleted"] ?? null;
-        
+        $this->requestableRepository->deleteBy($criteria,$params);
+  
+        $deletedEvent = $oldRequest->category->events["delete"] ?? null;
+
         if ($deletedEvent)
-          event(new $deletedEvent($oldRequest));
+          event(new $deletedEvent($newRequest,$oldRequest));
         
         $response = ["data" => "Item Deleted"];
         $newRequest = null;
