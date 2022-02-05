@@ -18,7 +18,7 @@ return [
     'form' => [
     ],
     'messages' => [
-      "creatingSameRequestError" => "El usuario ya posee una solicitud en progreso"
+      "creatingSameRequestError" => "Ya hay una solicitud en proceso, para realizar otra solicitud debe esperar a que culmine la solicitud actual"
     ],
     'validation' => [
     ],
