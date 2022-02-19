@@ -78,7 +78,12 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
         $query->where(function ($query) use ($filter) {
           $query->where('id', 'like', '%' . $filter->search . '%')
             ->orWhere('updated_at', 'like', '%' . $filter->search . '%')
-            ->orWhere('created_at', 'like', '%' . $filter->search . '%');
+            ->orWhere('created_at', 'like', '%' . $filter->search . '%')
+          ->orWhereHas("fields", function ($query) use ($filter){
+            $query->whereHas("translations",function ($query) use ($filter){
+              $query->where("ifillable__field_translations.value","like","%$filter->search%");
+            });
+          });
         });
       }
       
@@ -91,6 +96,7 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
   
    // $this->validateIndexAllPermission($query, $params);
     
+    //dd($query->toSql(),$query->getBindings());
     /*== REQUEST ==*/
     if (isset($params->page) && $params->page) {
       return $query->paginate($params->take);
