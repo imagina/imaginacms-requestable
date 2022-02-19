@@ -1,9 +1,16 @@
 <?php
+
 return [
-  "newRedirect"  => 'New redirect',
-  "updateRedirect"  => 'Update redirect',
-  "label"  => [
-    "redirectFrom"  => 'Redirect from',
-    "redirectTo"  => 'Redirect to',
-  ]
+  "sidebar" => [
+    "adminGroup" => "Request",
+    "status" => "Status",
+    "mainRequestable" => "Request",
+    "mainRequestableCreate" => "New Request"
+  ],
+  "newRequest" => "New Request",
+  "updateRequest" => "Update Request",
+  "newStatus" => "New Status",
+  "updateStatus" => "Update Status",
+  "selectRequestCategoryToForm" => "Select a request category"
 ];
+
