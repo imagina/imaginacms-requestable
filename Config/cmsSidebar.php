@@ -11,5 +11,5 @@ return [
       ]
     ]
   ],
-  "panel" => ["requestable_cms_panel_requestables"],
+  "panel" => ["requestable_cms_main_requestables"],
 ];
