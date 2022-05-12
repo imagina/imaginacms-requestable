@@ -100,12 +100,17 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
    // $this->validateIndexAllPermission($query, $params);
     
    // dd($query->toSql(),$query->getBindings(),$filter);
-    /*== REQUEST ==*/
-    if (isset($params->page) && $params->page) {
-      return $query->paginate($params->take);
-    } else {
-      $params->take ? $query->take($params->take) : false;//Take
-      return $query->get();
+
+    if (isset($params->onlyQuery) && $params->onlyQuery) {
+      return $query;
+    }else{
+      /*== REQUEST ==*/
+      if (isset($params->page) && $params->page) {
+        return $query->paginate($params->take);
+      } else {
+        $params->take ? $query->take($params->take) : false;//Take
+        return $query->get();
+      }
     }
   }
   
