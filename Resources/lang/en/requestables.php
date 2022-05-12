@@ -14,6 +14,11 @@ return [
         'create requestable' => 'Create a requestable',
     ],
     'table' => [
+        'category' => 'Category',
+        'status' => 'Status',
+        'type' => 'Type',
+        'created by' => 'Created by',
+        'last comment' => 'Last comment',
     ],
     'form' => [
     ],
