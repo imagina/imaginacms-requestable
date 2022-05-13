@@ -97,6 +97,14 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     if (isset($params->fields) && count($params->fields))
       $query->select($params->fields);
   
+
+    // If doesn't have Permission to index-all
+    if(\Auth::user() && !\Auth::user()->hasAccess('requestable.requestables.index-all')){
+      $user = \Auth::user();
+      $query->where('created_by', $user->id);
+    }
+
+
    // $this->validateIndexAllPermission($query, $params);
     
    // dd($query->toSql(),$query->getBindings(),$filter);
@@ -112,6 +120,7 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
         return $query->get();
       }
     }
+
   }
   
   
