@@ -178,7 +178,7 @@ WithEvents, ShouldQueue, WithMapping, WithHeadings
     //Extra fields
     if(!is_null($this->fields)){
       foreach ($this->fields as $key => $field) {
-        array_push($baseFields, str_replace('*','',$field['label']));
+        array_push($baseFields, rtrim(str_replace('*','',$field['label'])));
       }
     }
 
