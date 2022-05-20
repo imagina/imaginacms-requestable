@@ -43,6 +43,8 @@ class RequestableServiceProvider extends ServiceProvider
       $this->mergeConfigFrom($this->getModuleConfigFilePath('requestable', 'permissions'), "asgard.requestable.permissions");
         $this->publishConfig('requestable', 'config');
         //$this->publishConfig('requestable', 'requests');
+        $this->mergeConfigFrom($this->getModuleConfigFilePath('requestable', 'cmsPages'), "asgard.requestable.cmsPages");
+        $this->mergeConfigFrom($this->getModuleConfigFilePath('requestable', 'cmsSidebar'), "asgard.requestable.cmsSidebar");
 
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
     }

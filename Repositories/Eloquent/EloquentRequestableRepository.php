@@ -58,6 +58,10 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
         $query->where('created_by', $filter->createdBy);
       }
       
+      if (isset($filter->categoryId)) {
+        $query->where('category_id', $filter->categoryId);
+      }
+      
       //by type
       if(isset($filter->type) && $filter->type) {
         if(!is_array($filter->type)) $filter->type = [$filter->type];
@@ -65,8 +69,9 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
       }
   
       //by status
-      if(isset($filter->status) && $filter->status) {
-        $query->whereIn("status",$filter->status);
+      if(isset($filter->statusId) && $filter->statusId) {
+        if(!is_array($filter->statusId)) $filter->statusId = [$filter->statusId];
+        $query->whereIn("status_id",$filter->statusId);
       }
   
       //Order by
@@ -82,11 +87,14 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
         $query->where(function ($query) use ($filter) {
           $query->where('id', 'like', '%' . $filter->search . '%')
             ->orWhere('updated_at', 'like', '%' . $filter->search . '%')
-            ->orWhere('created_at', 'like', '%' . $filter->search . '%');
+            ->orWhere('created_at', 'like', '%' . $filter->search . '%')
+          ->orWhereHas("fields", function ($query) use ($filter){
+            $query->whereHas("translations",function ($query) use ($filter){
+              $query->where("ifillable__field_translations.value","like","%$filter->search%");
+            });
+          });
         });
       }
-      
-      
     }
     
     /*== FIELDS ==*/
@@ -95,13 +103,20 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
   
     $this->validateIndexAllPermission($query, $params);
     
-    /*== REQUEST ==*/
-    if (isset($params->page) && $params->page) {
-      return $query->paginate($params->take);
-    } else {
-      $params->take ? $query->take($params->take) : false;//Take
-      return $query->get();
+   // dd($query->toSql(),$query->getBindings(),$filter);
+
+    if (isset($params->onlyQuery) && $params->onlyQuery) {
+      return $query;
+    }else{
+      /*== REQUEST ==*/
+      if (isset($params->page) && $params->page) {
+        return $query->paginate($params->take);
+      } else {
+        $params->take ? $query->take($params->take) : false;//Take
+        return $query->get();
+      }
     }
+
   }
   
   
