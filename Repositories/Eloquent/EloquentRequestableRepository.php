@@ -45,6 +45,10 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
       if (isset($filter->requestableId)) {
         $query->where('requestable_id', $filter->requestableId);
       }
+      //by requested by
+      if (isset($filter->requestedBy)) {
+        $query->where('requested_by', $filter->requestedBy);
+      }
       //by related name
       if (isset($filter->requestableType)) {
         $query->where('requestable_type', $filter->requestableType);
@@ -89,7 +93,7 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     if (isset($params->fields) && count($params->fields))
       $query->select($params->fields);
   
-   // $this->validateIndexAllPermission($query, $params);
+    $this->validateIndexAllPermission($query, $params);
     
     /*== REQUEST ==*/
     if (isset($params->page) && $params->page) {
@@ -152,6 +156,8 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     /*== FIELDS ==*/
     if (isset($params->fields) && count($params->fields))
       $query->select($params->fields);
+  
+    $this->validateIndexAllPermission($query, $params);
     
     /*== REQUEST ==*/
     return $query->where($field ?? 'id', $criteria)->first();
@@ -269,7 +275,7 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
         !$params->permissions['requestable.requestables.index-all'])) {
       $user = $params->user;
       
-      $query->where('created_by', $user->id);
+      $query->where('requested_by', $user->id);
       
       
     }
@@ -294,4 +300,5 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     return $modulesWithConfigs;
     
   }
+  
 }

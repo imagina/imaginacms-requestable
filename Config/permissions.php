@@ -10,6 +10,7 @@ return [
         'destroy' => 'requestable::requestables.destroy resource',
       'edit-status' => 'requestable::requestables.edit-status resource',
       'edit-eta-date' => 'requestable::requestables.edit-eta-date resource',
+      'edit-requested-by' => 'requestable::requestables.edit-requested-by resource',
     ],
 
     'requestable.categories' => [

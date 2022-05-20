@@ -39,7 +39,8 @@ class RequestableServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        $this->publishConfig('requestable', 'permissions');
+
+      $this->mergeConfigFrom($this->getModuleConfigFilePath('requestable', 'permissions'), "asgard.requestable.permissions");
         $this->publishConfig('requestable', 'config');
         //$this->publishConfig('requestable', 'requests');
 

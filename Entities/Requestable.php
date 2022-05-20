@@ -33,6 +33,7 @@ class Requestable extends CrudModel
     "type",
     "eta",
     "status_id",
+    "requested_by",
     "category_id",
     "reviewed_by"
   ];
@@ -43,6 +44,11 @@ class Requestable extends CrudModel
   
   public function createdByUser(){
     return $this->belongsTo(User::class,'created_by');
+  }
+  
+  
+  public function requestedBy(){
+    return $this->belongsTo(User::class,'requested_by');
   }
   
   public function category(){
