@@ -163,21 +163,28 @@ class RequestableApiController extends BaseApiController
    */
   public function update($criteria, Request $request)
   {
+    \Log::info("Requestable:: RequestableApiController|Update");
+
     \DB::beginTransaction(); //DB Transaction
     try {
+
+      //Get Parameters from URL.
+      $params = $this->getParamsRequest($request);
+
       //Get data
       $data = $request->input('attributes');
       
       //Validate Request
       $this->validateRequestApi(new UpdateRequestableRequest((array)$data));
 
-      $model = $this->service->update($criteria,$data);
+      $model = $this->service->update($criteria,$data,$params);
       
       //Response
       //$response = ["data" => 'Item Updated'];
       
       \DB::commit();//Commit to DataBase
     } catch (\Exception $e) {
+      dd($e);
       \DB::rollback();//Rollback to Data Base
       $status = $this->getStatusError($e->getCode());
       $response = ["errors" => $e->getMessage()];
