@@ -75,8 +75,7 @@ class RequestableService extends BaseApiController
 
     //Request to Repository
     $oldRequest = $this->requestableRepository->getItem($criteria,$params);
-
-    \Log::info("Requestable:: asdasdas ");
+    
     
     if (!isset($oldRequest->id)) throw new \Exception('Item not found', 404);
     
