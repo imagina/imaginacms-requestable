@@ -163,8 +163,7 @@ class RequestableApiController extends BaseApiController
    */
   public function update($criteria, Request $request)
   {
-    \Log::info("Requestable:: RequestableApiController|Update");
-
+    
     \DB::beginTransaction(); //DB Transaction
     try {
 
@@ -184,7 +183,7 @@ class RequestableApiController extends BaseApiController
       
       \DB::commit();//Commit to DataBase
     } catch (\Exception $e) {
-      dd($e);
+      //dd($e);
       \DB::rollback();//Rollback to Data Base
       $status = $this->getStatusError($e->getCode());
       $response = ["errors" => $e->getMessage()];

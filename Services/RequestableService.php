@@ -72,8 +72,6 @@ class RequestableService extends BaseApiController
   
   public function update($criteria, $data,$params = null)
   {
-    
-    \Log::info("Requestable:: Services|RequestableService|Update");
 
     //Request to Repository
     $oldRequest = $this->requestableRepository->getItem($criteria,$params);
