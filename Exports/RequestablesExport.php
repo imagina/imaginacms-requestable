@@ -172,6 +172,7 @@ WithEvents, ShouldQueue, WithMapping, WithHeadings
       trans('requestable::requestables.table.category'),
       trans('requestable::requestables.table.status'),
       trans('requestable::requestables.table.type'),
+      trans('requestable::requestables.table.requested by'),
       trans('requestable::requestables.table.created by')
     ];
 
@@ -201,6 +202,7 @@ WithEvents, ShouldQueue, WithMapping, WithHeadings
       $item->category->title ?? null,
       $item->status->title ?? null,
       $item->type ?? null,
+      $item->requestedBy ? $item->requestedBy->present()->fullname: null,
       $item->createdByUser->present()->fullname ?? null
     ];
 
