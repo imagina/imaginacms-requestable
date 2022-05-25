@@ -17,6 +17,7 @@ return [
         'category' => 'Category',
         'status' => 'Status',
         'type' => 'Type',
+        'requested by' => 'Requested by',
         'created by' => 'Created by',
         'last comment' => 'Last comment',
     ],

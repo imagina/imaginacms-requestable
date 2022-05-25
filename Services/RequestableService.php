@@ -70,12 +70,12 @@ class RequestableService extends BaseApiController
   }
   
   
-  public function update($criteria, $data)
+  public function update($criteria, $data,$params = null)
   {
-    
-    
+
     //Request to Repository
-    $oldRequest = $this->requestableRepository->getItem($criteria);
+    $oldRequest = $this->requestableRepository->getItem($criteria,$params);
+    
     
     if (!isset($oldRequest->id)) throw new \Exception('Item not found', 404);
     
