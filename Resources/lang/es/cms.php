@@ -4,6 +4,7 @@ return [
   "sidebar" => [
     "adminGroup" => "Peticiones",
     "status" => "Estados",
+    "categories" => "Categorias",
     "mainRequestable" => "Peticiones",
     "mainRequestableCreate" => "Nueva Petición"
   ],
@@ -11,6 +12,7 @@ return [
   "updateRequest" => "Actualizar Petición",
   "newStatus" => "Nuevo Estado",
   "updateStatus" => "Actualizar Estado",
-  "selectRequestCategoryToForm" => "Selecciona una categoría para crear tu petición"
+  "selectRequestCategoryToForm" => "Selecciona una categoría para crear tu petición",
+  "timeElapsedToCancel" => "Cancelar despues de"
 ];
 
