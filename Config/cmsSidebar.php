@@ -7,7 +7,7 @@ return [
       "icon" => "fas fa-file-signature",
       "children" => [
         "requestable_cms_main_requestables",
-        "requestable_cms_admin_status",
+        "requestable_cms_admin_categories"
       ]
     ]
   ],

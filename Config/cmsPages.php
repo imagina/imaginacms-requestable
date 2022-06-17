@@ -2,9 +2,24 @@
 
 return [
   'admin' => [
+    'categories' => [
+      'permission' => 'requestable.categories.manage',
+      'activated' => true,
+      'authenticated' => true,
+      'path' => '/requestable/categories',
+      'name' => 'qrequestable.admin.categories',
+      'crud' => 'qrequestable/_crud/categories',
+      'page' => 'qcrud/_pages/admin/crudPage',
+      'layout' => 'qsite/_layouts/master.vue',
+      'title' => 'requestable.cms.sidebar.categories',
+      'icon' => 'fas fa-layer-group',
+      'subHeader' => [
+        'refresh' => true,
+      ]
+    ],
     "status" => [
       "permission" => "requestable.statuses.manage",
-      "activated" => true,
+      "activated" => false,
       "authenticated" => true,
       "path" => "/requestable/status",
       "name" => "qrequestable.admin.status",
