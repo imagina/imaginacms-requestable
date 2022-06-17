@@ -13,6 +13,9 @@ return [
   "newStatus" => "New Status",
   "updateStatus" => "Update Status",
   "selectRequestCategoryToForm" => "Select a request category",
-  "timeElapsedToCancel" => "Cancel after at"
+  "timeElapsedToCancel" => "Cancel after at",
+  "newCategory" => "New Category",
+  "updateCategory" => "Update Category",
+  "requestableType" => "Requestable Type"
 ];
 
