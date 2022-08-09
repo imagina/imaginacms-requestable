@@ -13,6 +13,9 @@ return [
   "newStatus" => "Nuevo Estado",
   "updateStatus" => "Actualizar Estado",
   "selectRequestCategoryToForm" => "Selecciona una categoría para crear tu petición",
-  "timeElapsedToCancel" => "Cancelar despues de"
+  "timeElapsedToCancel" => "Cancelar despues de",
+  "newCategory" => "Nueva Categoría",
+  "updateCategory" => "Actualizar Categoría",
+  "requestableType" => "Tipo de petición"
 ];
 
