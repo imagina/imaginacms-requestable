@@ -22,8 +22,9 @@ class RequestableTransformer extends CrudResource
     return [
       "requestableUrl" => isset($model->url) ? $model->url : "",
       "statusValue" => $this->status->value,
-      "files" => MediaTransformer::collection($this->whenLoaded('files'))
+      "files" => MediaTransformer::collection($this->whenLoaded('files')),
+      "comment" => null
     ];
-    
+
   }
 }
