@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Mockery\CountValidator\Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Modules\Ihelpers\Http\Controllers\Api\BaseApiController;
+use Modules\Requestable\Entities\Requestable;
 use Modules\Requestable\Http\Requests\CreateRequestableRequest;
 use Modules\Requestable\Http\Requests\UpdateRequestableRequest;
 use Modules\Requestable\Repositories\CategoryRepository;
@@ -13,19 +14,22 @@ use Modules\Requestable\Repositories\FieldRepository;
 use Modules\Requestable\Repositories\RequestableRepository;
 use Modules\Requestable\Services\RequestableService;
 use Modules\Requestable\Transformers\RequestableTransformer;
+use Modules\Core\Icrud\Controllers\BaseCrudController;
 
-
-class RequestableApiController extends BaseApiController
+class RequestableApiController extends BaseCrudController
 {
   private $requestable;
   private $service;
+    public $model;
+  public $modelRepository;
   
-  public function __construct(RequestableRepository $requestable, RequestableService $service)
+  public function __construct(RequestableRepository $requestable, RequestableService $service, Requestable $model)
   {
     parent::__construct();
     $this->requestable = $requestable;
     $this->service = $service;
-    
+    $this->model = $model;
+    $this->modelRepository = $requestable;
   }
   
   /**
