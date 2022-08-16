@@ -9,6 +9,7 @@ use Modules\Core\Icrud\Entities\CrudModel;
 use Modules\Ifillable\Traits\isFillable;
 use Modules\Media\Support\Traits\MediaRelation;
 use Modules\Icomments\Traits\Commentable;
+use Illuminate\Support\Facades\Cache;
 
 class Requestable extends CrudModel
 {
@@ -75,6 +76,42 @@ class Requestable extends CrudModel
     $requestableConfigs = collect($service->moduleConfigs())->keyBy("type");
   
     return $requestableConfigs[$this->type];
+    
+  }
+  
+  public function getTitleAttribute(){
+      return "ID: $this->id: ".($this->requestedBy->fullname ?? "")." - ".($this->category->title ?? "");
+  }
+  
+  public function getCustomFieldsAttribute(){
+  
+    try {
+      $customFields = [];
+  
+      $form = Cache::store('array')->remember('request_category_form' . $this->type, 60, function () {
+    
+        return $this->category->form ?? null;
+    
+      });
+  
+      $fields = Cache::store('array')->remember('request_category_form_fields' . $this->type, 60, function () use($form) {
+    
+        return $form->fields ?? [];
+    
+      });
+      
+      foreach ($fields as $field){
+        foreach ($this->fields as $requestField){
+          if($requestField->name == $field->name){
+            $requestField->label = $field->label;
+          }
+      
+        }
+      }
+    }catch (\Exception $e){
+    
+    }
+    
     
   }
   
