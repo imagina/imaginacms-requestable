@@ -36,6 +36,30 @@ class EloquentStatusRepository extends EloquentCrudRepository implements StatusR
      * if (isset($filter->status)) $query->where('status', $filter->status);
      *
      */
+    
+    $params = $filter->params;
+    
+    // ORDER
+    if (isset($params->order) && $params->order) {
+    
+      $order = is_array($params->order) ? $params->order : [$params->order];
+    
+      foreach ($order as $orderObject) {
+        if (isset($orderObject->field) && isset($orderObject->way)) {
+          if (in_array($orderObject->field, $this->model->translatedAttributes)) {
+            $query->orderByTranslation($orderObject->field, $orderObject->way);
+          } else
+            $query->orderBy($orderObject->field, $orderObject->way);
+        }
+      
+      }
+    } else {
+      //Order by position by default
+       $query->orderBy('position', 'asc');//Add order to query
+      
+    
+    }
+    
 
     //Response
     return $query;

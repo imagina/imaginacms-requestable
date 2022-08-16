@@ -22,6 +22,8 @@ class Status extends CrudModel
     'value',
     'category_id',
     'events',
+    'color',
+    'position',
     'final',
     'default',
     'cancelled_elapsed_time',
@@ -29,6 +31,8 @@ class Status extends CrudModel
   ];
 
   protected $fakeColumns = ['events'];
+  protected $with = ['translations'];
+  
 
   protected $casts = [
     'events' => 'array'
@@ -44,5 +48,13 @@ class Status extends CrudModel
   public function category()
   {
     return $this->belongsTo(Category::class);
+  }
+  public function requests()
+  {
+    return $this->hasMany(Requestable::class);
+  }
+  public function data()
+  {
+    return $this->hasMany(Requestable::class);
   }
 }
