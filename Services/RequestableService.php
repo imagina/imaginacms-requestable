@@ -196,10 +196,9 @@ class RequestableService extends BaseApiController
     ];
   }
 
-  /*
+  /**
   * Create Category, sync with Form, create statuses
-  * Check README.MD to params config
-  * @param Config
+  * @param Config - Check README.MD to params config
   */
   public function createFromConfig($config){
 
