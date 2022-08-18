@@ -17,5 +17,6 @@ class RequestableDatabaseSeeder extends Seeder
         Model::unguard();
 
         $this->call(RequestableTableSeeder::class);
+        $this->call(CreateFormTableSeeder::class);
     }
 }
