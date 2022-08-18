@@ -90,7 +90,7 @@ class CreateFormTableSeeder extends Seeder
   */  
   public function createCategoryAndStatusesFromConfig($form){
 
-    $config = config('asgard.requestable.config.requestable');
+    $config = config('asgard.requestable.config.requestable-leads');
 
     $config['formId'] = $form->id;
 
