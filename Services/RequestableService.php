@@ -19,19 +19,30 @@ use Modules\Requestable\Repositories\RequestableRepository;
 use Modules\Ihelpers\Http\Controllers\Api\BaseApiController;
 use Modules\Icomments\Services\CommentService;
 
+use Modules\Iforms\Events\SyncFormeable;
+use Modules\Requestable\Entities\DefaultStatus;
+use Modules\Requestable\Repositories\StatusRepository;
+
 class RequestableService extends BaseApiController
 {
   private $field;
   private $category;
   private $commentService;
   private $requestableRepository;
+  private $statusRepository;
   
-  public function __construct(RequestableRepository $requestableRepository, FieldApiController $field, CategoryRepository $category, CommentService $commentService)
-  {
+  public function __construct(
+    RequestableRepository $requestableRepository, 
+    FieldApiController $field, 
+    CategoryRepository $category, 
+    CommentService $commentService,
+    StatusRepository $statusRepository
+  ){
     $this->requestableRepository = $requestableRepository;
     $this->field = $field;
     $this->category = $category;
     $this->commentService = $commentService;
+    $this->statusRepository = $statusRepository;
   }
   
   public function create($data)
@@ -184,5 +195,84 @@ class RequestableService extends BaseApiController
       $newRequest
     ];
   }
+
+  /*
+  * Create Category, sync with Form, create statuses
+  * Check README.MD to params config
+  * @param Config
+  */
+  public function createFromConfig($config){
+
+    $locale = \LaravelLocalization::setLocale() ?: \App::getLocale();
+   
+    $params = [
+      "filter" => ["field" => "type"],
+      "include" => [],
+      "fields" => [],
+    ];
+      
+    if (isset($config["type"])) {
+        
+        $category = $this->category->getItem($config["type"] ?? '', json_decode(json_encode($params)));
+        
+
+        if (!isset($category->id)) {
+
+          try{
+
+            //Create Category
+            $category = $this->category->create([
+              'type' => $config["type"],
+              'time_elapsed_to_cancel' => $config["timeElapsedToCancel"] ?? -1,
+              'events' => $config["events"] ?? null,
+              'internal' => $config["internal"] ?? 1,
+              'requestable_type' => $config["requestableType"] ?? null,
+              $locale => [
+                "title" => trans($config["title"])
+              ]
+            ]);
+          
+            //Sync Formeable
+            if(isset($config["formId"]) && !empty($config["formId"])){
+              event(new SyncFormeable($category, ["form_id" => is_int($config["formId"]) ? $config["formId"] : setting($config["formId"], null, null)]));
+            }
+            
+            // Add default Statuses
+            if(isset($config["useDefaultStatuses"]) && $config["useDefaultStatuses"]){
+              $statuses = (new DefaultStatus())->lists();
+            }else{
+              $statuses = $config["statuses"];
+            }
+            
+            // Create Status
+            foreach ($statuses as $key => $status) {
+         
+              $this->statusRepository->create([
+                  "category_id" => $category->id,
+                  'value' => $key,
+                  'final' => $status["final"] ?? false,
+                  'default' => $config["defaultStatus"] ?? $status["default"] ?? false,
+                  'cancelled_elapsed_time' => $config["statusToSetWhenElapsedTime"] ?? $status["cancelled_elapsed_time"] ?? false,
+                  'events' => $config["eventsWhenStatus"][$key] ?? $status["events"] ?? null,
+                  'delete_request' => $config["deleteWhenStatus"][$key] ??  $status["delete_request"] ?? false,
+                  $locale => [
+                    "title" => trans($status["title"])
+                  ]
+                ]
+              );
+
+            }
+            
+
+          }catch(\Exception $e){
+            \Log::error('Requestable: Services|RequestableService|createFromConfig|Message: '.$e->getMessage());
+              dd($e);
+          }  
+
+        }
+    }
+
+  }
+
   
 }
