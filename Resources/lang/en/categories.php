@@ -21,4 +21,7 @@ return [
     ],
     'validation' => [
     ],
+    'leads' => [
+        'title' => 'Leads'
+    ]
 ];

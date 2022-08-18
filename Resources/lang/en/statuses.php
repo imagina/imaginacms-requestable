@@ -24,4 +24,12 @@ return [
   ],
   'validation' => [
   ],
+  'leads' => [
+    'new' => 'Nuevo',
+    'contacted' => 'Contactado',
+    'commercial proposal' => 'Propuesta Comercial',
+    'in progress' => 'En progreso',
+    'successful' => 'Exitoso',
+    'lost' => 'Perdido',
+  ]
 ];
