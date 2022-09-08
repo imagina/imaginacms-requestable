@@ -50,7 +50,16 @@ return [
         'destroy' => 'requestable::statushistories.destroy resource',
         'restore' => 'requestable::statushistories.restore resource',
     ],
+    'requestable.categoryrules' => [
+        'manage' => 'requestable::categoryrules.manage resource',
+        'index' => 'requestable::categoryrules.list resource',
+        'create' => 'requestable::categoryrules.create resource',
+        'edit' => 'requestable::categoryrules.edit resource',
+        'destroy' => 'requestable::categoryrules.destroy resource',
+        'restore' => 'requestable::categoryrules.restore resource',
+    ],
 // append
+
 
 
 

@@ -121,7 +121,20 @@ class RequestableServiceProvider extends ServiceProvider
                 return new \Modules\Requestable\Repositories\Cache\CacheStatusHistoryDecorator($repository);
             }
         );
+        $this->app->bind(
+            'Modules\Requestable\Repositories\CategoryRuleRepository',
+            function () {
+                $repository = new \Modules\Requestable\Repositories\Eloquent\EloquentCategoryRuleRepository(new \Modules\Requestable\Entities\CategoryRule());
+
+                if (! config('app.cache')) {
+                    return $repository;
+                }
+
+                return new \Modules\Requestable\Repositories\Cache\CacheCategoryRuleDecorator($repository);
+            }
+        );
 // add bindings
+
 
 
 

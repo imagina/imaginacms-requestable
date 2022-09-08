@@ -38,6 +38,15 @@ $router->group(['prefix' => '/requestable/v1'], function (Router $router) {
 
     ]
   ]);
+
+  $router->apiCrud([
+    'module' => 'requestable',
+    'prefix' => 'category-rule',
+    'controller' => 'CategoryRuleApiController',
+    'middleware' => [
+      'update' => ['auth:api','auth-can:requestable.categoryrules.edit']
+    ]
+  ]);
   
 
   
