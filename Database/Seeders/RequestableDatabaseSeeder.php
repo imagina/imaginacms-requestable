@@ -18,5 +18,6 @@ class RequestableDatabaseSeeder extends Seeder
 
         $this->call(RequestableTableSeeder::class);
         $this->call(CreateFormTableSeeder::class);
+        //$this->call(CreateCategoriesRulesTableSeeder::class);
     }
 }
