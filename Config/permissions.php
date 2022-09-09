@@ -58,7 +58,16 @@ return [
         'destroy' => 'requestable::categoryrules.destroy resource',
         'restore' => 'requestable::categoryrules.restore resource',
     ],
+    'requestable.automationrules' => [
+        'manage' => 'requestable::automationrules.manage resource',
+        'index' => 'requestable::automationrules.list resource',
+        'create' => 'requestable::automationrules.create resource',
+        'edit' => 'requestable::automationrules.edit resource',
+        'destroy' => 'requestable::automationrules.destroy resource',
+        'restore' => 'requestable::automationrules.restore resource',
+    ],
 // append
+
 
 
 

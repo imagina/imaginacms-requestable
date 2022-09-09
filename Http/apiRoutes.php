@@ -44,7 +44,20 @@ $router->group(['prefix' => '/requestable/v1'], function (Router $router) {
     'prefix' => 'category-rule',
     'controller' => 'CategoryRuleApiController',
     'middleware' => [
-      'update' => ['auth:api','auth-can:requestable.categoryrules.edit']
+      'create' => ['auth:api','auth-can:requestable.categoryrules.create'],
+      'update' => ['auth:api','auth-can:requestable.categoryrules.edit'],
+      'delete' => ['auth:api','auth-can:requestable.categoryrules.destroy'],
+    ]
+  ]);
+
+  $router->apiCrud([
+    'module' => 'requestable',
+    'prefix' => 'automation-rule',
+    'controller' => 'AutomationRuleApiController',
+    'middleware' => [
+      'create' => ['auth:api','auth-can:requestable.automationrules.create'],
+      'update' => ['auth:api','auth-can:requestable.automationrules.edit'],
+      'delete' => ['auth:api','auth-can:requestable.automationrules.destroy']
     ]
   ]);
   
