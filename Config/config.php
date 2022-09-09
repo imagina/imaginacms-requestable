@@ -64,6 +64,72 @@ return [
         ],
       ]
       
+  ],
+
+  /*
+  |--------------------------------------------------------------------------
+  | Categories Rule to Seeder
+  |--------------------------------------------------------------------------
+  */
+  "categories-rules" => [
+        //Parent
+        0 => [
+            'systemName' => 'client-communications',
+            'en' => ['title' => 'Client Communications'],
+            'es' => ['title' => 'Comunicacion con el Cliente'],
+       ],
+       //Child Category - client-communications
+       1 => [
+            'systemName' => 'send-email',
+            'parentSystemName' => 'client-communications', //from parent
+            'en' => ['title' => 'Send Email'],
+            'es' => ['title' => 'Enviar email'],
+            // Como el archivo crud-fields (esto es un ejemplo por ahora)
+            'formFields' => [
+                'title' => [
+                    'value' => null,
+                    'name' => 'title',
+                    'type' => 'input',
+                    'isTranslatable' => true,
+                    'props' => [
+                        'label' => 'requestable::categoryrules.formFields.title'
+                    ]
+                ],
+                'description' => [
+                    'value' => null,
+                    'name' => 'description',
+                    'type' => 'input',
+                    'isTranslatable' => true,
+                    'props' => [
+                        'label' => 'requestable::categoryrules.formFields.description',
+                        'type' => 'textarea',
+                        'rows' => 3,
+                    ]
+                ],
+            ]
+       ],
+       //Child Category - client-communications
+       2 => [
+            'systemName' => 'send-sms',
+            'parentSystemName' => 'client-communications', //from parent
+            'en' => ['title' => 'Send SMS'],
+            'es' => ['title' => 'Enviar sms'],
+        ],
+        //Child Category - client-communications
+        3 => [
+            'systemName' => 'send-telegram',
+            'parentSystemName' => 'client-communications', //from parent
+            'en' => ['title' => 'Send Telegram'],
+            'es' => ['title' => 'Enviar Telegram'],
+        ],
+        //Child Category - client-communications
+        4 => [
+            'systemName' => 'send-whatsapp',
+            'parentSystemName' => 'client-communications', //from parent
+            'en' => ['title' => 'Send Whatsapp'],
+            'es' => ['title' => 'Enviar Whatsapp'],
+        ],
+
   ]
   
 
