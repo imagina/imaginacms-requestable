@@ -13,7 +13,9 @@ class CreateCategoryRuleRequest extends BaseFormRequest
 
     public function translationRules()
     {
-        return [];
+        return [
+            'title' => 'required'
+        ];
     }
 
     public function authorize()
@@ -23,12 +25,14 @@ class CreateCategoryRuleRequest extends BaseFormRequest
 
     public function messages()
     {
-        return [];
+        return [ ];
     }
 
     public function translationMessages()
     {
-        return [];
+        return [
+            'title.required' => trans('requestable::common.messages.field required'),
+        ];
     }
 
     public function getValidator(){
