@@ -14,4 +14,15 @@ return [
     'min 2 characters' => 'Minimum of 2 characters',
   ],
 
+  'statusGeneral' => [
+    'inactive' => 'Inactive',
+    'active' => 'Active'
+  ],
+  'formFields' => [
+    'from' => 'De',
+    'subject' => 'Subject',
+    'message' => 'Mensaje',
+    'phone' => 'Teléfono',
+  ],
+
 ];
