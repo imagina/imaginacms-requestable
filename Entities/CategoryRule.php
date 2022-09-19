@@ -9,6 +9,9 @@ use Illuminate\Support\Str;
 use Kalnoy\Nestedset\NodeTrait;
 use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
 
+//Static Classes
+use Modules\Requestable\Entities\StatusGeneral;
+
 class CategoryRule extends CrudModel
 {
   use Translatable, NodeTrait;
@@ -57,6 +60,17 @@ class CategoryRule extends CrudModel
   public function children()
   {
     return $this->hasMany(Category::class, 'parent_id');
+  }
+
+  public function automationRules()
+  {
+    return $this->hasMany(AutomationRule::class);
+  }
+
+  public function getStatusNameAttribute()
+  {
+    $status = new StatusGeneral();
+    return $status->get($this->status);
   }
 
   //==================== ACCESORS ==============//

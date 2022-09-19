@@ -5,6 +5,9 @@ namespace Modules\Requestable\Entities;
 use Modules\Core\Icrud\Entities\CrudModel;
 use Modules\Ifillable\Traits\isFillable;
 
+//Static Classes
+use Modules\Requestable\Entities\StatusGeneral;
+
 class AutomationRule extends CrudModel
 {
   
@@ -32,7 +35,9 @@ class AutomationRule extends CrudModel
     'run_type',
     'run_config',
     'working_hours',
-    'status_id'
+    'status_id',
+    'category_rule_id',
+    'status'
   ];
 
   protected $with = [
@@ -46,8 +51,18 @@ class AutomationRule extends CrudModel
 
   //============== RELATIONS ==============//
 
-  public function status(){
-    return $this->belongsTo(Status::class);
+  public function requestStatus(){
+    return $this->belongsTo(Status::class,'status_id');
+  }
+
+  public function categoryRule(){
+    return $this->belongsTo(CategoryRule::class);
+  }
+
+  public function getStatusNameAttribute()
+  {
+    $status = new StatusGeneral();
+    return $status->get($this->status);
   }
 
   //==================== ACCESORS ==============//
