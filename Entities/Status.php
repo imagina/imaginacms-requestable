@@ -57,4 +57,10 @@ class Status extends CrudModel
   {
     return $this->hasMany(Requestable::class);
   }
+
+  public function automationRules()
+  {
+    return $this->hasMany(AutomationRule::class);
+  }
+
 }
