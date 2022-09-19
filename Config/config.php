@@ -84,24 +84,37 @@ return [
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send Email'],
             'es' => ['title' => 'Enviar email'],
-            // Como el archivo crud-fields (esto es un ejemplo por ahora)
             'formFields' => [
-                'title' => [
+                'from' => [
+                    'value' => [],
+                    'name' => 'from',
+                    'type' => 'select',
+                    'loadOptions' => [
+                      'apiRoute' => 'apiRoutes.quser.users',
+                      'select' => ['label' => 'email', 'id' => 'id'],
+                    ],
+                    'props' => [
+                      'label' => 'requestable::common.formFields.from',
+                      'multiple' => true,
+                      'clearable' => true,
+                    ],
+                ],
+                'subject' => [
                     'value' => null,
-                    'name' => 'title',
+                    'name' => 'subject',
                     'type' => 'input',
                     'isTranslatable' => true,
                     'props' => [
-                        'label' => 'requestable::categoryrules.formFields.title'
+                        'label' => 'requestable::common.formFields.subject'
                     ]
                 ],
-                'description' => [
+                'message' => [
                     'value' => null,
-                    'name' => 'description',
+                    'name' => 'message',
                     'type' => 'input',
                     'isTranslatable' => true,
                     'props' => [
-                        'label' => 'requestable::categoryrules.formFields.description',
+                        'label' => 'requestable::common.formFields.message',
                         'type' => 'textarea',
                         'rows' => 3,
                     ]
@@ -114,6 +127,19 @@ return [
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send SMS'],
             'es' => ['title' => 'Enviar sms'],
+            'formFields' => [
+                'message' => [
+                    'value' => null,
+                    'name' => 'message',
+                    'type' => 'input',
+                    'isTranslatable' => true,
+                    'props' => [
+                        'label' => 'requestable::common.formFields.message',
+                        'type' => 'textarea',
+                        'rows' => 3,
+                    ]
+                ]
+            ]
         ],
         //Child Category - client-communications
         3 => [
@@ -121,6 +147,19 @@ return [
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send Telegram'],
             'es' => ['title' => 'Enviar Telegram'],
+            'formFields' => [
+                'message' => [
+                    'value' => null,
+                    'name' => 'message',
+                    'type' => 'input',
+                    'isTranslatable' => true,
+                    'props' => [
+                        'label' => 'requestable::common.formFields.message',
+                        'type' => 'textarea',
+                        'rows' => 3,
+                    ]
+                ]
+            ]
         ],
         //Child Category - client-communications
         4 => [
@@ -128,6 +167,19 @@ return [
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send Whatsapp'],
             'es' => ['title' => 'Enviar Whatsapp'],
+            'formFields' => [
+                'message' => [
+                    'value' => null,
+                    'name' => 'message',
+                    'type' => 'input',
+                    'isTranslatable' => true,
+                    'props' => [
+                        'label' => 'requestable::common.formFields.message',
+                        'type' => 'textarea',
+                        'rows' => 3,
+                    ]
+                ]
+            ]
         ],
 
   ]
