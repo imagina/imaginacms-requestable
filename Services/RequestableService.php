@@ -152,6 +152,8 @@ class RequestableService extends BaseApiController
     //request update event
     if ($eventPath)
       event(new $eventPath($newRequest, $oldRequest));
+
+    return $newRequest;
     
     
   }
