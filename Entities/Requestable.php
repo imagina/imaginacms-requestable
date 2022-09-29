@@ -39,12 +39,6 @@ class Requestable extends CrudModel
     "reviewed_by"
   ];
 
-  /*
-  protected $casts = [
-    'fields' => 'array'
-  ];
-  */
-  
   
   public function createdByUser(){
     return $this->belongsTo(User::class,'created_by');
