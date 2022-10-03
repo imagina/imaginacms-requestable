@@ -16,6 +16,9 @@ use Modules\Requestable\Services\RequestableService;
 use Modules\Requestable\Transformers\RequestableTransformer;
 use Modules\Core\Icrud\Controllers\BaseCrudController;
 
+// Events
+use Modules\Requestable\Events\RequestableWasUpdated;
+
 class RequestableApiController extends BaseCrudController
 {
   private $requestable;
@@ -182,6 +185,8 @@ class RequestableApiController extends BaseCrudController
 
       $model = $this->service->update($criteria,$data,$params);
       
+      event(new RequestableWasUpdated($model));
+
       //Response
       //$response = ["data" => 'Item Updated'];
       
@@ -197,7 +202,50 @@ class RequestableApiController extends BaseCrudController
     //Return response
     return response()->json($response ?? ["data" => "Item Updated"], $status ?? 200);
   }
+
+  /**
+  * Add comment to requestable
+  * @param $criteria (requestable id)
+  * @param $request
+  */
+  public function addComment($criteria, Request $request){
+   
+    \DB::beginTransaction(); //DB Transaction
+    try {
+
+      //Get Parameters from URL.
+      $params = $this->getParamsRequest($request);
+
+      //Get data
+      $data = $request->input('attributes');
+
+      //Validate Request
+      $this->validateRequestApi(new \Modules\Icomments\Http\Requests\CreateCommentRequest((array)$data));
+
+      // Search
+      $model = $this->requestable->getItem($criteria, $params);
+
+      //Break if no found item
+      if (!$model) throw new \Exception('Item not found', 404);
+
+      //Create comment
+      $comment = app('Modules\Icomments\Services\CommentService')->create($model,$data);
+
+      //Response
+      $response = ["data" => new \Modules\Icomments\Transformers\CommentTransformer($comment)];
+      
+      \DB::commit();//Commit to DataBase
+    } catch (\Exception $e) {
+      //dd($e);
+      \DB::rollback();//Rollback to Data Base
+      $status = $this->getStatusError($e->getCode());
+      $response = ["errors" => $e->getMessage()];
   
+    }
+    
+    //Return response
+    return response()->json($response ?? ["data" => "Comment Added"], $status ?? 200);
+  }
  
   
 }

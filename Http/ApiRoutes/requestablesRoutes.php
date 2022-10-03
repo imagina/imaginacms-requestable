@@ -33,5 +33,12 @@ $router->group(['prefix' => '/requestables'], function (Router $router) {
     'uses' => 'RequestableApiController@create',
     'middleware' => ['auth:api','auth-can:requestable.requestables.create']
   ]);
+
+  //Add comment to requestable
+  $router->post('/{id}/comment', [
+    'as' => 'requestables.comment',
+    'uses' => 'RequestableApiController@addComment',
+    'middleware' => ['auth:api','auth-can:requestable.requestables.edit']
+  ]);
   
 });
