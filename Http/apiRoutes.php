@@ -69,4 +69,6 @@ $router->group(['prefix' => '/requestable/v1'], function (Router $router) {
 
   require('ApiRoutes/statusesRoutes.php');
 
+  require('ApiRoutes/categoriesRoutes.php');
+
 });
