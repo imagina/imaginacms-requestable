@@ -66,6 +66,14 @@ return [
         'destroy' => 'requestable::automationrules.destroy resource',
         'restore' => 'requestable::automationrules.restore resource',
     ],
+    'requestable.comments' => [
+        'manage' => 'requestable::comments.manage resource',
+        'index' => 'requestable::comments.list resource',
+        'create' => 'requestable::comments.create resource',
+        'edit' => 'requestable::comments.edit resource',
+        'destroy' => 'requestable::comments.destroy resource',
+        'restore' => 'requestable::comments.restore resource',
+    ],
 // append
 
 
