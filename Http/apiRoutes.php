@@ -60,6 +60,22 @@ $router->group(['prefix' => '/requestable/v1'], function (Router $router) {
       'delete' => ['auth:api','auth-can:requestable.automationrules.destroy']
     ]
   ]);
+
+  /**
+   * Requestable with Icomments Module
+  */
+  if (is_module_enabled('Icomments')) {
+    $router->apiCrud([
+      'module' => 'requestable',
+      'prefix' => 'comments',
+      'controller' => '\Modules\Icomments\Http\Controllers\Api\CommentApiController',
+      'middleware' => [
+        'create' => ['auth:api','auth-can:requestable.comments.create'],
+        'update' => ['auth:api','auth-can:requestable.comments.edit'],
+        'delete' => ['auth:api','auth-can:requestable.comments.destroy']
+      ]
+    ]);
+  }
   
 
   
