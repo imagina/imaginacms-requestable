@@ -14,7 +14,7 @@ class CreateRequestableByLeadData
       ->where("formeable_type", 'Modules\Requestable\Entities\Category')->first();
     if (isset($formeableData->id)) {
       $values['category_id'] = $formeableData->formeable_id;
-      Requestable::create($values);
+      app('Modules\Requestable\Services\RequestableService')->create($values);
     }
   }
 }
