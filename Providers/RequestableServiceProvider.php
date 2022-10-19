@@ -7,8 +7,6 @@ use Modules\Core\Traits\CanPublishConfiguration;
 use Modules\Core\Events\BuildingSidebar;
 use Modules\Core\Events\LoadingBackendTranslations;
 use Illuminate\Support\Arr;
-use Modules\Iforms\Events\LeadWasCreated;
-use Modules\Requestable\Events\Handlers\CreateRequestableByLeadData;
 use Modules\Requestable\Events\Handlers\RegisterRequestableSidebar;
 
 class RequestableServiceProvider extends ServiceProvider
@@ -31,8 +29,6 @@ class RequestableServiceProvider extends ServiceProvider
   {
     $this->registerBindings();
     $this->app['events']->listen(BuildingSidebar::class, RegisterRequestableSidebar::class);
-
-    $this->app['events']->listen(LeadWasCreated::class, CreateRequestableByLeadData::class);
 
     $this->app['events']->listen(LoadingBackendTranslations::class, function (LoadingBackendTranslations $event) {
       $event->load('requestables', Arr::dot(trans('requestable::requestables')));
