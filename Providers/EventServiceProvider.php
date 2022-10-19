@@ -9,6 +9,8 @@ use Modules\Requestable\Events\RequestableWasUpdated;
 
 //Handlers
 use Modules\Requestable\Events\Handlers\CheckStatusRequestable;
+use Modules\Iforms\Events\LeadWasCreated;
+use Modules\Requestable\Events\Handlers\CreateRequestableByLeadData;
 
 
 class EventServiceProvider extends ServiceProvider
@@ -19,6 +21,8 @@ class EventServiceProvider extends ServiceProvider
             CheckStatusRequestable::class
         ],
         */
-       
+      LeadWasCreated::class => [
+        CreateRequestableByLeadData::class
+      ],
     ];
 }

@@ -47,19 +47,26 @@ class RequestableService extends BaseApiController
   
   public function create($data)
   {
-    
-    $params = [
-      "filter" => [
-        "field" => "type",
-      ],
-      "include" => [],
-      "fields" => [],
-    ];
-    
-    $category = $this->category->getItem($data["type"], json_decode(json_encode($params)));
-    
+    if(isset($data["category_id"]) && !empty($data["category_id"])){
+      $params = [
+        "include" => [],
+        "fields" => [],
+      ];
+      $category = $this->category->getItem($data["category_id"], json_decode(json_encode($params)));
+    }else{
+      $params = [
+        "filter" => [
+          "field" => "type",
+        ],
+        "include" => [],
+        "fields" => [],
+      ];
+      $category = $this->category->getItem($data["type"], json_decode(json_encode($params)));
+    }
+
     if (!isset($category->id)) throw new \Exception('Request Type not found', 400);
-    
+
+    $data["type"] = $category->type;
     $eventPath = $category->events["create"] ?? null;
     
     $data["status_id"] = $category->defaultStatus()->id;
