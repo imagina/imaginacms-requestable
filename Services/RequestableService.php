@@ -69,7 +69,7 @@ class RequestableService extends BaseApiController
     $data["type"] = $category->type;
     $eventPath = $category->events["create"] ?? null;
     
-    $data["status_id"] = $category->defaultStatus()->id;
+    $data["status_id"] = isset($data["status_id"]) ? $data["status_id"] : $category->defaultStatus()->id;
     $data["requestable_type"] = $category->requestable_type;
     $data["category_id"] = $category->id;
     
