@@ -3,18 +3,14 @@
 namespace Modules\Requestable\Http\Requests;
 
 use Modules\Core\Internationalisation\BaseFormRequest;
-use Illuminate\Validation\Rule;
-use Modules\Requestable\Rules\CategoryInternal;
 
-class CreateStatusRequest extends BaseFormRequest
+class CreateAutomationRuleRequest extends BaseFormRequest
 {
     public function rules()
-    {   
-        $categoryService = app("Modules\Requestable\Services\CategoryService");
-
+    {
         return [
-            'category_id' => "required",
-            'value' => Rule::requiredIf($categoryService->isInternal($this->category_id))
+            'name' => 'required',
+            'run_type' => 'required'
         ];
     }
 
@@ -31,7 +27,8 @@ class CreateStatusRequest extends BaseFormRequest
     public function messages()
     {
         return [
-            'category_id.required' => trans('requestable::common.messages.field required'),
+            'name.required' => trans('requestable::common.messages.field required'),
+            'run_type.required' => trans('requestable::common.messages.field required'),
         ];
     }
 
@@ -43,6 +40,5 @@ class CreateStatusRequest extends BaseFormRequest
     public function getValidator(){
         return $this->getValidatorInstance();
     }
-
-
+    
 }

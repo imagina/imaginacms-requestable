@@ -47,22 +47,29 @@ class RequestableService extends BaseApiController
   
   public function create($data)
   {
-    
-    $params = [
-      "filter" => [
-        "field" => "type",
-      ],
-      "include" => [],
-      "fields" => [],
-    ];
-    
-    $category = $this->category->getItem($data["type"], json_decode(json_encode($params)));
-    
+    if(isset($data["category_id"]) && !empty($data["category_id"])){
+      $params = [
+        "include" => [],
+        "fields" => [],
+      ];
+      $category = $this->category->getItem($data["category_id"], json_decode(json_encode($params)));
+    }else{
+      $params = [
+        "filter" => [
+          "field" => "type",
+        ],
+        "include" => [],
+        "fields" => [],
+      ];
+      $category = $this->category->getItem($data["type"], json_decode(json_encode($params)));
+    }
+
     if (!isset($category->id)) throw new \Exception('Request Type not found', 400);
-    
+
+    $data["type"] = $category->type;
     $eventPath = $category->events["create"] ?? null;
     
-    $data["status_id"] = $category->defaultStatus()->id;
+    $data["status_id"] = isset($data["status_id"]) ? $data["status_id"] : $category->defaultStatus()->id;
     $data["requestable_type"] = $category->requestable_type;
     $data["category_id"] = $category->id;
     
@@ -152,6 +159,8 @@ class RequestableService extends BaseApiController
     //request update event
     if ($eventPath)
       event(new $eventPath($newRequest, $oldRequest));
+
+    return $newRequest;
     
     
   }

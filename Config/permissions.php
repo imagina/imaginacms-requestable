@@ -50,7 +50,33 @@ return [
         'destroy' => 'requestable::statushistories.destroy resource',
         'restore' => 'requestable::statushistories.restore resource',
     ],
+    'requestable.categoryrules' => [
+        'manage' => 'requestable::categoryrules.manage resource',
+        'index' => 'requestable::categoryrules.list resource',
+        'create' => 'requestable::categoryrules.create resource',
+        'edit' => 'requestable::categoryrules.edit resource',
+        'destroy' => 'requestable::categoryrules.destroy resource',
+        'restore' => 'requestable::categoryrules.restore resource',
+    ],
+    'requestable.automationrules' => [
+        'manage' => 'requestable::automationrules.manage resource',
+        'index' => 'requestable::automationrules.list resource',
+        'create' => 'requestable::automationrules.create resource',
+        'edit' => 'requestable::automationrules.edit resource',
+        'destroy' => 'requestable::automationrules.destroy resource',
+        'restore' => 'requestable::automationrules.restore resource',
+    ],
+    'requestable.comments' => [
+        'manage' => 'requestable::comments.manage resource',
+        'index' => 'requestable::comments.list resource',
+        'create' => 'requestable::comments.create resource',
+        'edit' => 'requestable::comments.edit resource',
+        'destroy' => 'requestable::comments.destroy resource',
+        'restore' => 'requestable::comments.restore resource',
+    ],
 // append
+
+
 
 
 

@@ -64,6 +64,124 @@ return [
         ],
       ]
       
+  ],
+
+  /*
+  |--------------------------------------------------------------------------
+  | Categories Rule to Seeder
+  |--------------------------------------------------------------------------
+  */
+  "categories-rules" => [
+        //Parent
+        0 => [
+            'systemName' => 'client-communications',
+            'en' => ['title' => 'Client Communications'],
+            'es' => ['title' => 'Comunicacion con el Cliente'],
+       ],
+       //Child Category - client-communications
+       1 => [
+            'systemName' => 'send-email',
+            'parentSystemName' => 'client-communications', //from parent
+            'en' => ['title' => 'Send Email'],
+            'es' => ['title' => 'Enviar email'],
+            'formFields' => [
+                'from' => [
+                    'value' => [],
+                    'name' => 'from',
+                    'type' => 'select',
+                    'loadOptions' => [
+                      'apiRoute' => 'apiRoutes.quser.users',
+                      'select' => ['label' => 'email', 'id' => 'id'],
+                    ],
+                    'props' => [
+                      'label' => 'requestable::common.formFields.from',
+                      'multiple' => true,
+                      'clearable' => true,
+                    ],
+                ],
+                'subject' => [
+                    'value' => null,
+                    'name' => 'subject',
+                    'type' => 'input',
+                    'isTranslatable' => true,
+                    'props' => [
+                        'label' => 'requestable::common.formFields.subject'
+                    ]
+                ],
+                'message' => [
+                    'value' => null,
+                    'name' => 'message',
+                    'type' => 'input',
+                    'isTranslatable' => true,
+                    'props' => [
+                        'label' => 'requestable::common.formFields.message',
+                        'type' => 'textarea',
+                        'rows' => 3,
+                    ]
+                ],
+            ]
+       ],
+       //Child Category - client-communications
+       2 => [
+            'systemName' => 'send-sms',
+            'parentSystemName' => 'client-communications', //from parent
+            'en' => ['title' => 'Send SMS'],
+            'es' => ['title' => 'Enviar sms'],
+            'formFields' => [
+                'message' => [
+                    'value' => null,
+                    'name' => 'message',
+                    'type' => 'input',
+                    'isTranslatable' => true,
+                    'props' => [
+                        'label' => 'requestable::common.formFields.message',
+                        'type' => 'textarea',
+                        'rows' => 3,
+                    ]
+                ]
+            ]
+        ],
+        //Child Category - client-communications
+        3 => [
+            'systemName' => 'send-telegram',
+            'parentSystemName' => 'client-communications', //from parent
+            'en' => ['title' => 'Send Telegram'],
+            'es' => ['title' => 'Enviar Telegram'],
+            'formFields' => [
+                'message' => [
+                    'value' => null,
+                    'name' => 'message',
+                    'type' => 'input',
+                    'isTranslatable' => true,
+                    'props' => [
+                        'label' => 'requestable::common.formFields.message',
+                        'type' => 'textarea',
+                        'rows' => 3,
+                    ]
+                ]
+            ]
+        ],
+        //Child Category - client-communications
+        4 => [
+            'systemName' => 'send-whatsapp',
+            'parentSystemName' => 'client-communications', //from parent
+            'en' => ['title' => 'Send Whatsapp'],
+            'es' => ['title' => 'Enviar Whatsapp'],
+            'formFields' => [
+                'message' => [
+                    'value' => null,
+                    'name' => 'message',
+                    'type' => 'input',
+                    'isTranslatable' => true,
+                    'props' => [
+                        'label' => 'requestable::common.formFields.message',
+                        'type' => 'textarea',
+                        'rows' => 3,
+                    ]
+                ]
+            ]
+        ],
+
   ]
   
 
