@@ -17,6 +17,7 @@ use Modules\Requestable\Transformers\RequestableTransformer;
 use Modules\Core\Icrud\Controllers\BaseCrudController;
 
 // Events
+use Modules\Requestable\Events\RequestableWasCreated;
 use Modules\Requestable\Events\RequestableWasUpdated;
 
 class RequestableApiController extends BaseCrudController
@@ -145,6 +146,8 @@ class RequestableApiController extends BaseCrudController
       $this->validateRequestApi(new CreateRequestableRequest((array)$data));
       
       $model = $this->service->create($data);
+
+      event(new RequestableWasCreated($model));
       
       //Response
       $response = ["data" => new RequestableTransformer($model)];
