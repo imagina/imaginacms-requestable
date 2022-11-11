@@ -84,6 +84,7 @@ return [
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send Email'],
             'es' => ['title' => 'Enviar email'],
+            'options' => ['filterFormFieldType'=>'email'],//type field iform
             'formFields' => [
                 'from' => [
                     'value' => [],
@@ -127,6 +128,7 @@ return [
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send SMS'],
             'es' => ['title' => 'Enviar sms'],
+            'options' => ['filterFormFieldType'=>'phone'],//type field iform
             'formFields' => [
                 'message' => [
                     'value' => null,
@@ -147,6 +149,7 @@ return [
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send Telegram'],
             'es' => ['title' => 'Enviar Telegram'],
+            'options' => ['filterFormFieldType'=>'phone'],//type field iform
             'formFields' => [
                 'message' => [
                     'value' => null,
@@ -167,6 +170,7 @@ return [
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send Whatsapp'],
             'es' => ['title' => 'Enviar Whatsapp'],
+            'options' => ['filterFormFieldType'=>'phone'],//type field iform
             'formFields' => [
                 'message' => [
                     'value' => null,
