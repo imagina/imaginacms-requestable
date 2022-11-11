@@ -16,6 +16,8 @@ return [
   "timeElapsedToCancel" => "Cancelar despues de",
   "newCategory" => "Nueva Categoría",
   "updateCategory" => "Actualizar Categoría",
-  "requestableType" => "Tipo de petición"
+  "requestableType" => "Tipo de petición",
+  "newRule" => "Nueva Regla",
+  "updateRule" => "Actualizar Regla"
 ];
 
