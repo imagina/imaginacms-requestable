@@ -11,7 +11,7 @@ use Modules\Requestable\Events\RequestableWasUpdated;
 //Handlers
 use Modules\Requestable\Events\Handlers\CheckStatusRequestable;
 use Modules\Iforms\Events\LeadWasCreated;
-//use Modules\Requestable\Events\Handlers\CreateRequestableByLeadData;
+use Modules\Requestable\Events\Handlers\CreateRequestableByLeadData;
 
 
 class EventServiceProvider extends ServiceProvider
@@ -19,10 +19,10 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
 
         RequestableWasCreated::class => [
-            //heckStatusRequestable::class // Dejar comentador aun en prueba
+            //CheckStatusRequestable::class // Dejar comentado aun en prueba
         ],
         RequestableWasUpdated::class => [
-            //CheckStatusRequestable::class // Dejar comentador aun en prueba
+            //CheckStatusRequestable::class // Dejar comentado aun en prueba
         ],
         LeadWasCreated::class => [
             CreateRequestableByLeadData::class
