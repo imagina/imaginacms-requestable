@@ -123,11 +123,12 @@ return [
             ]
        ],
        //Child Category - client-communications
-       2 => [
+        2 => [
             'systemName' => 'send-sms',
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send SMS'],
             'es' => ['title' => 'Enviar sms'],
+            'status' => 0,
             'options' => ['filterFormFieldType'=>'phone'],//type field iform
             'formFields' => [
                 'message' => [
@@ -149,6 +150,7 @@ return [
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send Telegram'],
             'es' => ['title' => 'Enviar Telegram'],
+            'status' => 0,
             'options' => ['filterFormFieldType'=>'phone'],//type field iform
             'formFields' => [
                 'message' => [
