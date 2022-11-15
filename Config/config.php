@@ -87,16 +87,16 @@ return [
             'options' => ['filterFormFieldType'=>'email'],//type field iform
             'formFields' => [
                 'from' => [
-                    'value' => [],
+                    'value' => null,
                     'name' => 'from',
                     'type' => 'select',
                     'loadOptions' => [
                       'apiRoute' => 'apiRoutes.quser.users',
-                      'select' => ['label' => 'email', 'id' => 'id'],
+                      'select' => ['label' => 'email', 'value' => 'email', 'id' => 'email'],
                     ],
                     'props' => [
                       'label' => 'requestable::common.formFields.from',
-                      'multiple' => true,
+                      'multiple' => false,
                       'clearable' => true,
                     ],
                 ],
