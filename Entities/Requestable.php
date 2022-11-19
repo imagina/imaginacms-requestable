@@ -60,6 +60,15 @@ class Requestable extends CrudModel
   public function status(){
     return $this->belongsTo(Status::class);
   }
+
+  public function statusHistory(){
+    return $this->hasMany(StatusHistory::class);
+  }
+
+  public function lastStatusHistoryId(){
+    $lastStatusHistory = $this->statusHistory()->orderBy('id', 'DESC')->first();
+    return $lastStatusHistory->id;
+  }
   
   /**
    * @return mixed

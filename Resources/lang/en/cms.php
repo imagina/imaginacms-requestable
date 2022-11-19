@@ -16,6 +16,8 @@ return [
   "timeElapsedToCancel" => "Cancel after at",
   "newCategory" => "New Category",
   "updateCategory" => "Update Category",
-  "requestableType" => "Requestable Type"
+  "requestableType" => "Requestable Type",
+  "newRule" => "New Rule",
+  "updateRule" => "Update Rule"
 ];
 

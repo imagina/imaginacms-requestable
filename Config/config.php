@@ -84,18 +84,19 @@ return [
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send Email'],
             'es' => ['title' => 'Enviar email'],
+            'options' => ['filterFormFieldType'=>'email'],//type field iform
             'formFields' => [
                 'from' => [
-                    'value' => [],
+                    'value' => null,
                     'name' => 'from',
                     'type' => 'select',
                     'loadOptions' => [
                       'apiRoute' => 'apiRoutes.quser.users',
-                      'select' => ['label' => 'email', 'id' => 'id'],
+                      'select' => ['label' => 'email', 'value' => 'email', 'id' => 'email'],
                     ],
                     'props' => [
                       'label' => 'requestable::common.formFields.from',
-                      'multiple' => true,
+                      'multiple' => false,
                       'clearable' => true,
                     ],
                 ],
@@ -122,11 +123,13 @@ return [
             ]
        ],
        //Child Category - client-communications
-       2 => [
+        2 => [
             'systemName' => 'send-sms',
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send SMS'],
             'es' => ['title' => 'Enviar sms'],
+            'status' => 0,
+            'options' => ['filterFormFieldType'=>'phone'],//type field iform
             'formFields' => [
                 'message' => [
                     'value' => null,
@@ -147,6 +150,8 @@ return [
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send Telegram'],
             'es' => ['title' => 'Enviar Telegram'],
+            'status' => 0,
+            'options' => ['filterFormFieldType'=>'phone'],//type field iform
             'formFields' => [
                 'message' => [
                     'value' => null,
@@ -167,6 +172,7 @@ return [
             'parentSystemName' => 'client-communications', //from parent
             'en' => ['title' => 'Send Whatsapp'],
             'es' => ['title' => 'Enviar Whatsapp'],
+            'options' => ['filterFormFieldType'=>'phone'],//type field iform
             'formFields' => [
                 'message' => [
                     'value' => null,

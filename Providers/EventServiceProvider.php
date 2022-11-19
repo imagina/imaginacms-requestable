@@ -5,6 +5,7 @@ namespace Modules\Requestable\Providers;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 //Events
+use Modules\Requestable\Events\RequestableWasCreated;
 use Modules\Requestable\Events\RequestableWasUpdated;
 
 //Handlers
@@ -16,13 +17,16 @@ use Modules\Requestable\Events\Handlers\CreateRequestableByLeadData;
 class EventServiceProvider extends ServiceProvider
 {
     protected $listen = [
-        /*
-        RequestableWasUpdated::class => [
-            CheckStatusRequestable::class
+
+        RequestableWasCreated::class => [
+            //CheckStatusRequestable::class // Dejar comentado aun en prueba
         ],
-        */
-      LeadWasCreated::class => [
-        CreateRequestableByLeadData::class
-      ],
+        RequestableWasUpdated::class => [
+            //CheckStatusRequestable::class // Dejar comentado aun en prueba
+        ],
+        LeadWasCreated::class => [
+            CreateRequestableByLeadData::class
+        ],
+        
     ];
 }

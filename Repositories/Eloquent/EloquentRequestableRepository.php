@@ -205,9 +205,14 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
       if (method_exists($model, 'createdCrudModel'))
         $model->createdCrudModel(['data' => $data]);
   
+      //Create History
+      $model->statusHistory()->create([
+        "status_id" => $model->status_id
+      ]);
+
       //Event to ADD media
       event(new CreateMedia($model, $data));
-      
+
       return $model;
     }else
       throw new \Exception(trans("requestable::requestables.messages.creatingSameRequestError"), 400);
@@ -239,9 +244,14 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
       
       $oldData = $model->toArray();
       $model->update((array)$data);
+
+      //Create History
+      $model->statusHistory()->create([
+        "status_id" => $model->status_id
+      ]);
   
       event(new UpdateMedia($model, $data));//Event to Update media
-      
+
       //Event updated model
       if (method_exists($model, 'updatedCrudModel'))
         $model->updatedCrudModel(['data' => $data, 'params' => $params, 'criteria' => $criteria]);
