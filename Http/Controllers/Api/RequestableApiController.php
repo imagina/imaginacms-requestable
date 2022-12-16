@@ -139,12 +139,19 @@ class RequestableApiController extends BaseCrudController
   {
     \DB::beginTransaction();
     try {
+
+      //Get Parameters from URL.
+      $params = $this->getParamsRequest($request);
+
       //Get data
       $data = $request->input('attributes');
       
       //Validate Request
       $this->validateRequestApi(new CreateRequestableRequest((array)$data));
       
+      //Validate with Permission
+      $data = $this->service->validateCreatedBy($data,$params);
+
       $model = $this->service->create($data);
 
       event(new RequestableWasCreated($model));
@@ -185,6 +192,9 @@ class RequestableApiController extends BaseCrudController
       
       //Validate Request
       $this->validateRequestApi(new UpdateRequestableRequest((array)$data));
+
+      //Validate with Permission
+      $data = $this->service->validateCreatedBy($data,$params);
 
       $model = $this->service->update($criteria,$data,$params);
       
