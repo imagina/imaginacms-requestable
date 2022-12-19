@@ -19,10 +19,10 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
 
         RequestableWasCreated::class => [
-            //CheckStatusRequestable::class // Dejar comentado aun en prueba
+            CheckStatusRequestable::class
         ],
         RequestableWasUpdated::class => [
-            //CheckStatusRequestable::class // Dejar comentado aun en prueba
+            CheckStatusRequestable::class
         ],
         LeadWasCreated::class => [
             CreateRequestableByLeadData::class

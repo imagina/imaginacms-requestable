@@ -282,5 +282,17 @@ class RequestableService extends BaseApiController
 
   }
 
+  public function validateCreatedBy(array $data,object $params){
+
+    if(isset($data['created_by'])){
+      if(!isset($params->permissions['requestable.requestables.edit-created-by'])){
+        unset($data['created_by']);
+      }
+    }
+
+    return $data;
+
+  }
+
   
 }

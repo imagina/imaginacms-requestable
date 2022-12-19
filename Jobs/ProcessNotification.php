@@ -21,7 +21,6 @@ class ProcessNotification implements ShouldQueue
     private $lastHistoryStatusId;
 
     public $notificationService;
-    public $messageService;
 
     /**
      * Create a new job instance.
@@ -36,7 +35,6 @@ class ProcessNotification implements ShouldQueue
         $this->lastHistoryStatusId = $lastHistoryStatusId;
 
         $this->notificationService = app("Modules\Notification\Services\Inotification");
-        $this->messageService = app("Modules\Ichat\Services\MessageService");
     }
 
     /**
@@ -165,7 +163,10 @@ class ProcessNotification implements ShouldQueue
         //\Log::info('Requestable: Jobs|ProcessNotification|sendMobile|messageToSend: '.json_encode($messageToSend));
 
         //Message service from Ichat Module
-        $this->messageService->create($messageToSend);
+        if (is_module_enabled('Ichat')) {
+            $messageService = app("Modules\Ichat\Services\MessageService");
+            $messageService->create($messageToSend);
+        }
             
     }
 
