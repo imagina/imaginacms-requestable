@@ -119,6 +119,9 @@ class ProcessNotification implements ShouldQueue
         $emailsTo[] = $this->getValueField($params['toFieldName'],$params['requestableFields']);
         \Log::info('Requestable: Jobs|ProcessNotification|sendEmail|emailsTo: '.json_encode($emailsTo));
 
+        //Check Variables to replace
+        $subject = $this->checkVariables($subject,$params['requestableFields']);
+        $message = $this->checkVariables($message,$params['requestableFields']);
         
         $this->notificationService->to([
             "email" => $emailsTo
@@ -130,8 +133,7 @@ class ProcessNotification implements ShouldQueue
             "setting" => [
                 "saveInDatabase" => true
             ]
-        ]); 
-        
+        ]);
                 
     }
 
@@ -152,7 +154,10 @@ class ProcessNotification implements ShouldQueue
         //Fillables from Requestable
         $sendTo = $this->getValueField($params['toFieldName'],$params['requestableFields']);
         \Log::info('Requestable: Jobs|ProcessNotification|sendMobile|sendTo: '.json_encode($sendTo));
-           
+        
+        //Check Variables to replace
+        $message = $this->checkVariables($message,$params['requestableFields']);
+
         $messageToSend = [
             "message" => $message,
             "provider" => $type,
@@ -186,6 +191,31 @@ class ProcessNotification implements ShouldQueue
     
         return $value;
 
+    }
+
+    /**
+    * @param $str (text which can contain variables)
+    */
+    public function checkVariables($str,$requestableFields){
+        
+        if (preg_match_all("~\{\{\s*(.*?)\s*\}\}~", $str, $matches)){
+            \Log::info('Requestable: Jobs|ProcessNotification|checkVariables|Matches: '.json_encode($matches[1]));
+            
+            foreach ($matches[1] as $key => $match) {
+                \Log::info('Requestable: CheckVariables|Search this value: '.$match);
+
+                $value = $this->getValueField($match,$requestableFields) ?? "--";
+                \Log::info('Requestable: CheckVariables|Value: '.$value);
+
+                //Ready to replace
+                $find = "{{".$match."}}";
+                $str = str_replace($find,$value,$str);
+            }
+
+            \Log::info('Requestable: Jobs|ProcessNotification|checkVariables|Str: '.$str);
+        }
+        
+        return $str;
     }
 
 
