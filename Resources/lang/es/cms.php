@@ -17,6 +17,14 @@ return [
   "newCategory" => "Nueva Categoría",
   "updateCategory" => "Actualizar Categoría",
   "requestableType" => "Tipo de petición",
+  "message" => [
+    "savedComment" => "Comentario guardado con exitoso",
+    "savedNoComment" => "No se puedo guardar su comentario",
+    "updateComment" => "Comentario actualizado",
+    "updateNoComment" => "No se puedo actualizar el commentario",
+    "undoComment" => "¿Desea cancelar el comentario?",
+    "writeComment" => "Escriba un comentario..."
+  ],
   "newRule" => "Nueva Regla",
   "updateRule" => "Actualizar Regla"
 ];
