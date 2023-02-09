@@ -202,17 +202,17 @@ class ProcessNotification implements ShouldQueue
             \Log::info('Requestable: Jobs|ProcessNotification|checkVariables|Matches: '.json_encode($matches[1]));
             
             foreach ($matches[1] as $key => $match) {
-                \Log::info('Requestable: CheckVariables|Search this value: '.$match);
+                //\Log::info('Requestable: CheckVariables|Search this value: '.$match);
 
                 $value = $this->getValueField($match,$requestableFields) ?? "--";
-                \Log::info('Requestable: CheckVariables|Value: '.$value);
+                //\Log::info('Requestable: CheckVariables|Value: '.$value);
 
                 //Ready to replace
                 $find = "{{".$match."}}";
                 $str = str_replace($find,$value,$str);
             }
 
-            \Log::info('Requestable: Jobs|ProcessNotification|checkVariables|Str: '.$str);
+            //\Log::info('Requestable: Jobs|ProcessNotification|checkVariables|Str: '.$str);
         }
         
         return $str;
