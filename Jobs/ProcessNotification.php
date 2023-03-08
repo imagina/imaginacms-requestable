@@ -171,6 +171,14 @@ class ProcessNotification implements ShouldQueue
         if (is_module_enabled('Ichat')) {
             $messageService = app("Modules\Ichat\Services\MessageService");
             $messageService->create($messageToSend);
+        }else{
+          $this->notificationService->provider($type)
+            ->to($sendTo)
+          ->push([
+            "type" => "template",
+            "message" => $message
+          ]);
+  
         }
             
     }
