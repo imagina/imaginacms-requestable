@@ -2,7 +2,7 @@
 
 return [
   'name' => 'Requestable',
-  
+
   /*
   |--------------------------------------------------------------------------
   | Define all the exportable available
@@ -15,24 +15,24 @@ return [
       'exportName' => "RequestablesExport"
     ]
   ],
-  
+
   /*
   |--------------------------------------------------------------------------
   | Same params Readme - Requestable - Only execute by CreateForm Seeder
   |--------------------------------------------------------------------------
   */
   "requestable-leads" => [
-    
+
     //Required: this is the identificator of the request, must be unique with respect to other requestable types
     "type" => "leads",
-    
+
     // Title can be trantaled or not, the language take the config app.locale
     "title" => "requestable::categories.leads.title",
-    
+
     // Optional: This columns has true by default
     "internal" => false,
-    
-    
+
+
     //Optional: if the useDefaultStatuses is true, statuses is ignored
     "statuses" => [
       1 => [
@@ -63,9 +63,9 @@ return [
         "final" => true
       ],
     ]
-  
+
   ],
-  
+
   /*
   |--------------------------------------------------------------------------
   | Categories Rule to Seeder
@@ -222,8 +222,12 @@ return [
         ]
       ]
     ],
-  
+
+  ],
+
+  'documentation' => [
+    'requestables' => "requestable::cms.documentation.requestables",
+    'categories' => "requestable::cms.documentation.categories",
+    'statuses' => "requestable::cms.documentation.statuses",
   ]
-
-
 ];

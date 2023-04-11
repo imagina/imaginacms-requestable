@@ -26,6 +26,15 @@ return [
     "writeComment" => "Write a comment..."
   ],
   "newRule" => "New Rule",
-  "updateRule" => "Update Rule"
+  "updateRule" => "Update Rule",
+  'documentation' => [
+    'requestables' => "Requests are records with a more complex flow, functionalities may vary
+     around defined rules such as when the record enters or changes to a specific state. is functionality
+     lends itself to work as a sales funnel",
+    "categories" => "It is possible to create categories, with a name, description and organize them in tree mode
+     (parent categories and child categories) in order to categorize all your requests.",
+    'statuses' => "Each request can have a status that can vary its flow or functionality, it is possible
+     manage these states.",
+  ]
 ];
 

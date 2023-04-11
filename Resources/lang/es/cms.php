@@ -26,6 +26,15 @@ return [
     "writeComment" => "Escriba un comentario..."
   ],
   "newRule" => "Nueva Regla",
-  "updateRule" => "Actualizar Regla"
+  "updateRule" => "Actualizar Regla",
+  'documentation' => [
+    'requestables' => "Las peticiones son registros con un flujo más complejo, pueden variar las funcionalidades
+    en torno a reglas definidas como cuando el registro ingresa o cambia a un estado especifico. Está funcionalidad
+    se presta para trabajar como un funnel de ventas",
+    "categories" => "Es posible crear categories, con un nombre, descripción y organizarlas en modo de árbol
+    (categorías padres y categorías hijas) con el fin de categorizar todas tus peticiones.",
+    'statuses' => "Cada petición puede contar con un estado que puede variar su flujo o funcionalidad, es posible 
+    administrar estos estados.",
+  ]
 ];
 
