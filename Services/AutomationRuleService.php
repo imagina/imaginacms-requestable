@@ -36,7 +36,11 @@ class AutomationRuleService
                     $delay = $this->getDelay($rule,$requestable);
                     if(!is_null($delay)){
                         //\Log::info('Requestable: Handler|CheckStatusRequestable|Create Job to Rule Id:'.$rule->id);
-                        ProcessNotification::dispatch($rule,$requestable,$requestable->lastStatusHistoryId())->delay($delay); 
+                        if(config("app.env")=="production"){
+                            ProcessNotification::dispatch($rule,$requestable,$requestable->lastStatusHistoryId())->delay($delay); 
+                        }else{
+                            \Log::info('Requestable: Services|AutomationRule|checkRulesAndDispatchJob|JOB NOT DISPTACHED (app.env is not Production)');
+                        }
                     }
                 }
                 
