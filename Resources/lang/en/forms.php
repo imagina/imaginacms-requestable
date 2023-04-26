@@ -10,7 +10,7 @@ return [
       'telephone' => 'Telephone',
       'email' => 'Email',
       'comment' => 'Comment',
-      'value' => 'Value'
+      'value' => 'Negotiation value'
     ]
     
   ]

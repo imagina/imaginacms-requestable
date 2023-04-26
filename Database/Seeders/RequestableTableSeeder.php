@@ -18,6 +18,8 @@ class RequestableTableSeeder extends Seeder
   {
     Model::unguard();
     
+    $this->call(RequestableModuleTableSeeder::class);
+    
     $requestableRepository = app("Modules\Requestable\Repositories\RequestableRepository");
     $categoryRepository = app("Modules\Requestable\Repositories\CategoryRepository");
     $statusRepository = app("Modules\Requestable\Repositories\StatusRepository");

@@ -12,6 +12,7 @@ return [
   'messages' => [
     'field required' => 'This field is required',
     'min 2 characters' => 'Minimum of 2 characters',
+    'field unique' => 'The field value :field is already in use'
   ],
 
   'statusGeneral' => [

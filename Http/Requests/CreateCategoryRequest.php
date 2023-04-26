@@ -8,7 +8,9 @@ class CreateCategoryRequest extends BaseFormRequest
 {
     public function rules()
     {
-        return [];
+        return [
+            'type' => 'required|min:5|unique:requestable__categories'
+        ];
     }
 
     public function translationRules()
@@ -23,11 +25,19 @@ class CreateCategoryRequest extends BaseFormRequest
 
     public function messages()
     {
-        return [];
+        return [
+            'type.required' => trans('requestable::common.messages.field required'),
+            'type.unique' => trans('requestable::common.messages.field unique',['field'=>'TIPO']),
+        ];
     }
 
     public function translationMessages()
     {
         return [];
     }
+
+    public function getValidator(){
+        return $this->getValidatorInstance();
+    }
+
 }

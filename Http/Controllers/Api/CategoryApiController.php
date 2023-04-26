@@ -57,10 +57,15 @@ class CategoryApiController extends BaseCrudController
 
         $data = $this->fieldRepository->getItemsBy($params);
 
-        $response = ["data" => FormFieldTransformer::collection($data)];
+        if(!is_null($data) && count($data)>0){
 
-        //If request pagination add meta-page
-        $params->page ? $response["meta"] = ["page" => $this->pageTransformer($data)] : false;
+          $response = ["data" => FormFieldTransformer::collection($data)];
+
+          //If request pagination add meta-page
+          $params->page ? $response["meta"] = ["page" => $this->pageTransformer($data)] : false;
+        }else{
+          throw new \Exception('Debe crear un campo de tipo:'.$params->filter->type.' en el formulario: '.$form->title, 404);
+        }
 
       }
       

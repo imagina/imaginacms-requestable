@@ -179,3 +179,26 @@ The module is very customizable when you need it to execute events, in each type
 | updated | $updatedRequest - $oldRequest
 | deleted | $deletedRequest
 | etaUpdated | $updatedRequest - $oldRequest
+
+### JOBS to Automation Rules
+
+#### Migration Commands
+```
+php artisan queue:table
+```
+```
+php artisan queue:failed-table
+```
+#### Extra Commands
+```
+php artisan queue:restart
+```
+
+#### File .env
+```
+QUEUE_CONNECTION=database
+```
+#### Migrate jobs table
+```
+php artisan migrate
+```
