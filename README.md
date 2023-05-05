@@ -207,18 +207,33 @@ php artisan migrate
 
 #### Create Multiples Reports
 
-1. Add a new option in "Config.exportFields reportType", example:
+1. Add a new "option" in reportType ("config.exportable.requestables.exportFields.reportType") example:
 ```
  ['label' => 'requestable::exports.exportFields.type.mynew', 'value' => "mynew"],
 ```
 
-2. Go to Exports/Reports/" and copy the file from other report and set name to the file and the new class with the same value from the option created above Example:
+2. Go to Requestable/Exports/Reports/" and copy the file from other report (Ej: detailedReport.php) and set name to the file (mynewReport.php) and the new class (class mynewReport) with the same value from the option created above Example:
 ```
 mynewReport.php
 ```
 
-3. To set the heading use the method "getHeading" in the new file.
+3. To set the Heading use the method "getHeading" in the new file.
+```
+public function getHeading()
+{
+    //your nice code here
+}
+```
 
-4. To set each row use the method "getMap" in the new file.
+4. To set each Row use the method "getMap" in the new file.
+```
+public function getMap($item)
+{
+    //your nice code here
+}
+```
 
-5. If you need a method from the RequestableExport you can use "$this->requestableExport".
+5. If you need a method from the RequestableExport you can use:
+```
+$this->requestableExport
+```
