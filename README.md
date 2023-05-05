@@ -202,3 +202,23 @@ QUEUE_CONNECTION=database
 ```
 php artisan migrate
 ```
+
+### Reports
+
+#### Create Multiples Reports
+
+1. Add a new option in "Config.exportFields reportType", example:
+```
+ ['label' => 'requestable::exports.exportFields.type.mynew', 'value' => "mynew"],
+```
+
+2. Go to Exports/Reports/" and copy the file from other report and set name to the file and the new class with the same value from the option created above Example:
+```
+mynewReport.php
+```
+
+3. To set the heading use the method "getHeading" in the new file.
+
+4. To set each row use the method "getMap" in the new file.
+
+5. If you need a method from the RequestableExport you can use "$this->requestableExport".
