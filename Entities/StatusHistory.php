@@ -4,6 +4,7 @@ namespace Modules\Requestable\Entities;
 
 use Astrotomic\Translatable\Translatable;
 use Modules\Core\Icrud\Entities\CrudModel;
+use Modules\User\Entities\Sentinel\User;
 
 class StatusHistory extends CrudModel
 {
@@ -29,6 +30,10 @@ class StatusHistory extends CrudModel
   public function status()
   {
     return $this->belongsTo(Status::class);
+  }
+
+  public function createdByUser(){
+    return $this->belongsTo(User::class,'created_by');
   }
 
 }
