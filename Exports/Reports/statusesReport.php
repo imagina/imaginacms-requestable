@@ -62,21 +62,6 @@ class statusesReport
       $item->createdByUser->present()->fullname ?? null
     ]; 
     
-    //Ojo para este caso (fue una prueba), tocaria guardar esto mejor en el config segun el reporte
-    //Igual para el Header
-    //El type no seria obligatorio, validarlo en el Requestable Export
-    /*
-    $customFieldsFromForm = [
-      0 => [
-        "name" => "placa",
-        "type" => "1"
-      ]
-    ];
-    */
-    
-    //Add Extra Fields
-    //$baseItem = $this->requestableExport->addFieldsToItem($item,$baseItem,$customFieldsFromForm);
-   
 
     //Add Statuses History
     $baseItem = $this->addStatusesHistory($item,$baseItem);

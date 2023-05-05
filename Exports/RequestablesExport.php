@@ -11,10 +11,6 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 // In testing (maybe this has performance issues with lots of data)
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-// Set default styles (Performance issues with lots of data)
-//use Maatwebsite\Excel\Concerns\WithDefaultStyles;
-//use PhpOffice\PhpSpreadsheet\Style\Style;
-
 //Events
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\BeforeSheet;
@@ -27,7 +23,7 @@ use Modules\Media\Entities\File;
 use Modules\Notification\Services\Inotification;
 
 class RequestablesExport implements FromQuery, 
-WithEvents, WithMapping, WithHeadings, ShouldQueue, ShouldAutoSize //,ShouldQueue
+WithEvents, WithMapping, WithHeadings, ShouldQueue, ShouldAutoSize
 {
   use Exportable;
 
@@ -204,23 +200,6 @@ WithEvents, WithMapping, WithHeadings, ShouldQueue, ShouldAutoSize //,ShouldQueu
 
   }
 
-
-  /**
-   * Set default Styles
-   */
-  /*
-  public function defaultStyles(Style $defaultStyle)
-  {
-       
-    return [
-      'alignment' => [
-        //Set all horinzontal for problems with cells containing number (if not, it looks messy)
-        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT
-      ]
-    ];
-
-  }
-  */
   
   /**
   * Handling Events
