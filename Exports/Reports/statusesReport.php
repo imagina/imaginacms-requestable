@@ -31,14 +31,14 @@ class statusesReport
     ];
 
     //Add Extra Fields
-    //$headingFields = $this->requestableExport->addFieldsToHeading($headingFields);
+    if($this->requestableExport->showExtraFields)
+      $headingFields = $this->requestableExport->addFieldsToHeading($headingFields);
 
     //Add Status Columns
     $statusColumns = [
       trans('requestable::requestables.table.status old'),
       trans('requestable::requestables.table.status new'),
       trans('requestable::requestables.table.date'),
-      //trans('requestable::requestables.table.hour'),
       trans('requestable::requestables.table.history created by'),
     ];
 
@@ -61,7 +61,10 @@ class statusesReport
       $item->requestedBy ? $item->requestedBy->present()->fullname: null,
       $item->createdByUser->present()->fullname ?? null
     ]; 
-    
+
+    //Add Extra Fields
+    if($this->requestableExport->showExtraFields)
+      $baseItem = $this->requestableExport->addFieldsToItem($item,$baseItem);
 
     //Add Statuses History
     $baseItem = $this->addStatusesHistory($item,$baseItem);

@@ -39,6 +39,8 @@ WithEvents, WithMapping, WithHeadings, ShouldQueue, ShouldAutoSize
   private $reportType = null;
   private $report = null;
 
+  public $showExtraFields = null;
+
   public function __construct($params, $exportParams)
   {
     $this->params = $params;
@@ -48,6 +50,8 @@ WithEvents, WithMapping, WithHeadings, ShouldQueue, ShouldAutoSize
     $this->categoryRepository = app('Modules\Requestable\Repositories\CategoryRepository');
 
     $this->getExtraFields();
+    
+    $this->showExtraFields = (boolean)setting('requestable::showExtraFieldsFromFormInReport');
 
     // Set report Type from Filter
     $this->reportType = $this->params->filter->reportType;
@@ -55,7 +59,8 @@ WithEvents, WithMapping, WithHeadings, ShouldQueue, ShouldAutoSize
     //IMPORTANT: The reportType in the Config must be the same value to the class (exportFields)
     //Set report class
     $this->report = app('Modules\Requestable\Exports\Reports\\'.$this->reportType.'Report',['requestableExport'=> $this]);
-   
+    
+
   }
 
   /*

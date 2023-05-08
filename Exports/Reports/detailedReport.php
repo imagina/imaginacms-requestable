@@ -48,7 +48,8 @@ class detailedReport
     ];
 
     //Add Extra Fields
-    $headingFields = $this->requestableExport->addFieldsToHeading($headingFields);
+    if($this->requestableExport->showExtraFields)
+      $headingFields = $this->requestableExport->addFieldsToHeading($headingFields);
     
     //Add only last comment
     array_push($headingFields, trans('requestable::requestables.table.last comment'));
@@ -74,7 +75,8 @@ class detailedReport
     ];
 
     //Add Extra Fields
-    $baseItem = $this->requestableExport->addFieldsToItem($item,$baseItem);
+    if($this->requestableExport->showExtraFields)
+      $baseItem = $this->requestableExport->addFieldsToItem($item,$baseItem);
 
     //Last Comment
     $baseItem = $this->addLastCommentToItem($item,$baseItem);
