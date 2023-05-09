@@ -25,5 +25,8 @@ return [
     'message' => 'Mensaje',
     'phone' => 'Teléfono',
   ],
+  'notifications' => [
+    "comment" => ' Notification Type: :type -- Message: :message'
+  ]
 
 ];
