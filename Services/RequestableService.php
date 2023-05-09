@@ -122,7 +122,7 @@ class RequestableService extends BaseApiController
       if ($oldRequest->status_id != $status->id) {
         
         //default status updated comment
-        $this->commentService->create($oldRequest,["comment" => trans("requestable::statuses.comments.statusUpdated",["prevStatus" => $oldRequest->status->title,"postStatus" =>  $status->title])]);
+        $this->commentService->create($oldRequest,["internal" => true, "comment" => trans("requestable::statuses.comments.statusUpdated",["prevStatus" => $oldRequest->status->title,"postStatus" =>  $status->title])]);
   
         //custom comment to the status updated
         if(isset($data["comment"]) && !empty($data["comment"])){
