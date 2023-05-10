@@ -306,7 +306,10 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
         !$params->permissions['requestable.requestables.index-all'])) {
       $user = $params->user;
       
-      $query->where('requested_by', $user->id);
+      $query->where(function ($query) use ($user){
+        $query->where('requested_by', $user->id);
+        $query->orWhere('created_by', $user->id);
+      });
       
       
     }
