@@ -37,6 +37,7 @@ class AutomationRule extends CrudModel
     'working_hours',
     'status_id',
     'category_rule_id',
+    'to',
     'status'
   ];
 

@@ -28,14 +28,6 @@
         }
     ],
     "extra": {
-        "laravel": {
-            "providers": [
-                "Modules\\Requestable\\Providers\\RequestableServiceProvider"
-            ],
-            "aliases": {
-                
-            }
-        },
         "branch-alias": {
             "dev-v8.x": "8.0.x-dev"
         }

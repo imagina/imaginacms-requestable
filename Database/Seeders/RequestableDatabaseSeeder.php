@@ -18,9 +18,7 @@ class RequestableDatabaseSeeder extends Seeder
     Model::unguard();
     ProcessSeeds::dispatch([
       "baseClass" => "\Modules\Requestable\Database\Seeders",
-      "seeds" => ["RequestableTableSeeder","CreateFormTableSeeder"]
+      "seeds" => ["RequestableTableSeeder","CreateFormTableSeeder","CreateCategoriesRulesTableSeeder"]
     ]);
-    //Dejar comentado xq aun sta en prueba
-    //$this->call(CreateCategoriesRulesTableSeeder::class);
   }
 }

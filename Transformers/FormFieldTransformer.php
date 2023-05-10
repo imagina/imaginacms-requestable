@@ -12,7 +12,7 @@ class FormFieldTransformer extends JsonResource
  
     $data = [
       'label' => $this->when($this->label, $this->label),
-      'value' => $this->when($this->name, $this->name),
+      'value' => $this->when($this->name, camelToSnake($this->name)), // Variables in the "fillables" are stored with notation snake_case
       //'id' => $this->when($this->id, $this->id),
       //'type' => $this->when($this->type, (int)$this->type),
       //'typeObject' => $this->when($this->type, $this->present()->type),

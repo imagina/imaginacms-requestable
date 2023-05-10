@@ -54,12 +54,12 @@ class CategoryRule extends CrudModel
 
   public function parent()
   {
-    return $this->belongsTo(Category::class, 'parent_id');
+    return $this->belongsTo(CategoryRule::class, 'parent_id');
   }
 
   public function children()
   {
-    return $this->hasMany(Category::class, 'parent_id');
+    return $this->hasMany(CategoryRule::class, 'parent_id');
   }
 
   public function automationRules()

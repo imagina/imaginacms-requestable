@@ -39,7 +39,9 @@ class Status extends CrudModel
   ];
 
   public function setDefaultAttribute($value){
+    //If default is 1 (Create or Update)
     if($value){
+      //Change any other status that is 'default' for this category
       Status::where("default",true)->where("category_id",$this->category_id)->update(["default" => false]);
     }
     $this->attributes['default'] = $value;

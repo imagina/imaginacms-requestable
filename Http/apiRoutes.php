@@ -22,7 +22,11 @@ $router->group(['prefix' => '/requestable/v1'], function (Router $router) {
     'prefix' => 'statuses',
     'controller' => 'StatusApiController',
     'middleware' => [
-    
+      'index' => ['auth:api','auth-can:requestable.statuses.index'],
+      'show' => ['auth:api','auth-can:requestable.statuses.show'],
+      'create' => ['auth:api','auth-can:requestable.statuses.create'],
+      'update' => ['auth:api','auth-can:requestable.statuses.edit'],
+      'delete' => ['auth:api','auth-can:requestable.statuses.destroy'],
     ]
   ]);
   

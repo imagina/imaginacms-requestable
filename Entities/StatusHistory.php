@@ -8,7 +8,7 @@ use Modules\Core\Icrud\Entities\CrudModel;
 class StatusHistory extends CrudModel
 {
   
-  protected $table = 'requestable__statushistories';
+  protected $table = 'requestable__status_history';
   public $transformer = 'Modules\Requestable\Transformers\StatusHistoryTransformer';
   public $requestValidation = [
     'create' => 'Modules\Requestable\Http\Requests\CreateStatusHistoryRequest',
@@ -17,7 +17,18 @@ class StatusHistory extends CrudModel
   
   protected $fillable = [
     'requestable_id',
-    'value',
+    'status_id',
     'comment',
   ];
+
+  public function requestable()
+  {
+    return $this->belongsTo(Requestable::class);
+  }
+
+  public function status()
+  {
+    return $this->belongsTo(Status::class);
+  }
+
 }

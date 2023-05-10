@@ -89,6 +89,7 @@ class CreateCategoriesRulesTableSeeder extends Seeder
       'en' => [
         'title' => $data['en']['title'] ?? null      
       ],
+      'options' => isset($data['options']) ? $data['options'] : null,
       'formFields' => isset($data['formFields']) ? $data['formFields'] : null
     ];
 
