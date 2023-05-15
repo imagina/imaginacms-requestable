@@ -201,6 +201,12 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     if(!isset($model->id) || $model->status->final || !$model->category->internal){
   
       $model =  $this->model->create($data);
+      
+      if(isset($data["created_by"]) && $data["created_by"] != $model->created_by){
+        $model->created_by = $data["created_by"];
+        $model->save();
+      }
+      
       //Event created model
       if (method_exists($model, 'createdCrudModel'))
         $model->createdCrudModel(['data' => $data]);
