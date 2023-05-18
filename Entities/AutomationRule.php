@@ -15,6 +15,7 @@ class AutomationRule extends CrudModel
 
   protected $table = 'requestable__automation_rules';
   public $transformer = 'Modules\Requestable\Transformers\AutomationRuleTransformer';
+  public $repository = 'Modules\Requestable\Repositories\AutomationRuleRepository';
   public $requestValidation = [
       'create' => 'Modules\Requestable\Http\Requests\CreateAutomationRuleRequest',
       'update' => 'Modules\Requestable\Http\Requests\UpdateAutomationRuleRequest',
