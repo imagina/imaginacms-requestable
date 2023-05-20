@@ -11,6 +11,7 @@ class StatusHistory extends CrudModel
   
   protected $table = 'requestable__status_history';
   public $transformer = 'Modules\Requestable\Transformers\StatusHistoryTransformer';
+  public $repository = 'Modules\Requestable\Repositories\StatusHistoryRepository';
   public $requestValidation = [
     'create' => 'Modules\Requestable\Http\Requests\CreateStatusHistoryRequest',
     'update' => 'Modules\Requestable\Http\Requests\UpdateStatusHistoryRequest',

@@ -11,6 +11,7 @@ class Status extends CrudModel
 
   protected $table = 'requestable__statuses';
   public $transformer = 'Modules\Requestable\Transformers\StatusTransformer';
+  public $repository = 'Modules\Requestable\Repositories\StatusRepository';
   public $requestValidation = [
     'create' => 'Modules\Requestable\Http\Requests\CreateStatusRequest',
     'update' => 'Modules\Requestable\Http\Requests\UpdateStatusRequest',

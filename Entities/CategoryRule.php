@@ -18,6 +18,7 @@ class CategoryRule extends CrudModel
 
   protected $table = 'requestable__category_rules';
   public $transformer = 'Modules\Requestable\Transformers\CategoryRuleTransformer';
+  public $repository = 'Modules\Requestable\Repositories\CategoryRuleRepository';
   public $requestValidation = [
       'create' => 'Modules\Requestable\Http\Requests\CreateCategoryRuleRequest',
       'update' => 'Modules\Requestable\Http\Requests\UpdateCategoryRuleRequest',
