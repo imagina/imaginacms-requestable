@@ -126,7 +126,7 @@ class ProcessNotification implements ShouldQueue
         $message = $this->checkVariables($message,$params['requestableFields']);
 
         //Save a comment
-        $this->saveComment("email",$params['requestableData'],$message);
+        $this->saveComment("email",$params['requestableData'],$message,$from,$emailsTo);
         
         if(config("app.env")=="production"){
             
@@ -180,7 +180,7 @@ class ProcessNotification implements ShouldQueue
         //\Log::info('Requestable: Jobs|ProcessNotification|sendMobile|messageToSend: '.json_encode($messageToSend));
 
         //Save a comment
-        $this->saveComment($type,$params['requestableData'],$message);
+        $this->saveComment($type,$params['requestableData'],$message,null,$sendTo);
 
         if(config("app.env")=="production"){
             //Message service from Ichat Module
@@ -248,10 +248,24 @@ class ProcessNotification implements ShouldQueue
     /**
      * @param $type (Notification type)
      */
-    public function saveComment($type,$model,$message)
+    public function saveComment($type,$model,$message,$from=null,$to=null)
     {
 
-        $comment = trans('requestable::common.notifications.comment',['type'=> $type,'message'=>$message]);
+        $comment = "<strong>".trans('requestable::common.notifications.title sent')."</strong>";
+        $comment = $comment."<p><strong>".trans('requestable::common.notifications.type').":</strong>".$type."</p>";
+       
+        if(!is_null($from))
+            $comment = $comment."<p><strong>".trans('requestable::common.notifications.from').":</strong>".$from."</p>";
+
+        if(!is_null($to)){
+            if(is_array($to))
+                $to = implode(" ",$to);
+            
+            $comment = $comment."<p><strong>".trans('requestable::common.notifications.to').":</strong>".$to."</p>";
+        }
+
+        $comment = $comment."<p><strong>".trans('requestable::common.notifications.message').":</strong>".$message."</p>";
+
         $this->commentService->create($model,[
                 "user_id" => $model->updated_by, // Needed because is a job
                 "comment" => $comment,
