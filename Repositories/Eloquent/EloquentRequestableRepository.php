@@ -201,6 +201,12 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     if(!isset($model->id) || $model->status->final || !$model->category->internal){
   
       $model =  $this->model->create($data);
+      
+      if(isset($data["created_by"]) && $data["created_by"] != $model->created_by){
+        $model->created_by = $data["created_by"];
+        $model->save();
+      }
+      
       //Event created model
       if (method_exists($model, 'createdCrudModel'))
         $model->createdCrudModel(['data' => $data]);
@@ -304,9 +310,15 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     if (!isset($params->permissions['requestable.requestables.index-all']) ||
       (isset($params->permissions['requestable.requestables.index-all']) &&
         !$params->permissions['requestable.requestables.index-all'])) {
-      $user = $params->user;
-      
-      $query->where('requested_by', $user->id);
+
+          if(isset($params->user)){
+            $user = $params->user;
+            
+            $query->where(function ($query) use ($user){
+              $query->where('requested_by', $user->id);
+              $query->orWhere('created_by', $user->id);
+            });
+          }
       
       
     }

@@ -21,6 +21,7 @@ class ProcessNotification implements ShouldQueue
     private $lastHistoryStatusId;
 
     public $notificationService;
+    public $commentService;
 
     /**
      * Create a new job instance.
@@ -35,6 +36,7 @@ class ProcessNotification implements ShouldQueue
         $this->lastHistoryStatusId = $lastHistoryStatusId;
 
         $this->notificationService = app("Modules\Notification\Services\Inotification");
+        $this->commentService = app("Modules\Icomments\Services\CommentService");
     }
 
     /**
@@ -122,18 +124,28 @@ class ProcessNotification implements ShouldQueue
         //Check Variables to replace
         $subject = $this->checkVariables($subject,$params['requestableFields']);
         $message = $this->checkVariables($message,$params['requestableFields']);
+
+        //Save a comment
+        $this->saveComment("email",$params['requestableData'],$message,$from,$emailsTo);
         
-        $this->notificationService->to([
-            "email" => $emailsTo
-        ])->push([
-            "title" => $subject,
-            "message" => $message,
-            "fromAddress" => $from,
-            "fromName" => "",
-            "setting" => [
-                "saveInDatabase" => true
-            ]
-        ]);
+        if(config("app.env")=="production"){
+            
+            $this->notificationService->to([
+                "email" => $emailsTo
+            ])->push([
+                "title" => $subject,
+                "message" => $message,
+                "fromAddress" => $from,
+                "fromName" => "",
+                "setting" => [
+                    "saveInDatabase" => true
+                ]
+            ]);
+
+        }else{
+            \Log::info('Requestable: Jobs|ProcessNotification|Email not sent (app.env is not Production)');
+        }
+        
                 
     }
 
@@ -167,20 +179,27 @@ class ProcessNotification implements ShouldQueue
         ];
         //\Log::info('Requestable: Jobs|ProcessNotification|sendMobile|messageToSend: '.json_encode($messageToSend));
 
-        //Message service from Ichat Module
-        if (is_module_enabled('Ichat')) {
-            $messageService = app("Modules\Ichat\Services\MessageService");
-            $messageService->create($messageToSend);
+        //Save a comment
+        $this->saveComment($type,$params['requestableData'],$message,null,$sendTo);
+
+        if(config("app.env")=="production"){
+            //Message service from Ichat Module
+            if (is_module_enabled('Ichat')) {
+                $messageService = app("Modules\Ichat\Services\MessageService");
+                $messageService->create($messageToSend);
+            }else{
+            $this->notificationService->provider($type)
+                ->to($sendTo)
+            ->push([
+                "type" => "template",
+                "message" => $message
+            ]);
+    
+            }
         }else{
-          $this->notificationService->provider($type)
-            ->to($sendTo)
-          ->push([
-            "type" => "template",
-            "message" => $message
-          ]);
-  
+            \Log::info('Requestable: Jobs|ProcessNotification|Notification not sent (app.env is not Production)');
         }
-            
+        
     }
 
     
@@ -224,6 +243,36 @@ class ProcessNotification implements ShouldQueue
         }
         
         return $str;
+    }
+
+    /**
+     * @param $type (Notification type)
+     */
+    public function saveComment($type,$model,$message,$from=null,$to=null)
+    {
+
+        $comment = "<strong>".trans('requestable::common.notifications.title sent')."</strong>";
+        $comment = $comment."<p><strong>".trans('requestable::common.notifications.type').":</strong>".$type."</p>";
+       
+        if(!is_null($from))
+            $comment = $comment."<p><strong>".trans('requestable::common.notifications.from').":</strong>".$from."</p>";
+
+        if(!is_null($to)){
+            if(is_array($to))
+                $to = implode(" ",$to);
+            
+            $comment = $comment."<p><strong>".trans('requestable::common.notifications.to').":</strong>".$to."</p>";
+        }
+
+        $comment = $comment."<p><strong>".trans('requestable::common.notifications.message').":</strong>".$message."</p>";
+
+        $this->commentService->create($model,[
+                "user_id" => $model->updated_by, // Needed because is a job
+                "comment" => $comment,
+                "internal" => true
+            ]
+        );
+
     }
 
 

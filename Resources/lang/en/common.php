@@ -25,5 +25,13 @@ return [
     'message' => 'Mensaje',
     'phone' => 'Teléfono',
   ],
+  'notifications' => [
+    "comment" => ' Notification Type: :type -- Message: :message',
+    "title sent" => 'Sent Notification',
+    "type" => 'Type',
+    "from" => 'From',
+    "to" => 'To',
+    "message" => 'Message'
+  ]
 
 ];

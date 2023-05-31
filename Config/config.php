@@ -12,7 +12,28 @@ return [
     "requestables" => [
       'moduleName' => "Requestable",
       'fileName' => "Requests",
-      'exportName' => "RequestablesExport"
+      'exportName' => "RequestablesExport",
+      'exportFields' => [
+        //Choose report Type
+        'reportType' => [
+          'value' => "detailed",
+          'name' => 'isite::reportType',
+          'type' => 'select',
+          'colClass' => 'col-6',
+          'props' => [
+            'label' => 'requestable::exports.exportFields.report type',
+            'useInput' => false,
+            'useChips' => false,
+            'multiple' => false,
+            'hideDropdownIcon' => true,
+            'newValueMode' => 'add-unique',
+            'options' => [
+              ['label' => 'requestable::exports.exportFields.type.detailed', 'value' => "detailed"],
+              ['label' => 'requestable::exports.exportFields.type.statuses', 'value' => "statuses"],
+            ]
+          ]
+        ],
+      ]
     ]
   ],
 

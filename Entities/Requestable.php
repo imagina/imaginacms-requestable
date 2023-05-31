@@ -19,6 +19,7 @@ class Requestable extends CrudModel
   protected $table = 'requestable__requestables';
   
   public $transformer = 'Modules\Requestable\Transformers\RequestableTransformer';
+  public $repository = 'Modules\Requestable\Repositories\RequestableRepository';
   
   public $requestValidation = [
     'create' => 'Modules\Requestable\Http\Requests\CreateRequestableRequest',

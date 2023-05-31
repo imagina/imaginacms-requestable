@@ -20,6 +20,7 @@ return [
         'requested by' => 'Requested by',
         'created by' => 'Created by',
         'last comment' => 'Last comment',
+        'date' => 'Date',
     ],
     'form' => [
     ],

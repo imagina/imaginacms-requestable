@@ -16,10 +16,16 @@ return [
     'table' => [
         'category' => 'Categoria',
         'status' => 'Estado',
+        'status old' => 'Estado Anterior',
+        'status new' => 'Estado Nuevo',
         'type' => 'Tipo',
         'requested by' => 'Solicitado por',
-        'created by' => 'Creado por',
+        'created by' => 'Peticion creada por',
         'last comment' => 'Ultimo comentario',
+        'date' => 'Fecha y Hora',
+        'hour' => 'Hora del cambio',
+        'id' => 'Petición ID',
+        'history created by' => 'Cambio realizado por'
     ],
     'form' => [
     ],

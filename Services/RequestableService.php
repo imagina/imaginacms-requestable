@@ -122,7 +122,7 @@ class RequestableService extends BaseApiController
       if ($oldRequest->status_id != $status->id) {
         
         //default status updated comment
-        $this->commentService->create($oldRequest,["comment" => trans("requestable::statuses.comments.statusUpdated",["prevStatus" => $oldRequest->status->title,"postStatus" =>  $status->title])]);
+        $this->commentService->create($oldRequest,["internal" => true, "comment" => trans("requestable::statuses.comments.statusUpdated",["prevStatus" => $oldRequest->status->title,"postStatus" =>  $status->title])]);
   
         //custom comment to the status updated
         if(isset($data["comment"]) && !empty($data["comment"])){
@@ -285,7 +285,8 @@ class RequestableService extends BaseApiController
   public function validateCreatedBy(array $data,object $params){
 
     if(isset($data['created_by'])){
-      if(!isset($params->permissions['requestable.requestables.edit-created-by'])){
+      if(!isset($params->permissions['requestable.requestables.edit-created-by']) || !$params->permissions['requestable.requestables.edit-created-by']){
+
         unset($data['created_by']);
       }
     }

@@ -8,20 +8,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
+// In testing (maybe this has performance issues with lots of data)
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+
 //Events
 use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\BeforeSheet;
 use Maatwebsite\Excel\Events\AfterSheet;
 
 //Entities
-use Modules\Requestable\Entities\Category;
 use Modules\Media\Entities\File;
 
 //Extra
 use Modules\Notification\Services\Inotification;
 
-
 class RequestablesExport implements FromQuery, 
-WithEvents, ShouldQueue, WithMapping, WithHeadings
+WithEvents, WithMapping, WithHeadings, ShouldQueue, ShouldAutoSize
 {
   use Exportable;
 
@@ -29,19 +31,36 @@ WithEvents, ShouldQueue, WithMapping, WithHeadings
   private $exportParams;
   private $inotification;
   private $requestableRepository;
+  private $categoryRepository;
 
   private $category = null;
   private $fields = null;
 
-  
+  private $reportType = null;
+  private $report = null;
+
+  public $showExtraFields = null;
+
   public function __construct($params, $exportParams)
   {
     $this->params = $params;
     $this->exportParams = $exportParams;
     $this->inotification = app('Modules\Notification\Services\Inotification');
     $this->requestableRepository = app('Modules\Requestable\Repositories\RequestableRepository');
+    $this->categoryRepository = app('Modules\Requestable\Repositories\CategoryRepository');
 
     $this->getExtraFields();
+    
+    $this->showExtraFields = (boolean)setting('requestable::showExtraFieldsFromFormInReport');
+
+    // Set report Type from Filter
+    $this->reportType = $this->params->filter->reportType;
+
+    //IMPORTANT: The reportType in the Config must be the same value to the class (exportFields)
+    //Set report class
+    $this->report = app('Modules\Requestable\Exports\Reports\\'.$this->reportType.'Report',['requestableExport'=> $this]);
+    
+
   }
 
   /*
@@ -62,21 +81,23 @@ WithEvents, ShouldQueue, WithMapping, WithHeadings
   /*
   * Get Category from filter params
   */
-  public function getCategory(){
+  public function getCategory()
+  {
 
     $filter = $this->params->filter ?? null;
     if(!is_null($filter)){
       if(isset($filter->categoryId)){
-        $this->category = Category::find($filter->categoryId);
+        $this->category = $this->categoryRepository->getItem($filter->categoryId);
       }
     }
-    
+   
   }
 
   /*
   * Get Fields from Form Category
   */
-  public function getExtraFields(){
+  public function getExtraFields()
+  {
 
     // Get Category From Filter Params
     $this->getCategory();
@@ -90,13 +111,33 @@ WithEvents, ShouldQueue, WithMapping, WithHeadings
   }
 
   /*
+  * Get fields and add to Heading
+  */
+  public function addFieldsToHeading($headingFields)
+  {
+
+    if(!is_null($this->fields)){
+      foreach ($this->fields as $key => $field) {
+        array_push($headingFields, rtrim(str_replace('*','',$field['label'])));
+      }
+    }
+
+    return $headingFields;
+
+  }
+
+  /*
   * Get fields and add to item
   */
-  public function addFieldsToItem($item,$baseItem){
+  public function addFieldsToItem($item,$baseItem,$customFields=null)
+  {
     
-    //Extra fields
+    
     if(!is_null($this->fields)){
       
+      //Testing custom fields
+      $this->fields = $customFields ?? $this->fields;
+
       foreach($this->fields as $key => $field){
 
         $value = '--';
@@ -140,25 +181,6 @@ WithEvents, ShouldQueue, WithMapping, WithHeadings
       
   }
 
-  /*
-  * Get Last comment and add to item
-  */
-  public function addLastCommentToItem($item,$baseItem){
-
-    $formatComment = "--";
-
-    if(count($item->comments)>0){
-
-      $lastComment = $item->comments->last();
-      $formatComment = $lastComment->comment." | Fecha: ".$lastComment->created_at->format('d-m-Y');
-    }
-
-    array_push($baseItem, $formatComment);
-
-    return $baseItem;
-
-  }
-
   /**
   * Table headings
   * @return string[]
@@ -166,56 +188,24 @@ WithEvents, ShouldQueue, WithMapping, WithHeadings
   public function headings(): array
   {
     
-    // Base Fields
-    $baseFields = [
-      'ID',
-      trans('requestable::requestables.table.category'),
-      trans('requestable::requestables.table.status'),
-      trans('requestable::requestables.table.type'),
-      trans('requestable::requestables.table.requested by'),
-      trans('requestable::requestables.table.created by')
-    ];
-
-    //Extra fields
-    if(!is_null($this->fields)){
-      foreach ($this->fields as $key => $field) {
-        array_push($baseFields, rtrim(str_replace('*','',$field['label'])));
-      }
-    }
-
-    //Add only last comment
-    array_push($baseFields, trans('requestable::requestables.table.last comment'));
-
+    $baseFields = $this->report->getHeading();
     return $baseFields;
     
   }
 
+ 
   /**
   * Each Item
   */
   public function map($item): array
   {
-    
-    // Base Item Fields
-    $baseItem = [
-      $item->id ?? null,
-      $item->category->title ?? null,
-      $item->status->title ?? null,
-      $item->type ?? null,
-      $item->requestedBy ? $item->requestedBy->present()->fullname: null,
-      $item->createdByUser->present()->fullname ?? null
-    ];
 
-    //Extra Fields
-    $baseItem = $this->addFieldsToItem($item,$baseItem);
-
-    //Last Comment
-    $baseItem = $this->addLastCommentToItem($item,$baseItem);
-    
+    $baseItem = $this->report->getMap($item);
     return $baseItem;
 
   }
 
+  
   /**
   * Handling Events
   * @return array
@@ -223,8 +213,19 @@ WithEvents, ShouldQueue, WithMapping, WithHeadings
   public function registerEvents(): array
   {
     return [
+
+      //Event gets raised just after the sheet is created.
+      BeforeSheet::class => function (BeforeSheet $event) {
+        \Log::info("Requestable:: Exports|BeforeSheet: Init");
+      },
+
       // Event gets raised at the end of the sheet process
       AfterSheet::class => function (AfterSheet $event) {
+
+        \Log::info("Requestable:: Exports|AfterSheet: Exported");
+      
+        $event->getSheet()->getDelegate()->getStyle(1)->getFont()->setBold(true);
+        
         //Send pusher notification
         $this->inotification->to(['broadcast' => $this->params->user->id])->push([
           "title" => "New report",
@@ -238,6 +239,7 @@ WithEvents, ShouldQueue, WithMapping, WithHeadings
           "setting" => ["saveInDatabase" => 1]
         ]);
       },
+
     ];
   }
 
