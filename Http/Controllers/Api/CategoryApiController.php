@@ -51,12 +51,13 @@ class CategoryApiController extends BaseCrudController
 
       // Get form from Model
       $form = $model->form;
+     
       if(!is_null($form->id)){
 
         $params->filter->formId = $form->id;
 
         $data = $this->fieldRepository->getItemsBy($params);
-
+        
         if(!is_null($data) && count($data)>0){
 
           $response = ["data" => FormFieldTransformer::collection($data)];
@@ -64,7 +65,7 @@ class CategoryApiController extends BaseCrudController
           //If request pagination add meta-page
           $params->page ? $response["meta"] = ["page" => $this->pageTransformer($data)] : false;
         }else{
-          throw new \Exception('Debe crear un campo de tipo:'.$params->filter->type.' en el formulario: '.$form->title, 404);
+          throw new \Exception(trans("requestable::categories.messages.phoneFieldError",["fieldType" => $params->filter->type, "formTitle" => $form->title, "formFieldsUrl" => url("/iadmin/#/form/fields/$form->id/")]), 400);
         }
 
       }
@@ -73,7 +74,7 @@ class CategoryApiController extends BaseCrudController
     } catch (\Exception $e) {
       //dd($e);
       $status = $this->getStatusError($e->getCode());
-      $response = ["errors" => $e->getMessage()];
+      $response = ["messages" => [["message" => $e->getMessage(), "type" => "error", "timeOut" => 10000 ]]];
   
     }
     

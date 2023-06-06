@@ -37,9 +37,8 @@ class CreateCategoriesRulesTableSeeder extends Seeder
 
           $existCategory = $this->findCategory($category['systemName']);
 
-          if(!isset($existCategory->id)) {
-            $this->createCategory($category); 
-          }
+            $this->createOrUpdateCategory($category, $existCategory);
+          
           
         }
       }
@@ -71,7 +70,7 @@ class CreateCategoriesRulesTableSeeder extends Seeder
   /*
   * Create 
   */
-  public function createCategory($data){
+  public function createOrUpdateCategory($data, $category = null){
 
     $parentId = null;
     if(isset($data['parentSystemName'])){
@@ -79,7 +78,7 @@ class CreateCategoriesRulesTableSeeder extends Seeder
       $parentId = $categoryParent->id;
     }
 
-    $dataToCreate = [
+    $dataModel = [
       'system_name' => $data['systemName'],
       'parent_id' => $parentId,
       'status' => $data['status'] ?? 1,    
@@ -93,8 +92,11 @@ class CreateCategoriesRulesTableSeeder extends Seeder
       'formFields' => isset($data['formFields']) ? $data['formFields'] : null
     ];
 
-    $categoryCreated = $this->categoryRuleRepository->create($dataToCreate);
-
+    if(!isset($category->id))
+      $categoryCreated = $this->categoryRuleRepository->create($dataModel);
+    else{
+      $categoryCreated = $this->categoryRuleRepository->updateBy($category->id, $dataModel);
+    }
   }
 
   
