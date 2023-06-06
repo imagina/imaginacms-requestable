@@ -24,9 +24,10 @@ class EloquentStatusRepository extends EloquentCrudRepository implements StatusR
    *
    * @param $query
    * @param $filter
+   * @param $params
    * @return mixed
    */
-  public function filterQuery($query, $filter)
+  public function filterQuery($query, $filter, $params)
   {
 
     /**
@@ -36,8 +37,6 @@ class EloquentStatusRepository extends EloquentCrudRepository implements StatusR
      * if (isset($filter->status)) $query->where('status', $filter->status);
      *
      */
-    
-    $params = $filter->params;
     
     // ORDER
     if (isset($params->order) && $params->order) {
