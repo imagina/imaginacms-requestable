@@ -175,7 +175,8 @@ class ProcessNotification implements ShouldQueue
             "provider" => $type,
             "recipient_id" => $sendTo,
             "sender_id" => $params['requestableData']->requestedBy->id,
-            "send_to_provider" => true
+            "send_to_provider" => true,
+            "type" => "template"
         ];
         //\Log::info('Requestable: Jobs|ProcessNotification|sendMobile|messageToSend: '.json_encode($messageToSend));
 
