@@ -233,10 +233,14 @@ class ProcessNotification implements ShouldQueue
 
                 $value = $this->getValueField($match,$requestableFields) ?? "--";
                 //\Log::info('Requestable: CheckVariables|Value: '.$value);
+                
+                if(is_array($value))
+                    $value = implode(",",$value);
 
                 //Ready to replace
                 $find = "{{".$match."}}";
                 $str = str_replace($find,$value,$str);
+
             }
 
             //\Log::info('Requestable: Jobs|ProcessNotification|checkVariables|Str: '.$str);
