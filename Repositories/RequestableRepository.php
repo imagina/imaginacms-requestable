@@ -9,7 +9,7 @@ interface RequestableRepository extends BaseRepository
   
   public function getItemsBy($params);
   
-  public function getItem($criteria, $params);
+  public function getItem($criteria, $params = false);
   
   public function create($data);
   
