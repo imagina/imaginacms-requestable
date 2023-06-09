@@ -117,6 +117,8 @@ class ProcessNotification implements ShouldQueue
         $message = $this->getValueField('message',$params['ruleFields']) ?? "Message Test";
         \Log::info('Requestable: Jobs|ProcessNotification|sendEmail|FROM: '.$from.' - SUBJECT: '.$subject.' - MESSAGE: '.$message);
 
+        //\Log::info('Requestable: Jobs|ProcessNotification|sendEmail|FieldName: '.$params['toFieldName']);
+
         // Fillables from Requestable
         $emailsTo[] = $this->getValueField($params['toFieldName'],$params['requestableFields']);
         \Log::info('Requestable: Jobs|ProcessNotification|sendEmail|emailsTo: '.json_encode($emailsTo));
