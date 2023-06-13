@@ -117,35 +117,40 @@ class ProcessNotification implements ShouldQueue
         $message = $this->getValueField('message',$params['ruleFields']) ?? "Message Test";
         \Log::info('Requestable: Jobs|ProcessNotification|sendEmail|FROM: '.$from.' - SUBJECT: '.$subject.' - MESSAGE: '.$message);
 
+        //\Log::info('Requestable: Jobs|ProcessNotification|sendEmail|FieldName: '.$params['toFieldName']);
+
         // Fillables from Requestable
         $emailsTo[] = $this->getValueField($params['toFieldName'],$params['requestableFields']);
         \Log::info('Requestable: Jobs|ProcessNotification|sendEmail|emailsTo: '.json_encode($emailsTo));
 
-        //Check Variables to replace
-        $subject = $this->checkVariables($subject,$params['requestableFields']);
-        $message = $this->checkVariables($message,$params['requestableFields']);
+        if(!is_null($emailsTo[0])){
 
-        //Save a comment
-        $this->saveComment("email",$params['requestableData'],$message,$from,$emailsTo);
-        
-        if(config("app.env")=="production"){
+            //Check Variables to replace
+            $subject = $this->checkVariables($subject,$params['requestableFields']);
+            $message = $this->checkVariables($message,$params['requestableFields']);
+
+            //Save a comment
+            $this->saveComment("email",$params['requestableData'],$message,$from,$emailsTo);
             
-            $this->notificationService->to([
-                "email" => $emailsTo
-            ])->push([
-                "title" => $subject,
-                "message" => $message,
-                "fromAddress" => $from,
-                "fromName" => "",
-                "setting" => [
-                    "saveInDatabase" => true
-                ]
-            ]);
+            if(config("app.env")=="production"){
+                
+                $this->notificationService->to([
+                    "email" => $emailsTo
+                ])->push([
+                    "title" => $subject,
+                    "message" => $message,
+                    "fromAddress" => $from,
+                    "fromName" => "",
+                    "setting" => [
+                        "saveInDatabase" => true
+                    ]
+                ]);
 
-        }else{
-            \Log::info('Requestable: Jobs|ProcessNotification|Email not sent (app.env is not Production)');
+            }else{
+                \Log::info('Requestable: Jobs|ProcessNotification|Email not sent (app.env is not Production)');
+            }
+
         }
-        
                 
     }
 
@@ -167,37 +172,41 @@ class ProcessNotification implements ShouldQueue
         $sendTo = $this->getValueField($params['toFieldName'],$params['requestableFields']);
         \Log::info('Requestable: Jobs|ProcessNotification|sendMobile|sendTo: '.json_encode($sendTo));
         
-        //Check Variables to replace
-        $message = $this->checkVariables($message,$params['requestableFields']);
+        if(!is_null($sendTo)){
 
-        $messageToSend = [
-            "message" => $message,
-            "provider" => $type,
-            "recipient_id" => $sendTo,
-            "sender_id" => $params['requestableData']->requestedBy->id,
-            "send_to_provider" => true
-        ];
-        //\Log::info('Requestable: Jobs|ProcessNotification|sendMobile|messageToSend: '.json_encode($messageToSend));
+            //Check Variables to replace
+            $message = $this->checkVariables($message,$params['requestableFields']);
 
-        //Save a comment
-        $this->saveComment($type,$params['requestableData'],$message,null,$sendTo);
+            $messageToSend = [
+                "message" => $message,
+                "provider" => $type,
+                "recipient_id" => $sendTo,
+                "sender_id" => $params['requestableData']->requestedBy->id,
+                "send_to_provider" => true
+            ];
+            //\Log::info('Requestable: Jobs|ProcessNotification|sendMobile|messageToSend: '.json_encode($messageToSend));
 
-        if(config("app.env")=="production"){
-            //Message service from Ichat Module
-            if (is_module_enabled('Ichat')) {
-                $messageService = app("Modules\Ichat\Services\MessageService");
-                $messageService->create($messageToSend);
+            //Save a comment
+            $this->saveComment($type,$params['requestableData'],$message,null,$sendTo);
+
+            if(config("app.env")=="production"){
+                //Message service from Ichat Module
+                if (is_module_enabled('Ichat')) {
+                    $messageService = app("Modules\Ichat\Services\MessageService");
+                    $messageService->create($messageToSend);
+                }else{
+                $this->notificationService->provider($type)
+                    ->to($sendTo)
+                ->push([
+                    "type" => "template",
+                    "message" => $message
+                ]);
+        
+                }
             }else{
-            $this->notificationService->provider($type)
-                ->to($sendTo)
-            ->push([
-                "type" => "template",
-                "message" => $message
-            ]);
-    
+                \Log::info('Requestable: Jobs|ProcessNotification|Notification not sent (app.env is not Production)');
             }
-        }else{
-            \Log::info('Requestable: Jobs|ProcessNotification|Notification not sent (app.env is not Production)');
+            
         }
         
     }
