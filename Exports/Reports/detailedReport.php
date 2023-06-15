@@ -23,7 +23,11 @@ class detailedReport
     if(count($item->comments)>0){
 
       $lastComment = $item->comments->last();
-      $formatComment = $lastComment->comment." | Fecha: ".$lastComment->created_at->format('d-m-Y');
+
+      $formatLastComment = strip_tags($lastComment->comment);
+      //\Log::info($formatLastComment);
+
+      $formatComment = $formatLastComment." | Fecha: ".$lastComment->created_at->format('d-m-Y');
     }
 
     array_push($baseItem, $formatComment);
