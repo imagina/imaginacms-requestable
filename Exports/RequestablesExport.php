@@ -41,6 +41,9 @@ WithEvents, WithMapping, WithHeadings, ShouldQueue, ShouldAutoSize
 
   public $showExtraFields = null;
 
+  //public $timeout = 600;
+  private $log = "Requestable:: Exports|";
+
   public function __construct($params, $exportParams)
   {
     $this->params = $params;
@@ -134,6 +137,8 @@ WithEvents, WithMapping, WithHeadings, ShouldQueue, ShouldAutoSize
     
     
     if(!is_null($this->fields)){
+
+      //\Log::info($this->log."addFieldsToItem");
       
       //Testing custom fields
       $this->fields = $customFields ?? $this->fields;
@@ -188,7 +193,12 @@ WithEvents, WithMapping, WithHeadings, ShouldQueue, ShouldAutoSize
   public function headings(): array
   {
     
+    \Log::info($this->log."Headings");
+
     $baseFields = $this->report->getHeading();
+
+    \Log::info($this->log."Mapping Data|It may take a few minutes...");
+
     return $baseFields;
     
   }
@@ -216,13 +226,13 @@ WithEvents, WithMapping, WithHeadings, ShouldQueue, ShouldAutoSize
 
       //Event gets raised just after the sheet is created.
       BeforeSheet::class => function (BeforeSheet $event) {
-        \Log::info("Requestable:: Exports|BeforeSheet: Init");
+        \Log::info($this->log."BeforeSheet: Init");
       },
 
       // Event gets raised at the end of the sheet process
       AfterSheet::class => function (AfterSheet $event) {
 
-        \Log::info("Requestable:: Exports|AfterSheet: Exported");
+        \Log::info($this->log."AfterSheet: Exported");
       
         $event->getSheet()->getDelegate()->getStyle(1)->getFont()->setBold(true);
         

@@ -6,10 +6,12 @@ class detailedReport
 {
  
   private $requestableExport;
+  private $log = "Requestable:: Exports|detailedReport|";
 
   public function __construct($requestableExport)
   {
     $this->requestableExport = $requestableExport;
+    \Log::info($this->log);
   }
 
    /*
@@ -17,6 +19,8 @@ class detailedReport
   */
   public function addLastCommentToItem($item,$baseItem)
   {
+
+    //\Log::info($this->log."addLastCommentToItem");
 
     $formatComment = "--";
 
@@ -68,6 +72,9 @@ class detailedReport
    */ 
   public function getMap($item)
   {
+
+      //\Log::info($this->log."getMap|id: ".$item->id);
+
      // Base Item Fields
      $baseItem = [
       $item->id ?? null,

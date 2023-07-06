@@ -6,6 +6,7 @@ class statusesReport
 {
  
   private $requestableExport;
+  private $log = "Requestable:: Exports|statusesReport|";
   
   /**
    * Position of Status History fields in table
@@ -16,6 +17,7 @@ class statusesReport
   public function __construct($requestableExport)
   {
     $this->requestableExport = $requestableExport;
+    \Log::info($this->log);
   }
 
   /**
@@ -54,8 +56,9 @@ class statusesReport
   public function getMap($item)
   {
 
+    //\Log::info($this->log."getMap|id: ".$item->id);
+
      // Base Item Fields
-    
      $baseItem = [
       $item->id ?? null,
       $item->requestedBy ? $item->requestedBy->present()->fullname: null,
