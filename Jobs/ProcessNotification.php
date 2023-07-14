@@ -117,8 +117,6 @@ class ProcessNotification implements ShouldQueue
         $message = $this->getValueField('message',$params['ruleFields']) ?? "Message Test";
         \Log::info('Requestable: Jobs|ProcessNotification|sendEmail|FROM: '.$from.' - SUBJECT: '.$subject.' - MESSAGE: '.$message);
 
-        //\Log::info('Requestable: Jobs|ProcessNotification|sendEmail|FieldName: '.$params['toFieldName']);
-
         // Fillables from Requestable
         $emailsTo[] = $this->getValueField($params['toFieldName'],$params['requestableFields']);
         \Log::info('Requestable: Jobs|ProcessNotification|sendEmail|emailsTo: '.json_encode($emailsTo));
@@ -177,14 +175,15 @@ class ProcessNotification implements ShouldQueue
             //Check Variables to replace
             $message = $this->checkVariables($message,$params['requestableFields']);
 
-            $messageToSend = [
-                "message" => $message,
-                "provider" => $type,
-                "recipient_id" => $sendTo,
-                "sender_id" => $params['requestableData']->requestedBy->id,
-                "send_to_provider" => true
-            ];
-            //\Log::info('Requestable: Jobs|ProcessNotification|sendMobile|messageToSend: '.json_encode($messageToSend));
+        $messageToSend = [
+            "message" => $message,
+            "provider" => $type,
+            "recipient_id" => $sendTo,
+            "sender_id" => $params['requestableData']->requestedBy->id,
+            "send_to_provider" => true,
+            "type" => "template"
+        ];
+        //\Log::info('Requestable: Jobs|ProcessNotification|sendMobile|messageToSend: '.json_encode($messageToSend));
 
             //Save a comment
             $this->saveComment($type,$params['requestableData'],$message,null,$sendTo);
