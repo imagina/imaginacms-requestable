@@ -2,255 +2,150 @@
 
 namespace Modules\Requestable\Exports;
 
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithMapping;
 
-// In testing (maybe this has performance issues with lots of data)
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-
 //Events
-use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\BeforeSheet;
 use Maatwebsite\Excel\Events\AfterSheet;
 
-//Entities
-use Modules\Media\Entities\File;
-
-//Extra
-use Modules\Notification\Services\Inotification;
-
-class RequestablesExport implements FromQuery, 
-WithEvents, WithMapping, WithHeadings, ShouldQueue, ShouldAutoSize
+class RequestablesExport implements ShouldQueue,
+  FromQuery, ShouldAutoSize, WithEvents, WithHeadings, WithMapping
 {
   use Exportable;
 
   private $params;
   private $exportParams;
-  private $inotification;
-  private $requestableRepository;
-  private $categoryRepository;
-
-  private $category = null;
-  private $fields = null;
-
-  private $reportType = null;
-  private $report = null;
-
-  public $showExtraFields = null;
-
-  //public $timeout = 600;
-  private $log = "Requestable:: Exports|";
+  private $categoryFields;
+  private $includeCategoryFields;
+  private $reportType;
+  private $log;
 
   public function __construct($params, $exportParams)
   {
     $this->params = $params;
+    $this->log = "Requestable:: Exports|" . $this->params->filter->reportType . "Report";
+    \Log::info("$this->log|Init");
     $this->exportParams = $exportParams;
-    $this->inotification = app('Modules\Notification\Services\Inotification');
-    $this->requestableRepository = app('Modules\Requestable\Repositories\RequestableRepository');
-    $this->categoryRepository = app('Modules\Requestable\Repositories\CategoryRepository');
-
-    $this->getExtraFields();
-    
-    $this->showExtraFields = (boolean)setting('requestable::showExtraFieldsFromFormInReport');
-
-    // Set report Type from Filter
-    $this->reportType = $this->params->filter->reportType;
-
-    //IMPORTANT: The reportType in the Config must be the same value to the class (exportFields)
-    //Set report class
-    $this->report = app('Modules\Requestable\Exports\Reports\\'.$this->reportType.'Report',['requestableExport'=> $this]);
-    
-
+    $this->includeCategoryFields = (boolean)setting('requestable::showExtraFieldsFromFormInReport');
+    $this->categoryFields = collect([]);
+    $this->getCategoryFields();
+    //Instance the report type
+    $this->reportType = app('Modules\Requestable\Exports\Reports\\' . $this->params->filter->reportType . 'Report', ['params' => $params]);
   }
 
-  /*
-  * Get items from repository
-  */
+  /**
+   * Get the category fields
+   * @return void
+   */
+  public function getCategoryFields()
+  {
+    if ($this->includeCategoryFields) {
+      \Log::info("$this->log|CategoryFields");
+      $categoryRepository = app('Modules\Requestable\Repositories\CategoryRepository');
+      //Get request category by filter
+      $params = ['include' => ['forms.fields']];
+      $category = $categoryRepository->getItem($this->params->filter->categoryId, json_decode(json_encode($params)));
+      //Get and instance the category fields
+      $this->categoryFields = $category->form->fields->map->only('name', 'label', 'type');
+    }
+  }
+
+  /**
+   * Get query by report type
+   * @return mixed
+   */
   public function query()
   {
-    
-    $this->params->onlyQuery = true;
-
-    $order['field'] = 'id';
-    $this->params->filter->order = (object)$order;
-
-    return $this->requestableRepository->getItemsBy($this->params);
-
-  }
-
-  /*
-  * Get Category from filter params
-  */
-  public function getCategory()
-  {
-
-    $filter = $this->params->filter ?? null;
-    if(!is_null($filter)){
-      if(isset($filter->categoryId)){
-        $this->category = $this->categoryRepository->getItem($filter->categoryId);
-      }
-    }
-   
-  }
-
-  /*
-  * Get Fields from Form Category
-  */
-  public function getExtraFields()
-  {
-
-    // Get Category From Filter Params
-    $this->getCategory();
-
-    // Validate category and get fields from Form category
-    if(!is_null($this->category) && !is_null($this->category->form)){
-      $fieldsAll = $this->category->form->fields;
-      $this->fields = $fieldsAll->map->only('name','label','type');
-    }
-
-  }
-
-  /*
-  * Get fields and add to Heading
-  */
-  public function addFieldsToHeading($headingFields)
-  {
-
-    if(!is_null($this->fields)){
-      foreach ($this->fields as $key => $field) {
-        array_push($headingFields, rtrim(str_replace('*','',$field['label'])));
-      }
-    }
-
-    return $headingFields;
-
-  }
-
-  /*
-  * Get fields and add to item
-  */
-  public function addFieldsToItem($item,$baseItem,$customFields=null)
-  {
-    
-    
-    if(!is_null($this->fields)){
-
-      //\Log::info($this->log."addFieldsToItem");
-      
-      //Testing custom fields
-      $this->fields = $customFields ?? $this->fields;
-
-      foreach($this->fields as $key => $field){
-
-        $value = '--';
-
-        /* Check if field from Form is a "file"
-        and change it because in the fillable they save it as "medias_single"
-        */
-        if($field['type']=="12")
-          $field['name'] = "medias_single";
-
-        // Convert to snake case fields from Form
-        $nameSnake = \Str::snake($field['name']);
-
-        // Validate field exist in item
-        $fieldItem = $item->fields->where('name',$nameSnake)->first();
-       
-        // Get field Value
-        if(!is_null($fieldItem)){
-
-          $value = $fieldItem->translations->first()->value ?? '--';
-          
-          // Value from Medias Single
-          if($field['name']=="medias_single"){
-            if(isset($value['mainimage']) && !is_null($value['mainimage'])){
-              $file = File::find($value['mainimage']);
-              $value = $file->pathString ?? '--';
-            }else{
-              $value = '--';
-            }
-          }
-          
-        }
-
-        //Add extra field value
-        array_push($baseItem, $value);
-      }
-
-    }
-
-    return $baseItem;
-      
+    $query = $this->reportType->getQuery();
+    return $query;
   }
 
   /**
-  * Table headings
-  * @return string[]
-  */
+   * Request the fields of all rows and merge each one with the row by chunks
+   * NOTE: the query sorts the fields with the correct format to merge directly with the row
+   * do not use loops because this causes memory limits with very large reports
+   * @param $rows
+   * @return mixed
+   */
+  public function prepareRows($rows)
+  {
+    $fields = collect([]);
+    //Get the category fields to each row
+    if ($this->includeCategoryFields) {
+      //Make query to get all fields by requestable id
+      $fieldNames = $this->categoryFields->pluck("name")->toArray();
+      $selectExpressions = ["f.entity_id as requestable_id"];
+      foreach ($fieldNames as $field) {
+        $selectExpressions[] = \DB::raw("MAX(CASE WHEN f.name = '$field' THEN ft.value END) AS `$field`");
+      }
+      //Request all fields by requestable id
+      $fields = \DB::table('ifillable__fields as f')
+        ->select($selectExpressions)
+        ->leftJoin('ifillable__field_translations as ft', 'f.id', '=', 'ft.field_id')
+        ->whereIn('f.name', $fieldNames)
+        ->where('f.entity_type', 'Modules\\Requestable\\Entities\\Requestable')
+        ->whereIn('f.entity_id', $rows->pluck('requestable_id')->unique()->toArray())
+        ->groupBy('f.entity_id')
+        ->orderBy('f.entity_id', 'desc')
+        ->get();
+    }
+
+    //Get prepareRows by reportType
+    $rows = $this->reportType->getPrepareRows($rows, $fields);
+
+    //Response
+    return collect($rows->toArray());
+  }
+
+  /**
+   * Get map by report type
+   * @param $row
+   * @return array
+   */
+  public function map($row): array
+  {
+    $mapRow = $this->reportType->getMap($row);
+    return $mapRow;
+  }
+
+  /**
+   * Get the main headers by reportType and merge the categoryFields
+   * @return array
+   */
   public function headings(): array
   {
-    
-    \Log::info($this->log."Headings");
+    \Log::info("$this->log|Headings");
+    //Get category fields columns
+    $categoryFields = $this->categoryFields->pluck("label")->toArray();
+    //Get headings
+    $headers = $this->reportType->getHeadings($categoryFields);
+    \Log::info("$this->log|MappingRows");
 
-    $baseFields = $this->report->getHeading();
-
-    \Log::info($this->log."Mapping Data|It may take a few minutes...");
-
-    return $baseFields;
-    
+    //Response
+    return $headers;
   }
 
- 
-  /**
-  * Each Item
-  */
-  public function map($item): array
-  {
-
-    $baseItem = $this->report->getMap($item);
-    return $baseItem;
-
-  }
-
-  
-  /**
-  * Handling Events
-  * @return array
-  */
   public function registerEvents(): array
   {
     return [
-
       //Event gets raised just after the sheet is created.
       BeforeSheet::class => function (BeforeSheet $event) {
-        \Log::info($this->log."BeforeSheet: Init");
+        \Log::info("$this->log|BeforeSheet");
       },
 
       // Event gets raised at the end of the sheet process
       AfterSheet::class => function (AfterSheet $event) {
-
-        \Log::info($this->log."AfterSheet: Exported");
-      
+        \Log::info("$this->log|AfterSheet: Exported");
         $event->getSheet()->getDelegate()->getStyle(1)->getFont()->setBold(true);
-        
-        //Send pusher notification
-        $this->inotification->to(['broadcast' => $this->params->user->id])->push([
-          "title" => "New report",
-          "message" => "Your report is ready!",
-          "link" => url(''),
-          "isAction" => true,
-          "frontEvent" => [
-            "name" => "isite.export.ready",
-            "data" => $this->exportParams
-          ],
-          "setting" => ["saveInDatabase" => 1]
-        ]);
       },
-
     ];
   }
-
 }
