@@ -16,10 +16,12 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Events\BeforeSheet;
 use Maatwebsite\Excel\Events\AfterSheet;
 
+use Modules\Isite\Traits\ReportQueueTrait;
+
 class RequestablesExport implements ShouldQueue,
   FromQuery, ShouldAutoSize, WithEvents, WithHeadings, WithMapping
 {
-  use Exportable;
+  use Exportable, ReportQueueTrait;
 
   private $params;
   private $exportParams;
@@ -139,11 +141,13 @@ class RequestablesExport implements ShouldQueue,
       //Event gets raised just after the sheet is created.
       BeforeSheet::class => function (BeforeSheet $event) {
         \Log::info("$this->log|BeforeSheet");
+        $this->lockReport($this->exportParams->exportName);
       },
 
       // Event gets raised at the end of the sheet process
       AfterSheet::class => function (AfterSheet $event) {
         \Log::info("$this->log|AfterSheet: Exported");
+        $this->unlockReport($this->exportParams->exportName);
         $event->getSheet()->getDelegate()->getStyle(1)->getFont()->setBold(true);
       },
     ];
