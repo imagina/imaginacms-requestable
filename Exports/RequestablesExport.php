@@ -32,6 +32,7 @@ class RequestablesExport implements ShouldQueue,
 
   public function __construct($params, $exportParams)
   {
+    $this->userId = \Auth::id();//Set for ReportQueue
     $this->params = $params;
     $this->log = "Requestable:: Exports|" . $this->params->filter->reportType . "Report";
     \Log::info("$this->log|Init");
