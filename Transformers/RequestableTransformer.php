@@ -22,7 +22,6 @@ class RequestableTransformer extends CrudResource
     return [
       "requestableUrl" => isset($model->url) ? $model->url : "",
       "statusValue" => isset($this->status) ? $this->status->value : null,
-      "files" => MediaTransformer::collection($this->whenLoaded('files')),
       "comment" => null,
       "fields" => $this->includeLabelFromFormtoFields()//TODO: Fix this with the update of the name in the Iform
     ];

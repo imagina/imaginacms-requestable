@@ -27,7 +27,8 @@ class Requestable extends CrudModel
   ];
   
   protected $with = [
-    "fields"
+    "fields",
+    "files"
   ];
   protected $fillable = [
     "requestable_type",
