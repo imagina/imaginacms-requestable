@@ -31,6 +31,7 @@ return [
     "from" => 'De',
     "to" => 'Para',
     "message" => 'Mensaje'
-  ]
+  ],
+  'notFound' => 'Item no encontrado',
 
 ];

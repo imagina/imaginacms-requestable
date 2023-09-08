@@ -23,13 +23,20 @@ return [
     "statusUpdated" => "Status updated: from :prevStatus to :postStatus"
   ],
   'validation' => [
+    'validateType' => 'There is already a status of type Success for this category',
+    'associatedRequests' => 'Cannot delete status because it has associated requests',
   ],
   'leads' => [
-    'new' => 'Nuevo',
-    'contacted' => 'Contactado',
-    'commercial proposal' => 'Propuesta Comercial',
-    'in progress' => 'En progreso',
-    'successful' => 'Exitoso',
-    'lost' => 'Perdido',
+    'new' => 'New',
+    'contacted' => 'Contacted',
+    'commercial proposal' => 'Commercial Proposal',
+    'in progress' => 'In progress',
+    'successful' => 'Successful',
+    'lost' => 'Lost',
+  ],
+  'types' => [
+    'inprogress' => 'In Progress',
+    'success' => 'Success',
+    'failed' => 'Failed'
   ]
 ];
