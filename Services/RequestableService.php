@@ -22,6 +22,7 @@ use Modules\Icomments\Services\CommentService;
 use Modules\Iforms\Events\SyncFormeable;
 use Modules\Requestable\Entities\DefaultStatus;
 use Modules\Requestable\Repositories\StatusRepository;
+use Modules\Requestable\Services\StatusService;
 
 class RequestableService extends BaseApiController
 {
@@ -30,19 +31,24 @@ class RequestableService extends BaseApiController
   private $commentService;
   private $requestableRepository;
   private $statusRepository;
+  private $statusService;
+
+  private $log = "Requestable:: Services|RequestableService";
   
   public function __construct(
     RequestableRepository $requestableRepository, 
     FieldApiController $field, 
     CategoryRepository $category, 
     CommentService $commentService,
-    StatusRepository $statusRepository
+    StatusRepository $statusRepository,
+    StatusService $statusService
   ){
     $this->requestableRepository = $requestableRepository;
     $this->field = $field;
     $this->category = $category;
     $this->commentService = $commentService;
     $this->statusRepository = $statusRepository;
+    $this->statusService = $statusService;
   }
   
   public function create($data)
@@ -122,11 +128,11 @@ class RequestableService extends BaseApiController
       if ($oldRequest->status_id != $status->id) {
         
         //default status updated comment
-        $this->commentService->create($oldRequest,["internal" => true, "comment" => trans("requestable::statuses.comments.statusUpdated",["prevStatus" => $oldRequest->status->title,"postStatus" =>  $status->title])]);
+        $this->commentService->create($oldRequest,["type" => "statusChanged","internal" => true, "comment" => trans("requestable::statuses.comments.statusUpdated",["prevStatus" => $oldRequest->status->title,"postStatus" =>  $status->title])]);
   
         //custom comment to the status updated
         if(isset($data["comment"]) && !empty($data["comment"])){
-          $this->commentService->create($oldRequest,["comment" => $data["comment"]]);
+          $this->commentService->create($oldRequest,["comment" => $data["comment"],"type" => "statusChanged"]);
         }
         
         if (!empty($status->events)) {
@@ -245,36 +251,13 @@ class RequestableService extends BaseApiController
               event(new SyncFormeable($category, ["form_id" => is_int($config["formId"]) ? $config["formId"] : setting($config["formId"], null, null)]));
             }
             
-            // Add default Statuses
-            if(isset($config["useDefaultStatuses"]) && $config["useDefaultStatuses"]){
-              $statuses = (new DefaultStatus())->lists();
-            }else{
-              $statuses = $config["statuses"];
-            }
-            
-            // Create Status
-            foreach ($statuses as $key => $status) {
-         
-              $this->statusRepository->create([
-                  "category_id" => $category->id,
-                  'value' => $key,
-                  'final' => $status["final"] ?? false,
-                  'default' => $config["defaultStatus"] ?? $status["default"] ?? false,
-                  'cancelled_elapsed_time' => $config["statusToSetWhenElapsedTime"] ?? $status["cancelled_elapsed_time"] ?? false,
-                  'events' => $config["eventsWhenStatus"][$key] ?? $status["events"] ?? null,
-                  'delete_request' => $config["deleteWhenStatus"][$key] ??  $status["delete_request"] ?? false,
-                  $locale => [
-                    "title" => trans($status["title"])
-                  ]
-                ]
-              );
-
-            }
+            //Create Statuses to category from config
+            $this->statusService->createStatuses($config,$category);
             
 
           }catch(\Exception $e){
-            \Log::error('Requestable: Services|RequestableService|createFromConfig|Message: '.$e->getMessage());
-              dd($e);
+            \Log::error($this->log.'Message: '.$e->getMessage());
+            dd($e);
           }  
 
         }
