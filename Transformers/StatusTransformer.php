@@ -13,6 +13,8 @@ class StatusTransformer extends CrudResource
   */
   public function modelAttributes($request)
   {
-    return [];
+    return [
+      'typeName' => $this->typeName
+    ];
   }
 }
