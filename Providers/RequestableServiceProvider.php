@@ -2,12 +2,16 @@
 
 namespace Modules\Requestable\Providers;
 
+use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Traits\CanPublishConfiguration;
 use Modules\Core\Events\BuildingSidebar;
 use Modules\Core\Events\LoadingBackendTranslations;
 use Illuminate\Support\Arr;
+use Modules\Requestable\Events\Handlers\NotifyNewFilesRequestable;
 use Modules\Requestable\Events\Handlers\RegisterRequestableSidebar;
+use Modules\Requestable\Events\RequestableIsUpdating;
+use Modules\Iblog\Events\PostWasUpdated;
 
 class RequestableServiceProvider extends ServiceProvider
 {
@@ -36,7 +40,7 @@ class RequestableServiceProvider extends ServiceProvider
     });
   }
 
-  public function boot()
+  public function boot(DispatcherContract $events)
   {
 
     $this->mergeConfigFrom($this->getModuleConfigFilePath('requestable', 'permissions'), "asgard.requestable.permissions");
@@ -48,6 +52,9 @@ class RequestableServiceProvider extends ServiceProvider
     $this->mergeConfigFrom($this->getModuleConfigFilePath('requestable', 'cmsSidebar'), "asgard.requestable.cmsSidebar");
 
     $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+
+    $events->listen(RequestableIsUpdating::class, NotifyNewFilesRequestable::class);
+  //  $events->listen(PostWasUpdated::class, NotifyNewFilesRequestable::class);
   }
 
   /**
