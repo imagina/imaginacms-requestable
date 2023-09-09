@@ -18,4 +18,6 @@ interface RequestableRepository extends BaseRepository
   public function deleteBy($criteria, $params = false);
   
   public function moduleConfigs();
+
+  public function leadsByStatus($params = false) ;
 }

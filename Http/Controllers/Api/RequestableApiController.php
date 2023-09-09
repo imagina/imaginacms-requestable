@@ -15,10 +15,12 @@ use Modules\Requestable\Repositories\RequestableRepository;
 use Modules\Requestable\Services\RequestableService;
 use Modules\Requestable\Transformers\RequestableTransformer;
 use Modules\Core\Icrud\Controllers\BaseCrudController;
+use ReflectionClass;
 
 // Events
 use Modules\Requestable\Events\RequestableWasCreated;
 use Modules\Requestable\Events\RequestableWasUpdated;
+use Modules\Requestable\Events\RequestableIsUpdating;
 
 class RequestableApiController extends BaseCrudController
 {
@@ -180,7 +182,6 @@ class RequestableApiController extends BaseCrudController
    */
   public function update($criteria, Request $request)
   {
-    
     \DB::beginTransaction(); //DB Transaction
     try {
 
@@ -189,7 +190,11 @@ class RequestableApiController extends BaseCrudController
 
       //Get data
       $data = $request->input('attributes');
-      
+
+      $data['id'] = $criteria;
+
+      event(new RequestableIsUpdating($data, $this));
+
       //Validate Request
       $this->validateRequestApi(new UpdateRequestableRequest((array)$data));
 
@@ -259,6 +264,18 @@ class RequestableApiController extends BaseCrudController
     //Return response
     return response()->json($response ?? ["data" => "Comment Added"], $status ?? 200);
   }
- 
-  
+
+  public function analytics($criteria, Request $request){
+    $params = $request->params;
+    $requestableRepository = app('Modules\Requestable\Repositories\RequestableRepository');
+    $functionsInRepo = new ReflectionClass('Modules\Requestable\Repositories\RequestableRepository');
+    $existFunction = $functionsInRepo->hasMethod($criteria);
+    if ($existFunction){
+      $data = $requestableRepository->{$criteria}($params);
+    } else {
+      $data = "No found this Repo";
+    }
+    //Return response
+    return response()->json($data, $status ?? 200);
+  }
 }
