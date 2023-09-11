@@ -19,6 +19,7 @@ class RequestableDatabaseSeeder extends Seeder
     ProcessSeeds::dispatch([
       "baseClass" => "\Modules\Requestable\Database\Seeders",
       "seeds" => ["RequestableTableSeeder","CreateFormTableSeeder","CreateCategoriesRulesTableSeeder"]
+      //"seeds" => ["UpdateTypeCommentsTableSeeder"]
     ]);
   }
 }

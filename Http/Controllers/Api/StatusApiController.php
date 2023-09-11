@@ -42,6 +42,9 @@ class StatusApiController extends BaseCrudController
       //Get params
       $params = $this->getParamsRequest($request);
 
+      //Check if status has requests
+      $this->statusService->hasRequests($criteria,$params);
+
       //Check status to delete
       $this->statusService->checkIfStatusIsDefault($criteria,$params);
 
