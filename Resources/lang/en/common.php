@@ -32,6 +32,7 @@ return [
     "from" => 'From',
     "to" => 'To',
     "message" => 'Message'
-  ]
+  ],
+  'notFound' => 'Item not found',
 
 ];

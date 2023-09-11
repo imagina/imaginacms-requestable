@@ -34,5 +34,6 @@ return [
     "titleReportNewDocument" => 'Nuevo Documento Asignado En Tu Solicitud',
     "MessageReportNewDocument" => 'Documento Asignado: ',
   ]
+  'notFound' => 'Item no encontrado',
 
 ];

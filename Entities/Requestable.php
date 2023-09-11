@@ -33,10 +33,11 @@ class Requestable extends CrudModel
   protected $fillable = [
     "requestable_type",
     "requestable_id",
+    "responsible_id",
     "type",
     "eta",
     "status_id",
-    "requested_by",
+    "requested_by_id",
     "category_id",
     "reviewed_by"
   ];
@@ -48,7 +49,7 @@ class Requestable extends CrudModel
   
   
   public function requestedBy(){
-    return $this->belongsTo(User::class,'requested_by');
+    return $this->belongsTo(User::class,'requested_by_id');
   }
   
   public function category(){
@@ -70,6 +71,10 @@ class Requestable extends CrudModel
   public function lastStatusHistoryId(){
     $lastStatusHistory = $this->statusHistory()->orderBy('id', 'DESC')->first();
     return $lastStatusHistory->id;
+  }
+
+  public function responsible(){
+    return $this->belongsTo(User::class,'responsible_id');
   }
   
   /**

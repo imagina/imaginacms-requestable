@@ -4,7 +4,7 @@
 namespace Modules\Requestable\Services;
 
 use Modules\Requestable\Repositories\StatusRepository;
-
+use Modules\Requestable\Entities\DefaultStatus;
 
 class StatusService
 {
@@ -72,6 +72,60 @@ class StatusService
 
       
     }
+  }
+
+  /**
+   * Create statuses from Config or Category
+   * @param $config (Data with statuses and other infor)
+   */
+  public function createStatuses(array $config, object $category)
+  {
+
+    //Add default Statuses
+    if(isset($config["useDefaultStatuses"]) && $config["useDefaultStatuses"]){
+      $statuses = (new DefaultStatus())->lists();
+    }else{
+      $statuses = $config["statuses"];
+    }
+
+    
+    // Create Status
+    foreach ($statuses as $key => $status) {
+ 
+      $this->statusRepository->create([
+          "category_id" => $category->id,
+          'value' => $key,
+          'final' => $status["final"] ?? false,
+          'default' => $config["defaultStatus"] ?? $status["default"] ?? false,
+          'cancelled_elapsed_time' => $config["statusToSetWhenElapsedTime"] ?? $status["cancelled_elapsed_time"] ?? false,
+          'events' => $config["eventsWhenStatus"][$key] ?? $status["events"] ?? null,
+          'delete_request' => $config["deleteWhenStatus"][$key] ??  $status["delete_request"] ?? false,
+          'es' => ["title" => trans($status["title"],[],'es')],
+          'en' => ["title" => trans($status["title"],[],'en')],
+          'type' => $status["type"] ?? 0, 
+          'color' => $status["color"] ?? '#3f36eb'
+        ] 
+      );
+
+    }
+
+  }
+
+  /**
+   * Validation when delete
+   */
+  public function hasRequests($criteria,$params)
+  {
+
+    $status = $this->statusRepository->getItem($criteria, $params);
+
+    //Throw exception if no found item
+    if (!$status) throw new \Exception(trans("requestable::common.notFound"), 204);
+
+    if($status->requests->count()>0)
+      throw new \Exception(trans("requestable::statuses.validation.associatedRequests"), 400);
+   
+
   }
   
 }

@@ -23,6 +23,8 @@ return [
       "statusUpdated" => "Estado Actualizado: de :prevStatus a :postStatus"
     ],
     'validation' => [
+        'validateType' => 'Ya existe un estado de tipo Success para esta categoria',
+        'associatedRequests' => 'No se puede eliminar el estado porque posee solicitudes asociadas',
     ],
     'leads' => [
         'new' => 'Nuevo',
@@ -31,6 +33,11 @@ return [
         'in progress' => 'En progreso',
         'successful' => 'Exitoso',
         'lost' => 'Perdido',
+    ],
+    'types' => [
+        'inprogress' => 'En Progreso',
+        'success' => 'Exito',
+        'failed' => 'Fallido'
     ]
 
 ];

@@ -59,28 +59,40 @@ return [
       1 => [
         "id" => 1,
         "title" => "requestable::statuses.leads.new", // Title can be trantaled or not, the language take the config app.locale
+        "type" => 0, //In Progress
+        "color" => "#bf5454",
         "default" => true
       ],
       2 => [
         "id" => 2,
-        "title" => "requestable::statuses.leads.contacted"
+        "title" => "requestable::statuses.leads.contacted",
+        "type" => 0, //In Progress
+        "color" => "#6d2080"
       ],
       3 => [
         "id" => 3,
-        "title" => "requestable::statuses.leads.commercial proposal"
+        "title" => "requestable::statuses.leads.commercial proposal",
+        "type" => 0, //In Progress
+        "color" => "#38d3b2"
       ],
       4 => [
         "id" => 4,
-        "title" => "requestable::statuses.leads.in progress"
+        "title" => "requestable::statuses.leads.in progress",
+        "type" => 0, //In Progress
+        "color" => "#ec7f17"
       ],
       5 => [
         "id" => 5,
         "title" => "requestable::statuses.leads.successful",
+        "type" => 1, //Success
+        "color" => "#2cc03d",
         "final" => true
       ],
       6 => [
         "id" => 6,
         "title" => "requestable::statuses.leads.lost",
+        "type" => 2, //Failed
+        "color" => "#e34b4b",
         "final" => true
       ],
     ]

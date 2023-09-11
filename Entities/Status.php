@@ -5,6 +5,9 @@ namespace Modules\Requestable\Entities;
 use Astrotomic\Translatable\Translatable;
 use Modules\Core\Icrud\Entities\CrudModel;
 
+//Static Classes
+use Modules\Requestable\Entities\StatusType;
+
 class Status extends CrudModel
 {
   use Translatable;
@@ -28,7 +31,8 @@ class Status extends CrudModel
     'final',
     'default',
     'cancelled_elapsed_time',
-    'delete_request'
+    'delete_request',
+    'type'
   ];
 
   protected $fakeColumns = ['events'];
@@ -64,6 +68,12 @@ class Status extends CrudModel
   public function automationRules()
   {
     return $this->hasMany(AutomationRule::class);
+  }
+
+  public function getTypeNameAttribute()
+  {
+    $type = new StatusType();
+    return $type->get($this->type);
   }
 
 }
