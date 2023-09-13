@@ -258,6 +258,11 @@ return [
 
   ],
 
+  /*
+  |--------------------------------------------------------------------------
+  | Documentation
+  |--------------------------------------------------------------------------
+  */
   'documentation' => [
     'requestables' => "requestable::cms.documentation.requestables",
     'categories' => "requestable::cms.documentation.categories",
