@@ -8,6 +8,7 @@ use Modules\Core\Repositories\Eloquent\EloquentBaseRepository;
 use Modules\Ihelpers\Events\CreateMedia;
 use Modules\Ihelpers\Events\DeleteMedia;
 use Modules\Ihelpers\Events\UpdateMedia;
+use mysql_xdevapi\Collection;
 
 class EloquentRequestableRepository extends EloquentBaseRepository implements RequestableRepository
 {
@@ -105,7 +106,7 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     
    // dd($query->toSql(),$query->getBindings(),$filter);
 
-    if (isset($params->onlyQuery) && $params->onlyQuery) {
+    if (isset($params->onlyQuery) && $params->onlyQuery || isset($params->returnAsQuery) && $params->returnAsQuery) {
       return $query;
     }else{
       /*== REQUEST ==*/
@@ -345,19 +346,40 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
   }
 
   public function leadsByStatus($params = false) {
-    $leadsRepository = app('Modules\Iforms\Repositories\LeadRepository');
+    $statusRepository = app('Modules\Requestable\Repositories\StatusRepository');
     isset($params->take) ? $params->take = false : false;
     isset($params->page) ? $params->page = null : false;
     isset($params->include) ? $params->include = [] : false;
-    isset($params->filter->dateRange) ? $params->filter->dateRange = null : false;
-    $params->onlyQuery = true;
-    $query = $leadsRepository->getItemsBy($params);
+   // isset($params->filter->dateRange) ? $params->filter->dateRange = null : false;
+    $params->returnAsQuery = true;
+    $query = $this->getItemsBy($params);
+    $query->groupBy('status_id');
     $query->select(
-      \DB::raw("MIN(icommerce__products.price) AS minPrice"),
-      \DB::raw("MAX(icommerce__products.price) AS maxPrice")
+      \DB::raw("status_id"),
+      \DB::raw("COUNT(status_id) AS number_of_leads")
     );
+    $leads = $query->get();
 
+    $paramsStatus = ['filter' => ['id' => $leads->pluck("status_id")->toArray()], 'include' => ['translations']];
+    $statuses = $statusRepository->getItemsBy(json_decode(json_encode($paramsStatus)))->keyBy("id");
 
+    foreach ($leads as &$lead){
+      $status = $statuses[$lead["status_id"]];
+      $lead["label"] = $status->title;
+      $lead["color"] = $status->color;
+    }
+
+    $data = [
+      'title' => trans(''),
+      'icon' => "fa-light fa-file-chart-column",
+      'type' => 'barChart',
+      'dataLabels' => $leads->pluck("label")->toArray(),
+      'dataSets' => [
+        'label' => '',
+        'backgroundColor' => $leads->pluck("color")->toArray(),
+      ],
+      'data' => $leads->pluck("number_of_leads")->toArray(),
+    ];
+    return $data;
   }
-  
 }

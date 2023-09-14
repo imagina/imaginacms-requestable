@@ -266,7 +266,7 @@ class RequestableApiController extends BaseCrudController
   }
 
   public function analytics($criteria, Request $request){
-    $params = $request->params;
+    $params = $this->getParamsRequest($request);
     $requestableRepository = app('Modules\Requestable\Repositories\RequestableRepository');
     $functionsInRepo = new ReflectionClass('Modules\Requestable\Repositories\RequestableRepository');
     $existFunction = $functionsInRepo->hasMethod($criteria);
