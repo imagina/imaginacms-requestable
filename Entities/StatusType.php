@@ -46,5 +46,20 @@ class StatusType
 
         return $this->types[self::INPROGRESS];
     }
+
+    /**
+     * Index Method To API
+     */
+    public function index()
+    {
+      //Instance response
+      $response = [];
+      //AMp status
+      foreach ($this->types as $key => $status) {
+        array_push($response, ['id' => $key, 'title' => $status]);
+      }
+      //Repsonse
+      return collect($response);
+    }
     
 }
