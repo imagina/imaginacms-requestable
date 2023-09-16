@@ -343,5 +343,21 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     return $modulesWithConfigs;
     
   }
+
+  public function leadsByStatus($params = false) {
+    $leadsRepository = app('Modules\Iforms\Repositories\LeadRepository');
+    isset($params->take) ? $params->take = false : false;
+    isset($params->page) ? $params->page = null : false;
+    isset($params->include) ? $params->include = [] : false;
+    isset($params->filter->dateRange) ? $params->filter->dateRange = null : false;
+    $params->onlyQuery = true;
+    $query = $leadsRepository->getItemsBy($params);
+    $query->select(
+      \DB::raw("MIN(icommerce__products.price) AS minPrice"),
+      \DB::raw("MAX(icommerce__products.price) AS maxPrice")
+    );
+
+
+  }
   
 }

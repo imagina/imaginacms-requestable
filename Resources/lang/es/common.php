@@ -1,8 +1,8 @@
 <?php
 
 return [
-  
-  
+
+
   'status' => [
     'pending' => 'Pendiente',
     'inProgress' => 'En progreso',
@@ -30,7 +30,10 @@ return [
     "type" => 'Tipo',
     "from" => 'De',
     "to" => 'Para',
-    "message" => 'Mensaje'
-  ]
+    "message" => 'Mensaje',
+    "titleReportNewDocument" => 'Nuevo Documento Asignado En Tu Solicitud',
+    "MessageReportNewDocument" => 'Documento Asignado: ',
+  ],
+  'notFound' => 'Item no encontrado',
 
 ];

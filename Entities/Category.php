@@ -17,6 +17,11 @@ class Category extends CrudModel
     'create' => 'Modules\Requestable\Http\Requests\CreateCategoryRequest',
     'update' => 'Modules\Requestable\Http\Requests\UpdateCategoryRequest',
   ];
+  public $dispatchesEventsWithBindings = [
+    'created' => [
+      ['path' => 'Modules\Requestable\Events\CategoryWasCreated']
+    ]
+  ];
   public $translatedAttributes = [
     'title'
   ];
