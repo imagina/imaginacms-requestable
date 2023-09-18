@@ -84,14 +84,14 @@ return [
       5 => [
         "id" => 5,
         "title" => "requestable::statuses.leads.successful",
-        "type" => 1, //Success
+        "type" => 2, //Success
         "color" => "#2cc03d",
         "final" => true
       ],
       6 => [
         "id" => 6,
         "title" => "requestable::statuses.leads.lost",
-        "type" => 2, //Failed
+        "type" => 1, //Failed
         "color" => "#e34b4b",
         "final" => true
       ],

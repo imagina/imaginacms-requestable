@@ -6,8 +6,8 @@ namespace Modules\Requestable\Entities;
 class StatusType
 {
     const INPROGRESS = 0;
-    const SUCCESS = 1;
-    const FAILED = 2;
+    const FAILED = 1;
+    const SUCCESS = 2;
    
     private $types = [];
 
