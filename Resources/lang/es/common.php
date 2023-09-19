@@ -1,8 +1,6 @@
 <?php
 
 return [
-
-
   'status' => [
     'pending' => 'Pendiente',
     'inProgress' => 'En progreso',
@@ -35,5 +33,7 @@ return [
     "MessageReportNewDocument" => 'Documento Asignado: ',
   ],
   'notFound' => 'Item no encontrado',
-
+  'erros' => [
+    'nonExistentFunction' => 'Función inexistente',
+  ],
 ];
