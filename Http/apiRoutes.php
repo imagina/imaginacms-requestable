@@ -87,6 +87,13 @@ $router->group(['prefix' => '/requestable/v1'], function (Router $router) {
     //'middleware' => ['auth:api']
   ]);
 
+  
+  $router->apiCrud([
+    'module' => 'requestable',
+    'prefix' => 'status-types',
+    'staticEntity' => 'Modules\Requestable\Entities\StatusType'
+  ]);
+
 
   //======  REQUESTS
   require('ApiRoutes/requestablesRoutes.php');

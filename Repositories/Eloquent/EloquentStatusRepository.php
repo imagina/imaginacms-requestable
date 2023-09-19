@@ -55,7 +55,7 @@ class EloquentStatusRepository extends EloquentCrudRepository implements StatusR
     } else {
       //Order by position by default
        $query->orderBy('position', 'asc');//Add order to query
-      
+       $query->orderBy('type', 'asc');//Add order to query
     
     }
     

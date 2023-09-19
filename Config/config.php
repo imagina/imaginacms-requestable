@@ -84,14 +84,14 @@ return [
       5 => [
         "id" => 5,
         "title" => "requestable::statuses.leads.successful",
-        "type" => 1, //Success
+        "type" => 2, //Success
         "color" => "#2cc03d",
         "final" => true
       ],
       6 => [
         "id" => 6,
         "title" => "requestable::statuses.leads.lost",
-        "type" => 2, //Failed
+        "type" => 1, //Failed
         "color" => "#e34b4b",
         "final" => true
       ],
@@ -258,9 +258,44 @@ return [
 
   ],
 
+  /*
+  |--------------------------------------------------------------------------
+  | Documentation
+  |--------------------------------------------------------------------------
+  */
   'documentation' => [
     'requestables' => "requestable::cms.documentation.requestables",
     'categories' => "requestable::cms.documentation.categories",
     'statuses' => "requestable::cms.documentation.statuses",
+  ],
+
+  /*
+  |--------------------------------------------------------------------------
+  | Configuration to comment types by entity
+  |--------------------------------------------------------------------------
+  */
+  'commentableConfig' => [
+
+    'requestable' => [
+
+      'notification' => [
+        'type' => 'notification',
+        'icon'  => 'fa fa-bell',
+        'color' => '#31ccec' //blue
+      ],
+      'document' => [
+        'type' => 'document',
+        'icon'  => 'fa fa-book',
+        'color' => '#bf5454' //red
+      ],
+      'statusChanged' => [
+        'type' => 'statusChanged',
+        'icon'  => 'fa fa-info-circle',
+        'color' => '#fae100' //yellow
+      ]
+
+    ]
+
   ]
+
 ];
