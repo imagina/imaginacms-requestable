@@ -281,7 +281,8 @@ class ProcessNotification implements ShouldQueue
         $this->commentService->create($model,[
                 "user_id" => $model->updated_by, // Needed because is a job
                 "comment" => $comment,
-                "internal" => true
+                "internal" => true,
+                "type" => "notification"
             ]
         );
 

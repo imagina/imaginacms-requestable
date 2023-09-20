@@ -26,9 +26,9 @@ class RequestableApiController extends BaseCrudController
 {
   private $requestable;
   private $service;
-    public $model;
+  public $model;
   public $modelRepository;
-  
+
   public function __construct(RequestableRepository $requestable, RequestableService $service, Requestable $model)
   {
     parent::__construct();
@@ -37,7 +37,7 @@ class RequestableApiController extends BaseCrudController
     $this->model = $model;
     $this->modelRepository = $requestable;
   }
-  
+
   /**
    * GET ITEMS
    *
@@ -48,27 +48,27 @@ class RequestableApiController extends BaseCrudController
     try {
       //Get Parameters from URL.
       $params = $this->getParamsRequest($request);
-      
+
       //Request to Repository
       $newRequest = $this->requestable->getItemsBy($params);
-      
+
       //Response
       $response = [
         "data" => RequestableTransformer::collection($newRequest)
       ];
-      
+
       //If request pagination add meta-page
       $params->page ? $response["meta"] = ["page" => $this->pageTransformer($newRequest)] : false;
     } catch (\Exception $e) {
       $status = $this->getStatusError($e->getCode());
       $response = ["errors" => $e->getMessage()];
     }
-    
+
     //Return response
     return response()->json($response, $status ?? 200);
   }
-  
-  
+
+
   /**
    * GET ITEMS
    *
@@ -79,27 +79,27 @@ class RequestableApiController extends BaseCrudController
     try {
       //Get Parameters from URL.
       $params = $this->getParamsRequest($request);
-      
+
       //Request to Repository
       //$newRequest = $this->requestable->getItemsBy($params);
-      
+
       //Response
       $response = [
         "data" => config('asgard.requestable.config.requests')
       ];
-      
+
       //If request pagination add meta-page
       //$params->page ? $response["meta"] = ["page" => $this->pageTransformer($newRequest)] : false;
     } catch (\Exception $e) {
       $status = $this->getStatusError($e->getCode());
       $response = ["errors" => $e->getMessage()];
     }
-    
+
     //Return response
     return response()->json($response, $status ?? 200);
   }
-  
-  
+
+
   /**
    * GET A ITEM
    *
@@ -111,26 +111,26 @@ class RequestableApiController extends BaseCrudController
     try {
       //Get Parameters from URL.
       $params = $this->getParamsRequest($request);
-      
+
       //Request to Repository
       $newRequest = $this->requestable->getItem($criteria, $params);
-      
+
       //Break if no found item
       if (!$newRequest) throw new \Exception('Item not found', 404);
-      
+
       //Response
       $response = ["data" => new RequestableTransformer($newRequest)];
-      
+
     } catch (\Exception $e) {
       $status = $this->getStatusError($e->getCode());
       $response = ["errors" => $e->getMessage()];
     }
-    
+
     //Return response
     return response()->json($response, $status ?? 200);
   }
-  
-  
+
+
   /**
    * CREATE A ITEM
    *
@@ -147,32 +147,32 @@ class RequestableApiController extends BaseCrudController
 
       //Get data
       $data = $request->input('attributes');
-      
+
       //Validate Request
       $this->validateRequestApi(new CreateRequestableRequest((array)$data));
-      
+
       //Validate with Permission
-      $data = $this->service->validateCreatedBy($data,$params);
+      $data = $this->service->validateCreatedBy($data, $params);
 
       $model = $this->service->create($data);
 
       event(new RequestableWasCreated($model));
-      
+
       //Response
       $response = ["data" => new RequestableTransformer($model)];
-      
+
       \DB::commit(); //Commit to Data Base
     } catch (\Exception $e) {
       \DB::rollback();//Rollback to Data Base
       $status = $this->getStatusError($e->getCode());
       $response = ["errors" => $e->getMessage()];
-    
+
     }
     //Return response
     return response()->json($response, $status ?? 200);
   }
-  
-  
+
+
   /**
    * UPDATE ITEM
    *
@@ -191,43 +191,45 @@ class RequestableApiController extends BaseCrudController
       //Get data
       $data = $request->input('attributes');
 
-      $data['id'] = $criteria;
+      $requestableRepository = app('Modules\Requestable\Repositories\RequestableRepository');
+      $requestableInDB = $requestableRepository->getItem($criteria);
 
-      event(new RequestableIsUpdating($data, $this));
+      event(new RequestableIsUpdating($data, $requestableInDB));
 
       //Validate Request
       $this->validateRequestApi(new UpdateRequestableRequest((array)$data));
 
       //Validate with Permission
-      $data = $this->service->validateCreatedBy($data,$params);
+      $data = $this->service->validateCreatedBy($data, $params);
 
-      $model = $this->service->update($criteria,$data,$params);
-      
+      $model = $this->service->update($criteria, $data, $params);
+
       event(new RequestableWasUpdated($model));
 
       //Response
       //$response = ["data" => 'Item Updated'];
-      
+
       \DB::commit();//Commit to DataBase
     } catch (\Exception $e) {
       //dd($e);
       \DB::rollback();//Rollback to Data Base
       $status = $this->getStatusError($e->getCode());
       $response = ["errors" => $e->getMessage()];
-  
+
     }
-    
+
     //Return response
     return response()->json($response ?? ["data" => "Item Updated"], $status ?? 200);
   }
 
   /**
-  * Add comment to requestable
-  * @param $criteria (requestable id)
-  * @param $request
-  */
-  public function addComment($criteria, Request $request){
-   
+   * Add comment to requestable
+   * @param $criteria (requestable id)
+   * @param $request
+   */
+  public function addComment($criteria, Request $request)
+  {
+
     \DB::beginTransaction(); //DB Transaction
     try {
 
@@ -247,33 +249,45 @@ class RequestableApiController extends BaseCrudController
       if (!$model) throw new \Exception('Item not found', 404);
 
       //Create comment
-      $comment = app('Modules\Icomments\Services\CommentService')->create($model,$data);
+      $comment = app('Modules\Icomments\Services\CommentService')->create($model, $data);
 
       //Response
       $response = ["data" => new \Modules\Icomments\Transformers\CommentTransformer($comment)];
-      
+
       \DB::commit();//Commit to DataBase
     } catch (\Exception $e) {
       //dd($e);
       \DB::rollback();//Rollback to Data Base
       $status = $this->getStatusError($e->getCode());
       $response = ["errors" => $e->getMessage()];
-  
+
     }
-    
+
     //Return response
     return response()->json($response ?? ["data" => "Comment Added"], $status ?? 200);
   }
 
-  public function analytics($criteria, Request $request){
-    $params = $request->params;
-    $requestableRepository = app('Modules\Requestable\Repositories\RequestableRepository');
-    $functionsInRepo = new ReflectionClass('Modules\Requestable\Repositories\RequestableRepository');
-    $existFunction = $functionsInRepo->hasMethod($criteria);
-    if ($existFunction){
-      $data = $requestableRepository->{$criteria}($params);
-    } else {
-      $data = "No found this Repo";
+  public function analytics($criteria, Request $request)
+  {
+    \DB::beginTransaction(); //DB Transaction
+    try {
+      $params = $this->getParamsRequest($request);
+      $requestableRepository = app('Modules\Requestable\Repositories\RequestableRepository');
+      $functionsInRepo = new ReflectionClass('Modules\Requestable\Repositories\RequestableRepository');
+      $existFunction = $functionsInRepo->hasMethod($criteria);
+      if ($existFunction) {
+        $data = $requestableRepository->{$criteria}($params);
+      } else {
+        $data = ["errors" => trans('Requestable::common.erros.nonExistentFunction')];
+        $status = 404;
+      }
+      \DB::commit();//Commit to DataBase
+    } catch (\Exception $e) {
+      //dd($e);
+      \DB::rollback();//Rollback to Data Base
+      $status = $this->getStatusError($e->getCode());
+      $data = ["errors" => $e->getMessage()];
+
     }
     //Return response
     return response()->json($data, $status ?? 200);

@@ -6,8 +6,8 @@ namespace Modules\Requestable\Entities;
 class StatusType
 {
     const INPROGRESS = 0;
-    const SUCCESS = 1;
-    const FAILED = 2;
+    const FAILED = 1;
+    const SUCCESS = 2;
    
     private $types = [];
 
@@ -45,6 +45,21 @@ class StatusType
         }
 
         return $this->types[self::INPROGRESS];
+    }
+
+    /**
+     * Index Method To API
+     */
+    public function index()
+    {
+      //Instance response
+      $response = [];
+      //AMp status
+      foreach ($this->types as $key => $status) {
+        array_push($response, ['id' => $key, 'title' => $status]);
+      }
+      //Repsonse
+      return collect($response);
     }
     
 }
