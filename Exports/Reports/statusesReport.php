@@ -2,114 +2,147 @@
 
 namespace Modules\Requestable\Exports\Reports;
 
-use Modules\Requestable\Entities\Requestable;
-
 class statusesReport
 {
-  private $params;
+    private $requestableExport;
 
+    /**
+     * Position of Status History fields in table
+     * Values: first|end
+     */
+    private $position = 'first';
 
-  public function __construct($params)
-  {
-    $this->params = $params;
-  }
+    public function __construct($requestableExport)
+    {
+        $this->requestableExport = $requestableExport;
+    }
 
-  /**
-   * Return all records by status history and also the request without an status history
-   * @return mixed
-   */
-  public function getQuery()
-  {
-    $query = Requestable::query()
-      ->without("fields")
-      ->selectRaw("
-        COALESCE(prev_status_t.title, '----') AS previous_status,
-        COALESCE(current_status_t.title, no_history_status_t.title, '----') AS current_status,
-        COALESCE(current.created_at, requestable__requestables.created_at, '0000-00-00 00:00:00') AS created_at,
-        COALESCE(
-            CONCAT(user_status_history.first_name, user_status_history.last_name),
-            CONCAT(user_requestable.first_name, user_requestable.last_name),
-            '----'
-        ) AS cambio_realizado_por,
-        requestable__requestables.id AS requestable_id,
-        COALESCE(CONCAT(user_requested_by_requestable.first_name, user_requested_by_requestable.last_name), '----') AS solicitado_por,
-        COALESCE(CONCAT(user_requestable.first_name, user_requestable.last_name), '----') AS peticion_creada_por
-    ")
-      ->leftJoin('requestable__status_history AS current', 'current.requestable_id', '=', 'requestable__requestables.id')
-      ->leftJoin('requestable__status_history AS previous', function ($join) {
-        $join->on('current.requestable_id', '=', 'previous.requestable_id')
-          ->whereRaw('previous.created_at = (
-                SELECT MAX(created_at)
-                FROM requestable__status_history AS innerPrevious
-                WHERE innerPrevious.requestable_id = current.requestable_id
-                AND innerPrevious.created_at < current.created_at
-            )');
-      })
-      ->leftJoin('requestable__status_translations as current_status_t', 'current.status_id', '=', 'current_status_t.status_id')
-      ->leftJoin('requestable__status_translations as prev_status_t', 'previous.status_id', '=', 'prev_status_t.status_id')
-      ->leftJoin('requestable__status_translations as no_history_status_t', 'requestable__requestables.status_id', '=', 'no_history_status_t.status_id')
-      ->leftJoin('users as user_status_history', 'current.created_by', '=', 'user_status_history.id')
-      ->leftJoin('users as user_requestable', 'requestable__requestables.created_by', '=', 'user_requestable.id')
-      ->leftJoin('users as user_requested_by_requestable', 'requestable__requestables.requested_by', '=', 'user_requested_by_requestable.id')
-      ->where('requestable__requestables.category_id', $this->params->filter->categoryId)
-      ->orderByDesc('requestable__requestables.id')
-      ->orderByDesc('current.created_at');
+    /**
+     * Heading to Report
+     */
+    public function getHeading()
+    {
+        $headingFields = [
+            trans('requestable::requestables.table.id'),
+            trans('requestable::requestables.table.requested by'),
+            trans('requestable::requestables.table.created by'),
+        ];
 
-    return $query;
-  }
+        //Add Extra Fields
+        if ($this->requestableExport->showExtraFields) {
+            $headingFields = $this->requestableExport->addFieldsToHeading($headingFields);
+        }
 
-  /**
-   * Make logic to prepare rows
-   *
-   * @param $rows
-   * @param $fields
-   * @return mixed
-   */
-  public function getPrepareRows($rows, $fields)
-  {
-    //Loop the rows
-    $rows = $rows->map(function ($row, $index) use ($fields) {
-      //Get only row fields and merge it
-      $rowFields = $fields->where("requestable_id", $row->requestable_id)->first();
-      if ($rowFields) $row = collect($row->toArray())->merge(collect($rowFields));
-      //response
-      return $row;
-    });
+        //Add Status Columns
+        $statusColumns = [
+            trans('requestable::requestables.table.status old'),
+            trans('requestable::requestables.table.status new'),
+            trans('requestable::requestables.table.date'),
+            trans('requestable::requestables.table.history created by'),
+        ];
 
-    //Response
-    return $rows;
-  }
-  /**
-   * Returns the map for each row, take care with loops maybe cause memory limits with very large reports
-   * @param $row
-   * @return mixed
-   * @throws \Exception
-   */
-  public function getMap($row){
-    //Format created_at
-    $date = \Carbon\Carbon::parse($row["created_at"]);
-    $row["created_at"] = $date->format('d-m-Y || H:i:s');
+        $headingFields = $this->setPositionData($headingFields, $statusColumns);
 
-    //Response
-    return $row;
-  }
+        return $headingFields;
+    }
 
-  /**
-   * Return the headings without category fields
-   * @return array
-   */
-  public function getHeadings($categoryFields){
-    $headers = array_merge([
-      trans('requestable::requestables.table.status old'),
-      trans('requestable::requestables.table.status new'),
-      trans('requestable::requestables.table.date'),
-      trans('requestable::requestables.table.history created by'),
-      trans('requestable::requestables.table.id'),
-      trans('requestable::requestables.table.requested by'),
-      trans('requestable::requestables.table.created by'),
-    ], $categoryFields);
+    /**
+     * Map (Row) to Report
+     */
+    public function getMap($item)
+    {
+        // Base Item Fields
 
-    //Response
-    return $headers;
-  }
+        $baseItem = [
+            $item->id ?? null,
+            $item->requestedBy ? $item->requestedBy->present()->fullname : null,
+            $item->createdByUser->present()->fullname ?? null,
+        ];
+
+        //Add Extra Fields
+        if ($this->requestableExport->showExtraFields) {
+            $baseItem = $this->requestableExport->addFieldsToItem($item, $baseItem);
+        }
+
+        //Add Statuses History
+        $baseItem = $this->addStatusesHistory($item, $baseItem);
+
+        return $baseItem;
+    }
+
+    /**
+     * Add statuses to the item
+     */
+    public function addStatusesHistory($item, $baseItem)
+    {
+        //$itemStatusHistory = $item->statusHistory;
+        $itemStatusHistory = $item->statusHistory()->orderBy('created_at', 'desc')->get();
+
+        $statusesTotal = $itemStatusHistory->count();
+        if ($statusesTotal > 0) {
+            $rows = [];
+            foreach ($itemStatusHistory as $key => $statusHistory) {
+                //the status not deleted yet
+                if (isset($statusHistory->status)) {
+                    $copyBase = $baseItem;
+
+                    // Because order is Desc
+                    if ($key < ($statusesTotal - 1)) {
+                        $statusPrevious = $itemStatusHistory[$key + 1];
+                    } else {
+                        $statusPrevious = null;
+                    }
+
+                    //Set final data
+                    $statusData = [
+                        $statusPrevious->status->title ?? '-----',
+                        $statusHistory->status->title ?? '-----',
+                        $statusHistory->created_at->format('d-m-Y || H:i:s'),
+                        //$statusHistory->created_at->format('H:i:s'),
+                        $statusHistory->createdByUser->present()->fullname ?? '-----',
+                    ];
+
+                    $copyBase = $this->setPositionData($copyBase, $statusData);
+
+                    //Save Final rows
+                    $rows[] = $copyBase;
+                }
+            }
+
+            //Set baseitem to return
+            $baseItem = $rows;
+        } else {
+            //Not status history - Set item with the first status (when the request was created)
+            $statusData = [
+                '', //Not old status
+                $item->status->title ?? '-----',
+                //verify that the status exists because they may have deleted the status
+                $item->status ? $item->created_at->format('d-m-Y') : '-----',
+                $item->status ? $item->created_at->format('H:i:s') : '-----',
+                $item->status ? $item->createdByUser->present()->fullname : '-----',
+            ];
+
+            $baseItem = $this->setPositionData($baseItem, $statusData);
+        }
+
+        return $baseItem;
+    }
+
+    /**
+     * Set Position of Status History fields in table
+     */
+    public function setPositionData($baseData, $newData)
+    {
+        $total = (count($baseData));
+
+        if ($this->position == 'first') {
+            array_splice($baseData, 0, 0, $newData);
+        }
+
+        if ($this->position == 'end') {
+            array_splice($baseData, $total, 0, $newData);
+        }
+
+        return $baseData;
+    }
 }
