@@ -33,7 +33,7 @@ class ValidateType implements Rule, DataAwareRule
         $typeValue = (int)$value;
 
         //Check Status Success
-        if($typeValue==1)
+        if($typeValue==2)
             return $this->existsStatusWithType($typeValue); 
         
         return true;
