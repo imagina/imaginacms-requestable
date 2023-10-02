@@ -122,10 +122,10 @@ class StatusService
     //Throw exception if no found item
     if (!$status) throw new \Exception(trans("requestable::common.notFound"), 204);
 
-    if($status->requests->count()>0)
+    //Best performance than 'requests->count()'
+    if($status->requests()->count()>0)
       throw new \Exception(trans("requestable::statuses.validation.associatedRequests"), 400);
    
-
   }
   
 }
