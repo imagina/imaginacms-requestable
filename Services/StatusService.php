@@ -124,7 +124,7 @@ class StatusService
 
     //Best performance than 'requests->count()'
     if($status->requests()->count()>0)
-      throw new \Exception(trans("requestable::statuses.validation.associatedRequests"), 400);
+      throw new \Exception(trans("requestable::statuses.validation.associatedRequests"), 409);
    
   }
   
