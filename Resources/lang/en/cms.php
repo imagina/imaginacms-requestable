@@ -35,6 +35,12 @@ return [
      (parent categories and child categories) in order to categorize all your requests.",
     'statuses' => "Each request can have a status that can vary its flow or functionality, it is possible
      manage these states.",
-  ]
+  ],
+  "label" => [
+    "plan" => "Plan",
+    "analytics" => "Analytics",
+    "automationRules" => "Automation Rules",
+    "responsible" => "Responsible",
+  ],
 ];
 
