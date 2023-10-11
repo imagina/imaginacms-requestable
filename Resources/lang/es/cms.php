@@ -35,6 +35,12 @@ return [
     (categorías padres y categorías hijas) con el fin de categorizar todas tus peticiones.",
     'statuses' => "Cada petición puede contar con un estado que puede variar su flujo o funcionalidad, es posible 
     administrar estos estados.",
-  ]
+  ],
+  "label" => [
+    "plan" => "Plan",
+    "analytics" => "Analítica",
+    "automationRules" => "Reglas De Automatización",
+    "responsible" => "Responsable",
+  ],
 ];
 
