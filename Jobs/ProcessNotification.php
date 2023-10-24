@@ -263,20 +263,20 @@ class ProcessNotification implements ShouldQueue
     public function saveComment($type,$model,$message,$from=null,$to=null)
     {
 
-        $comment = "<strong>".trans('requestable::common.notifications.title sent')."</strong>";
-        $comment = $comment."<p><strong>".trans('requestable::common.notifications.type').":</strong>".$type."</p>";
+        $comment = trans('requestable::common.notifications.title sent');
+        $comment = $comment." <b>".$type."</b>";
        
-        if(!is_null($from))
-            $comment = $comment."<p><strong>".trans('requestable::common.notifications.from').":</strong>".$from."</p>";
+        if(!is_null($from) && !empty($from))
+            $comment = $comment." ".trans('requestable::common.notifications.from')." <b>".$from."</b>";
 
         if(!is_null($to)){
             if(is_array($to))
                 $to = implode(" ",$to);
             
-            $comment = $comment."<p><strong>".trans('requestable::common.notifications.to').":</strong>".$to."</p>";
+            $comment = $comment." ".trans('requestable::common.notifications.to')." <b>".$to."</b>";
         }
 
-        $comment = $comment."<p><strong>".trans('requestable::common.notifications.message').":</strong>".$message."</p>";
+        $comment = $comment."<p>".$message."</p>";
 
         $this->commentService->create($model,[
                 "user_id" => $model->updated_by, // Needed because is a job
