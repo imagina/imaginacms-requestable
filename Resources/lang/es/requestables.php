@@ -34,4 +34,7 @@ return [
     ],
     'validation' => [
     ],
+    'responsible' => [
+        'updated' => "Se ha actualizado el responsable a: :responsible"
+    ]
 ];
