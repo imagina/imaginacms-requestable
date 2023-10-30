@@ -8,6 +8,7 @@ return [
     "mainRequestable" => "Peticiones",
     "mainRequestableCreate" => "Nueva Petición"
   ],
+  "newRequestedBy" => "Nuevo Contacto",
   "newRequest" => "Nueva Petición",
   "updateRequest" => "Actualizar Petición",
   "newStatus" => "Nuevo Estado",

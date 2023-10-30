@@ -8,6 +8,7 @@ return [
     "mainRequestable" => "Request",
     "mainRequestableCreate" => "New Request"
   ],
+  "newRequestedBy" => "New Contact",
   "newRequest" => "New Request",
   "updateRequest" => "Update Request",
   "newStatus" => "New Status",
