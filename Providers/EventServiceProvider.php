@@ -14,6 +14,7 @@ use Modules\Requestable\Events\CategoryWasCreated;
 use Modules\Requestable\Events\Handlers\CheckStatusRequestable;
 use Modules\Iforms\Events\LeadWasCreated;
 use Modules\Requestable\Events\Handlers\CreateRequestableByLeadData;
+use Modules\Requestable\Events\Handlers\CheckResponsibleRequestable;
 
 use Modules\Requestable\Events\Handlers\CreateFormAndStatusesToCategory;
 
@@ -25,7 +26,8 @@ class EventServiceProvider extends ServiceProvider
             CheckStatusRequestable::class
         ],
         RequestableWasUpdated::class => [
-            CheckStatusRequestable::class
+            CheckStatusRequestable::class,
+            CheckResponsibleRequestable::class
         ],
         LeadWasCreated::class => [
             CreateRequestableByLeadData::class

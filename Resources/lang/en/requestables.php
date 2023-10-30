@@ -30,4 +30,7 @@ return [
     'validation' => [
       'chatRequestableIdRequired' => "The lead id is not valid"
     ],
+    'responsible' => [
+        'updated' => "Responsible has been updated to: :responsible"
+    ]
 ];

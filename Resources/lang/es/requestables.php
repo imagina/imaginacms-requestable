@@ -37,4 +37,7 @@ return [
       'chatRequestedByIdRequired' => "El lead no tiene un cliente asignado",
       'chatRequestedByPhoneNumberRequired' => "El cliente asignado no tiene un número de teléfono asignado",
     ],
+    'responsible' => [
+        'updated' => "Se ha actualizado el responsable a: :responsible"
+    ]
 ];

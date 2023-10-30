@@ -292,6 +292,11 @@ return [
         'type' => 'statusChanged',
         'icon'  => 'fa fa-info-circle',
         'color' => 'yellow-9' //yellow
+      ],
+      'responsibleChanged' => [
+        'type' => 'responsibleChanged',
+        'icon'  => 'fa fa-info-circle',
+        'color' => 'green-9' //green
       ]
 
     ]

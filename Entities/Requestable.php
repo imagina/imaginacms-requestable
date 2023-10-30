@@ -4,6 +4,7 @@ namespace Modules\Requestable\Entities;
 
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Ichat\Traits\Chateable;
 use Modules\User\Entities\Sentinel\User;
 use Modules\Core\Icrud\Entities\CrudModel;
 use Modules\Ifillable\Traits\isFillable;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Cache;
 class Requestable extends CrudModel
 {
   
-  use isFillable,MediaRelation,Commentable;
+  use isFillable,MediaRelation,Commentable, Chateable;
   
   protected $table = 'requestable__requestables';
   
