@@ -11,4 +11,19 @@ return [
       'falseValue' => "0",
     ]
   ],
+  //Default contact role
+  'defaultContactRole' => [
+    "onlySuperAdmin" => true,
+    'name' => 'requestable::defaultContactRole',
+    'value' => null,
+    'type' => 'select',
+    'props' => [
+      'label' => 'requestable::settings.defaultContactRole',
+      
+    ],
+    'loadOptions' => [
+      'apiRoute' => 'apiRoutes.quser.roles',
+      'select' => ['label' => 'name', 'id' => 'id']
+    ]
+  ],
 ];
