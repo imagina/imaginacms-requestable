@@ -281,17 +281,17 @@ return [
       'notification' => [
         'type' => 'notification',
         'icon'  => 'fa fa-bell',
-        'color' => '#31ccec' //blue
+        'color' => 'blue-5' //blue
       ],
       'document' => [
         'type' => 'document',
         'icon'  => 'fa fa-book',
-        'color' => '#bf5454' //red
+        'color' => 'red-5' //red
       ],
       'statusChanged' => [
         'type' => 'statusChanged',
         'icon'  => 'fa fa-info-circle',
-        'color' => '#fae100' //yellow
+        'color' => 'yellow-9' //yellow
       ]
 
     ]
