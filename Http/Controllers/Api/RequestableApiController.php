@@ -5,6 +5,7 @@ namespace Modules\Requestable\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Mockery\CountValidator\Exception;
 use Illuminate\Contracts\Foundation\Application;
+use Modules\Ichat\Transformers\ConversationTransformer;
 use Modules\Ihelpers\Http\Controllers\Api\BaseApiController;
 use Modules\Requestable\Entities\Requestable;
 use Modules\Requestable\Http\Requests\CreateRequestableRequest;
@@ -15,6 +16,7 @@ use Modules\Requestable\Repositories\RequestableRepository;
 use Modules\Requestable\Services\RequestableService;
 use Modules\Requestable\Transformers\RequestableTransformer;
 use Modules\Core\Icrud\Controllers\BaseCrudController;
+use phpDocumentor\Reflection\DocBlock\Tags\Throws;
 use ReflectionClass;
 
 // Events
@@ -291,5 +293,55 @@ class RequestableApiController extends BaseCrudController
     }
     //Return response
     return response()->json($data, $status ?? 200);
+  }
+  
+  public function createConversation($criteria, Request $request){
+  
+    \DB::beginTransaction(); //DB Transaction
+    try {
+      $params = $this->getParamsRequest($request);
+  
+      $requestable = $this->requestable->getItem($criteria);
+      
+      if(!isset($requestable->id)){
+        throw new \Exception(trans("requestable::requestables.validations.chatRequestableIdRequired"),400);
+      }
+      $requestedBy = $requestable->requestedBy;
+  
+      if(!isset($requestedBy->id)){
+        throw new \Exception(trans("requestable::requestables.validations.chatRequestedByIdRequired"),400);
+      }
+  
+      if(empty($requestedBy->phone)){
+        throw new \Exception(trans("requestable::requestables.validations.chatRequestedByPhoneNumberRequired"),400);
+      }
+      
+      if(isset($requestable->conversation->id)){
+        $conversation = $requestable->conversation;
+      }else{
+        $conversation = $requestable->createConversation([
+          'private' => false,
+          'provider_type' => 'whatsapp',
+          'provider_id' => $requestedBy->phone,
+          'entity_id' => $requestable->id,
+          'entity_type' => get_class($requestable),
+          'users' => [$requestedBy->id]
+        ]);
+      }
+  
+      //Response
+      $response = ["data" => new ConversationTransformer($conversation)];
+      
+      \DB::commit();//Commit to DataBase
+    } catch (\Exception $e) {
+      //dd($e);
+      \DB::rollback();//Rollback to Data Base
+      $status = $this->getStatusError($e->getCode());
+      $response = ["errors" => $e->getMessage()];
+    
+    }
+    //Return response
+    return response()->json($response, $status ?? 200);
+  
   }
 }

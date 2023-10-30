@@ -80,21 +80,28 @@ $router->group(['prefix' => '/requestable/v1'], function (Router $router) {
       ]
     ]);
   }
-
-  $router->get('requestable/analytics/{criteria}', [
-    'module' => 'requestable',
-    'uses' => 'RequestableApiController@analytics',
-    //'middleware' => ['auth:api']
-  ]);
-
   
   $router->apiCrud([
     'module' => 'requestable',
     'prefix' => 'status-types',
     'staticEntity' => 'Modules\Requestable\Entities\StatusType'
   ]);
-
-
+  
+  // append
+  
+  $router->get('requestable/analytics/{criteria}', [
+    'module' => 'requestable',
+    'uses' => 'RequestableApiController@analytics',
+    'middleware' => ['auth:api']
+  ]);
+  
+  $router->post('requestable/{criteria}/chat', [
+    'module' => 'requestable',
+    'uses' => 'RequestableApiController@createConversation',
+    'middleware' => ['auth:api']
+  ]);
+  
+  
   //======  REQUESTS
   require('ApiRoutes/requestablesRoutes.php');
 
