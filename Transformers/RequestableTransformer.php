@@ -16,13 +16,14 @@ class RequestableTransformer extends CrudResource
    */
   public function modelAttributes($request)
   {
-    if(!empty($this->requestable_type) && !empty($this->requestable_id)){
+    if (!empty($this->requestable_type) && !empty($this->requestable_id)) {
       $model = $this->requestable_type::find($this->requestable_id);
     }
     return [
       "requestableUrl" => isset($model->url) ? $model->url : "",
       "statusValue" => isset($this->status) ? $this->status->value : null,
       "comment" => null,
+      'chat' => $this->whenLoaded('chat'),
       "fields" => $this->includeLabelFromFormtoFields()//TODO: Fix this with the update of the name in the Iform
     ];
   }
