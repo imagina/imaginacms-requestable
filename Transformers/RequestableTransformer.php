@@ -23,7 +23,7 @@ class RequestableTransformer extends CrudResource
       "requestableUrl" => isset($model->url) ? $model->url : "",
       "statusValue" => isset($this->status) ? $this->status->value : null,
       "comment" => null,
-      'chat' => $this->whenLoaded('chat'),
+      'conversation' => $this->whenLoaded('conversation'),
       "fields" => $this->includeLabelFromFormtoFields()//TODO: Fix this with the update of the name in the Iform
     ];
   }
