@@ -27,10 +27,10 @@ return [
   ],
   'notifications' => [
     "comment" => ' Notification Type: :type -- Message: :message',
-    "title sent" => 'Sent Notification',
+    "title sent" => 'Sent',
     "type" => 'Type',
-    "from" => 'From',
-    "to" => 'To',
+    "from" => 'from',
+    "to" => 'to',
     "message" => 'Message'
   ],
   'notFound' => 'Item not found',

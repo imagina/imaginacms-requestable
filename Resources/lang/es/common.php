@@ -24,10 +24,10 @@ return [
   ],
   'notifications' => [
     "comment" => 'Notificacion de: :type -- Mensaje: :message',
-    "title sent" => 'Notificacion enviada',
+    "title sent" => 'Enviado',
     "type" => 'Tipo',
-    "from" => 'De',
-    "to" => 'Para',
+    "from" => 'de',
+    "to" => 'para',
     "message" => 'Mensaje',
     "titleReportNewDocument" => 'Nuevo Documento Asignado En Tu Solicitud',
     "MessageReportNewDocument" => 'Documento Asignado: ',
