@@ -63,7 +63,7 @@ class RequestableApiController extends BaseCrudController
       $params->page ? $response["meta"] = ["page" => $this->pageTransformer($newRequest)] : false;
     } catch (\Exception $e) {
       $status = $this->getStatusError($e->getCode());
-      $response = ["errors" => $e->getMessage()];
+      $response = ["messages" => [["message" => $e->getMessage(), "type" => "error"]]];
     }
 
     //Return response
@@ -94,7 +94,7 @@ class RequestableApiController extends BaseCrudController
       //$params->page ? $response["meta"] = ["page" => $this->pageTransformer($newRequest)] : false;
     } catch (\Exception $e) {
       $status = $this->getStatusError($e->getCode());
-      $response = ["errors" => $e->getMessage()];
+      $response = ["messages" => [["message" => $e->getMessage(), "type" => "error"]]];
     }
 
     //Return response
@@ -125,7 +125,7 @@ class RequestableApiController extends BaseCrudController
 
     } catch (\Exception $e) {
       $status = $this->getStatusError($e->getCode());
-      $response = ["errors" => $e->getMessage()];
+      $response = ["messages" => [["message" => $e->getMessage(), "type" => "error"]]];
     }
 
     //Return response
@@ -167,7 +167,7 @@ class RequestableApiController extends BaseCrudController
     } catch (\Exception $e) {
       \DB::rollback();//Rollback to Data Base
       $status = $this->getStatusError($e->getCode());
-      $response = ["errors" => $e->getMessage()];
+      $response = ["messages" => [["message" => $e->getMessage(), "type" => "error"]]];
 
     }
     //Return response
@@ -216,7 +216,7 @@ class RequestableApiController extends BaseCrudController
       //dd($e);
       \DB::rollback();//Rollback to Data Base
       $status = $this->getStatusError($e->getCode());
-      $response = ["errors" => $e->getMessage()];
+      $response = ["messages" => [["message" => $e->getMessage(), "type" => "error"]]];
 
     }
 
@@ -261,7 +261,7 @@ class RequestableApiController extends BaseCrudController
       //dd($e);
       \DB::rollback();//Rollback to Data Base
       $status = $this->getStatusError($e->getCode());
-      $response = ["errors" => $e->getMessage()];
+      $response = ["messages" => [["message" => $e->getMessage(), "type" => "error"]]];
 
     }
 
@@ -288,7 +288,7 @@ class RequestableApiController extends BaseCrudController
       //dd($e);
       \DB::rollback();//Rollback to Data Base
       $status = $this->getStatusError($e->getCode());
-      $data = ["errors" => $e->getMessage()];
+      $response = ["messages" => [["message" => $e->getMessage(), "type" => "error"]]];
 
     }
     //Return response
@@ -337,7 +337,7 @@ class RequestableApiController extends BaseCrudController
       //dd($e);
       \DB::rollback();//Rollback to Data Base
       $status = $this->getStatusError($e->getCode());
-      $response = ["errors" => $e->getMessage()];
+      $response = ["messages" => [["message" => $e->getMessage(), "type" => "error"]]];
     
     }
     //Return response
