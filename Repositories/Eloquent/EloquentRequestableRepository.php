@@ -319,6 +319,19 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
           $query->where('requested_by_id', $user->id);
           $query->orWhere('created_by', $user->id);
 
+          //Or WHERE | Not permission Source index all | Get only source for the same user logged
+          if (!isset($params->permissions['requestable.sources.index-all']) || (isset($params->permissions['requestable.sources.index-all']) &&
+          !$params->permissions['requestable.sources.index-all'])) {
+
+            $query->orWhereHas('source', function ($query) use ($user) {
+              $query->whereHas('users', function ($query) use ($user) {
+                  $query->where('user_id', $user->id);
+                });
+            });
+
+          }
+         
+          
         });
       }
 
