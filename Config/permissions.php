@@ -75,7 +75,17 @@ return [
         'destroy' => 'requestable::comments.destroy resource',
         'restore' => 'requestable::comments.restore resource',
     ],
+    'requestable.sources' => [
+        'index-all' => 'requestable::sources.index-all resource',
+        'manage' => 'requestable::sources.manage resource',
+        'index' => 'requestable::sources.list resource',
+        'create' => 'requestable::sources.create resource',
+        'edit' => 'requestable::sources.edit resource',
+        'destroy' => 'requestable::sources.destroy resource',
+        'restore' => 'requestable::sources.restore resource',
+    ],
 // append
+
 
 
 

@@ -153,7 +153,20 @@ class RequestableServiceProvider extends ServiceProvider
         return new \Modules\Requestable\Repositories\Cache\CacheAutomationRuleDecorator($repository);
       }
     );
+        $this->app->bind(
+            'Modules\Requestable\Repositories\SourceRepository',
+            function () {
+                $repository = new \Modules\Requestable\Repositories\Eloquent\EloquentSourceRepository(new \Modules\Requestable\Entities\Source());
+
+                if (! config('app.cache')) {
+                    return $repository;
+                }
+
+                return new \Modules\Requestable\Repositories\Cache\CacheSourceDecorator($repository);
+            }
+        );
 // add bindings
+
 
 
   }
