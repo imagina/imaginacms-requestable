@@ -316,8 +316,9 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
         $user = $params->user;
 
         $query->where(function ($query) use ($user) {
-          $query->where('requested_by', $user->id);
+          $query->where('requested_by_id', $user->id);
           $query->orWhere('created_by', $user->id);
+
         });
       }
 
