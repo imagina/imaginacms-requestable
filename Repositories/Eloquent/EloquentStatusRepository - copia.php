@@ -2,10 +2,10 @@
 
 namespace Modules\Requestable\Repositories\Eloquent;
 
-use Modules\Requestable\Repositories\SourceRepository;
+use Modules\Requestable\Repositories\StatusRepository;
 use Modules\Core\Icrud\Repositories\Eloquent\EloquentCrudRepository;
 
-class EloquentSourceRepository extends EloquentCrudRepository implements SourceRepository
+class EloquentStatusRepository extends EloquentCrudRepository implements StatusRepository
 {
   /**
    * Filter names to replace
@@ -37,19 +37,27 @@ class EloquentSourceRepository extends EloquentCrudRepository implements SourceR
      * if (isset($filter->status)) $query->where('status', $filter->status);
      *
      */
-
-     //Not permission source index all | exist but is false
-    if (!isset($params->permissions['requestable.sources.index-all']) || (!$params->permissions['requestable.sources.index-all'])) {
-
-      if (isset($params->user)) {
-        $user = $params->user;
-
-        $query->whereHas('users', function ($query) use ($user) {
-           $query->where('user_id', $user->id);
-        });
-      }
+    
+    // ORDER
+    if (isset($params->order) && $params->order) {
+    
+      $order = is_array($params->order) ? $params->order : [$params->order];
+    
+      foreach ($order as $orderObject) {
+        if (isset($orderObject->field) && isset($orderObject->way)) {
+          if (in_array($orderObject->field, $this->model->translatedAttributes)) {
+            $query->orderByTranslation($orderObject->field, $orderObject->way);
+          } else
+            $query->orderBy($orderObject->field, $orderObject->way);
+        }
       
+      }
+    } else {
+      //Order by position by default
+      $query->orderBy('type', 'asc');//Add order to query
+      $query->orderBy('position', 'asc');//Add order to query
     }
+    
 
     //Response
     return $query;
@@ -79,4 +87,31 @@ class EloquentSourceRepository extends EloquentCrudRepository implements SourceR
     //Response
     return $model;
   }
+
+  public function deleteBy($criteria, $params = false)
+  {
+
+    try{
+
+      $model = $this->model->find($criteria);
+      $model->forceDelete();
+
+      /*
+      \DB::rollback();
+      \DB::beginTransaction();
+      $response = parent::deleteBy($criteria, $params);  
+      */
+      
+    }catch(\Exception $e){
+      if($e->getCode()=="23000")
+        throw new \Exception(trans("requestable::statuses.validation.associatedRequests"), 400);
+      else
+        throw $e;
+    }
+    
+    return $response;
+    
+    
+  }
+
 }
