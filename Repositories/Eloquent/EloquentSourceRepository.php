@@ -44,12 +44,18 @@ class EloquentSourceRepository extends EloquentCrudRepository implements SourceR
       if (isset($params->user)) {
         $user = $params->user;
 
+
+        $query->whereRaw("requestable__sources.id IN (SELECT source_id from requestable__user_source where user_id = ".$user->id . ")");
+        /*
         $query->whereHas('users', function ($query) use ($user) {
            $query->where('user_id', $user->id);
         });
+        */
       }
       
     }
+
+    //dd($query->toSql());
 
     //Response
     return $query;
