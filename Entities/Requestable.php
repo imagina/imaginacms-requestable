@@ -35,6 +35,7 @@ class Requestable extends CrudModel
     "requestable_type",
     "requestable_id",
     "responsible_id",
+    "source_id",
     "type",
     "eta",
     "status_id",
@@ -77,6 +78,11 @@ class Requestable extends CrudModel
   public function responsible(){
     return $this->belongsTo(User::class,'responsible_id');
   }
+
+  public function source()
+  {
+    return $this->belongsTo(Source::class,'source_id');
+  }
   
   /**
    * @return mixed
@@ -86,7 +92,7 @@ class Requestable extends CrudModel
     $service = app("Modules\Requestable\Repositories\RequestableRepository");
     $requestableConfigs = collect($service->moduleConfigs())->keyBy("type");
   
-    return $requestableConfigs[$this->type];
+    return $requestableConfigs[$this->type] ?? null;
     
   }
   

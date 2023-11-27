@@ -87,7 +87,18 @@ $router->group(['prefix' => '/requestable/v1'], function (Router $router) {
     'staticEntity' => 'Modules\Requestable\Entities\StatusType'
   ]);
   
-  // append
+  $router->apiCrud([
+    'module' => 'requestable',
+    'prefix' => 'sources',
+    'controller' => 'SourceApiController',
+    'middleware' => [
+      'create' => ['auth:api', 'auth-can:requestable.sources.create'],
+      'update' => ['auth:api', 'auth-can:requestable.sources.edit'],
+      'delete' => ['auth:api', 'auth-can:requestable.sources.destroy']
+    ]
+  ]);
+// append
+
   
   $router->get('requestable/analytics/{criteria}', [
     'module' => 'requestable',
