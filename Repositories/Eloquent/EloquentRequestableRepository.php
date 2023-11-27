@@ -322,14 +322,6 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
           //Or WHERE | Not permission Source index all | | exist but is false | Get only source for the same user logged
           if (!isset($params->permissions['requestable.sources.index-all']) || (!$params->permissions['requestable.sources.index-all'])) {
 
-            //Con este funca
-            /*
-            $query->orWhereHas('source', function ($query) use ($user) {
-              $query->whereHas('users', function ($query) use ($user) {
-                  $query->where('user_id', $user->id);
-                });
-            });
-            */
             $query->orWhereRaw("requestable__requestables.id IN (SELECT id from requestable__requestables where source_id IN (
             (SELECT source_id from requestable__user_source where user_id = ".$user->id . ")))");
 
