@@ -35,5 +35,6 @@ return [
   'notFound' => 'Item no encontrado',
   'erros' => [
     'nonExistentFunction' => 'Función inexistente',
+    'FieldProtect' => 'Estos campos están protegidos por el modulo CRM',
   ],
 ];
