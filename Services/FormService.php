@@ -96,8 +96,6 @@ class FormService
     // Create Field
     $fieldCreated = $fieldRepository->create($dataToCreate);
 
-    dd('aca esta services', $fieldCreated);
-
     if ($fieldCreated->name == 'comment' || $fieldCreated->name == 'value') {
       \DB::table('iforms__fields')->where('id', $fieldCreated->id)->update(['system_type' => 'requestableField-' . $fieldCreated->name]);
     } else {
