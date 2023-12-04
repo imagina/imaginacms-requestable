@@ -36,7 +36,7 @@ class UpdateSystemTypeFormsCategoriesTableSeeder extends Seeder
         foreach ($form->fields as $field) {
           if ($field->name == 'comment' || $field->name == 'value') {
             \DB::table('iforms__fields')->where('id', $field->id)->update(['system_type' => 'requestableField-' . $field->name]);
-          } else {
+          } elseif ($field->name == 'name' || $field->name == 'lastname' || $field->name == 'telephone' || $field->name == 'email') {
             \DB::table('iforms__fields')->where('id', $field->id)->update(['system_type' => 'requestableHiddenField-' . $field->name]);
           }
         }
