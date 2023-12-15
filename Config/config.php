@@ -105,19 +105,29 @@ return [
   |--------------------------------------------------------------------------
   */
   "categories-rules" => [
-    //Parent
-    0 => [
-      'systemName' => 'client-communications',
-      'en' => ['title' => 'Client Communications'],
-      'es' => ['title' => 'Comunicacion con el Cliente'],
+    
+    //--------------------------------------------------------------------------
+    //PARENT - internal-communication 
+    //--------------------------------------------------------------------------
+    'internal-communication' => [
+      'systemName' => 'internal-communication',
+      'en' => ['title' => 'Internal Comunication'],
+      'es' => ['title' => 'Comunicacion Interna'],
     ],
-    //Child Category - client-communications
-    1 => [
-      'systemName' => 'send-email',
-      'parentSystemName' => 'client-communications', //from parent
+    
+    //PARENT - Child Category - employee-alert
+    'employee-alert' => [
+      'systemName' => 'employee-alert',
+      'en' => ['title' => 'Employee alert'],
+      'es' => ['title' => 'Alerta a empleados'],
+      'parentSystemName' => 'internal-communication', //from parent
+    ],
+    //Child Category - send-email-to-employee
+    'send-email-to-employee' => [
+      'systemName' => 'send-email-to-employee',
+      'parentSystemName' => 'employee-alert', //from parent
       'en' => ['title' => 'Send Email'],
       'es' => ['title' => 'Enviar email'],
-      'options' => ['filterFormFieldType' => 'email'],//type field iform
       'formFields' => [
         'from' => [
           'value' => null,
@@ -125,6 +135,7 @@ return [
           'type' => 'select',
           'loadOptions' => [
             'apiRoute' => 'apiRoutes.quser.users',
+            'filterByQuery' => true,
             'select' => ['label' => 'email', 'value' => 'email', 'id' => 'email']
           ],
           'props' => [
@@ -169,14 +180,12 @@ return [
         ],
       ]
     ],
-    //Child Category - client-communications
-    2 => [
-      'systemName' => 'send-sms',
-      'parentSystemName' => 'client-communications', //from parent
+    //Child Category - send-sms-to-employee
+    'send-sms-to-employee' => [
+      'systemName' => 'send-sms-to-employee',
+      'parentSystemName' => 'employee-alert', //from parent
       'en' => ['title' => 'Send SMS'],
       'es' => ['title' => 'Enviar sms'],
-      'status' => 0,
-      'options' => ['filterFormFieldType' => 'phone'],//type field iform
       'formFields' => [
         'message' => [
           'value' => null,
@@ -198,14 +207,12 @@ return [
         ]
       ]
     ],
-    //Child Category - client-communications
-    3 => [
-      'systemName' => 'send-telegram',
-      'parentSystemName' => 'client-communications', //from parent
-      'en' => ['title' => 'Send Telegram'],
-      'es' => ['title' => 'Enviar Telegram'],
-      'status' => 0,
-      'options' => ['filterFormFieldType' => 'phone'],//type field iform
+    //Child Category - send-telegram-to-employee
+    'send-telegram-to-employee' => [
+      'systemName' => 'send-telegram-to-employee',
+      'parentSystemName' => 'employee-alert', //from parent
+      'en' => ['title' => 'Send telegram'],
+      'es' => ['title' => 'Enviar telegram'],
       'formFields' => [
         'message' => [
           'value' => null,
@@ -227,13 +234,12 @@ return [
         ]
       ]
     ],
-    //Child Category - client-communications
-    4 => [
-      'systemName' => 'send-whatsapp',
-      'parentSystemName' => 'client-communications', //from parent
-      'en' => ['title' => 'Send Whatsapp'],
-      'es' => ['title' => 'Enviar Whatsapp'],
-      'options' => ['filterFormFieldType' => 'phone'],//type field iform
+    //Child Category - send-whatsapp-to-employee
+    'send-whatsapp-to-employee' => [
+      'systemName' => 'send-whatsapp-to-employee',
+      'parentSystemName' => 'employee-alert', //from parent
+      'en' => ['title' => 'Send whatsapp'],
+      'es' => ['title' => 'Enviar whatsapp'],
       'formFields' => [
         'message' => [
           'value' => null,
@@ -256,7 +262,464 @@ return [
       ]
     ],
 
+    //--------------------------------------------------------------------------
+    //PARENT - external-communication
+    //--------------------------------------------------------------------------
+    'external-communication' => [
+      'systemName' => 'external-communication',
+      'en' => ['title' => 'External Comunication'],
+      'es' => ['title' => 'Comunicacion Externa'],
+    ],
+
+    //PARENT - Child Category - main-form-comunication
+    'main-form-comunication' => [
+      'systemName' => 'main-form-comunication',
+      'en' => ['title' => 'Main Form Communication'],
+      'es' => ['title' => 'Comunicacion con el Formulario Principal'],
+      'parentSystemName' => 'external-communication', //from parent
+    ],
+    //Child Category - send-email-to-form-field
+    'send-email-to-form-field' => [
+      'systemName' => 'send-email-to-form-field',
+      'parentSystemName' => 'main-form-comunication', //from parent
+      'en' => ['title' => 'Send Email'],
+      'es' => ['title' => 'Enviar email'],
+      'options' => ['filterFormFieldType' => 'email'],//type field iform
+      'formFields' => [
+        'from' => [
+          'value' => null,
+          'name' => 'from',
+          'type' => 'select',
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.quser.users',
+            'filterByQuery' => true,
+            'select' => ['label' => 'email', 'value' => 'email', 'id' => 'email']
+          ],
+          'props' => [
+            'label' => 'requestable::common.formFields.from',
+            'multiple' => false,
+            'clearable' => true,
+          ],
+        ],
+        'subject' => [
+          'value' => null,
+          'name' => 'subject',
+          'type' => 'expression',
+          'isTranslatable' => true,
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'props' => [
+            'label' => 'requestable::common.formFields.subject'
+          ]
+        ],
+        'message' => [
+          'value' => null,
+          'name' => 'message',
+          'type' => 'expression',
+          'isTranslatable' => true,
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'props' => [
+            'label' => 'requestable::common.formFields.message',
+            'type' => 'textarea',
+            'rows' => 3,
+          ]
+        ],
+      ]
+    ],
+    //Child Category - send-sms-to-form-field
+    'send-sms-to-form-field' => [
+      'systemName' => 'send-sms-to-form-field',
+      'parentSystemName' => 'main-form-comunication', //from parent
+      'en' => ['title' => 'Send SMS'],
+      'es' => ['title' => 'Enviar sms'],
+      'options' => ['filterFormFieldType' => 'phone'],//type field iform
+      'formFields' => [
+        'message' => [
+          'value' => null,
+          'name' => 'message',
+          'type' => 'expression',
+          'isTranslatable' => true,
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'props' => [
+            'label' => 'requestable::common.formFields.message',
+            'type' => 'textarea',
+            'rows' => 3,
+          ]
+        ]
+      ]
+    ],
+    //Child Category - send-telegram-to-form-field
+    'send-telegram-to-form-field' => [
+      'systemName' => 'send-telegram-to-form-field',
+      'parentSystemName' => 'main-form-comunication', //from parent
+      'en' => ['title' => 'Send telegram'],
+      'es' => ['title' => 'Enviar telegram'],
+      'options' => ['filterFormFieldType' => 'phone'],//type field iform
+      'formFields' => [
+        'message' => [
+          'value' => null,
+          'name' => 'message',
+          'type' => 'expression',
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'isTranslatable' => true,
+          'props' => [
+            'label' => 'requestable::common.formFields.message',
+            'type' => 'textarea',
+            'rows' => 3,
+          ]
+        ]
+      ]
+    ],
+    //Child Category - send-whatsapp-to-form-field
+    'send-whatsapp-to-form-field' => [
+      'systemName' => 'send-whatsapp-to-form-field',
+      'parentSystemName' => 'main-form-comunication', //from parent
+      'en' => ['title' => 'Send whatsapp'],
+      'es' => ['title' => 'Enviar whatsapp'],
+      'options' => ['filterFormFieldType' => 'phone'],//type field iform
+      'status' => 0,
+      'formFields' => [
+        'message' => [
+          'value' => null,
+          'name' => 'message',
+          'type' => 'expression',
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'isTranslatable' => true,
+          'props' => [
+            'label' => 'requestable::common.formFields.message',
+            'type' => 'textarea',
+            'rows' => 3,
+          ]
+        ]
+      ]
+    ],
+
+    //PARENT - Child Category - external-data-comunication
+    'external-data-comunication' => [
+      'systemName' => 'external-data-comunication',
+      'en' => ['title' => 'External data comunication'],
+      'es' => ['title' => 'Comunicacion con datos externos'],
+      'parentSystemName' => 'external-communication', //from parent
+    ],
+    //Child Category - send-email-to-external-data
+    'send-email-to-external-data' => [
+      'systemName' => 'send-email-to-external-data',
+      'parentSystemName' => 'external-data-comunication', //from parent
+      'en' => ['title' => 'Send Email'],
+      'es' => ['title' => 'Enviar email'],
+      'formFields' => [
+        'from' => [
+          'value' => null,
+          'name' => 'from',
+          'type' => 'select',
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.quser.users',
+            'filterByQuery' => true,
+            'select' => ['label' => 'email', 'value' => 'email', 'id' => 'email']
+          ],
+          'props' => [
+            'label' => 'requestable::common.formFields.from',
+            'multiple' => false,
+            'clearable' => true,
+          ],
+        ],
+        'subject' => [
+          'value' => null,
+          'name' => 'subject',
+          'type' => 'expression',
+          'isTranslatable' => true,
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'props' => [
+            'label' => 'requestable::common.formFields.subject'
+          ]
+        ],
+        'message' => [
+          'value' => null,
+          'name' => 'message',
+          'type' => 'expression',
+          'isTranslatable' => true,
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'props' => [
+            'label' => 'requestable::common.formFields.message',
+            'type' => 'textarea',
+            'rows' => 3,
+          ]
+        ],
+      ]
+    ],
+    //Child Category - send-sms-to-external-data
+    'send-sms-to-external-data' => [
+      'systemName' => 'send-sms-to-external-data',
+      'parentSystemName' => 'external-data-comunication', //from parent
+      'en' => ['title' => 'Send SMS'],
+      'es' => ['title' => 'Enviar sms'],
+      'formFields' => [
+        'message' => [
+          'value' => null,
+          'name' => 'message',
+          'type' => 'expression',
+          'isTranslatable' => true,
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'props' => [
+            'label' => 'requestable::common.formFields.message',
+            'type' => 'textarea',
+            'rows' => 3,
+          ]
+        ]
+      ]
+    ],
+    //Child Category - send-telegram-to-external-data
+    'send-telegram-to-external-data' => [
+      'systemName' => 'send-telegram-to-external-data',
+      'parentSystemName' => 'external-data-comunication', //from parent
+      'en' => ['title' => 'Send telegram'],
+      'es' => ['title' => 'Enviar telegram'],
+      'formFields' => [
+        'message' => [
+          'value' => null,
+          'name' => 'message',
+          'type' => 'expression',
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'isTranslatable' => true,
+          'props' => [
+            'label' => 'requestable::common.formFields.message',
+            'type' => 'textarea',
+            'rows' => 3,
+          ]
+        ]
+      ]
+    ],
+    //Child Category - send-whatsapp-to-external-data
+    'send-whatsapp-to-external-data' => [
+      'systemName' => 'send-whatsapp-to-external-data',
+      'parentSystemName' => 'external-data-comunication', //from parent
+      'en' => ['title' => 'Send whatsapp'],
+      'es' => ['title' => 'Enviar whatsapp'],
+      'formFields' => [
+        'message' => [
+          'value' => null,
+          'name' => 'message',
+          'type' => 'expression',
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'isTranslatable' => true,
+          'props' => [
+            'label' => 'requestable::common.formFields.message',
+            'type' => 'textarea',
+            'rows' => 3,
+          ]
+        ]
+      ]
+    ],
+
+     //PARENT - Child Category - client-communication
+     'client-communication' => [
+      'systemName' => 'client-communication',
+      'en' => ['title' => 'Client Communication'],
+      'es' => ['title' => 'Comunicacion con el Cliente'],
+      'parentSystemName' => 'external-communication', //from parent
+    ],
+    //Child Category - send-email-to-requested-by
+    'send-email-to-requested-by' => [
+      'systemName' => 'send-email-to-requested-by',
+      'parentSystemName' => 'client-communication', //from parent
+      'en' => ['title' => 'Send Email'],
+      'es' => ['title' => 'Enviar email'],
+      'formFields' => [
+        'from' => [
+          'value' => null,
+          'name' => 'from',
+          'type' => 'select',
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.quser.users',
+            'filterByQuery' => true,
+            'select' => ['label' => 'email', 'value' => 'email', 'id' => 'email']
+          ],
+          'props' => [
+            'label' => 'requestable::common.formFields.from',
+            'multiple' => false,
+            'clearable' => true,
+          ],
+        ],
+        'subject' => [
+          'value' => null,
+          'name' => 'subject',
+          'type' => 'expression',
+          'isTranslatable' => true,
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'props' => [
+            'label' => 'requestable::common.formFields.subject'
+          ]
+        ],
+        'message' => [
+          'value' => null,
+          'name' => 'message',
+          'type' => 'expression',
+          'isTranslatable' => true,
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'props' => [
+            'label' => 'requestable::common.formFields.message',
+            'type' => 'textarea',
+            'rows' => 3,
+          ]
+        ],
+      ]
+    ],
+    //Child Category - send-sms-to-requested-by
+    'send-sms-to-requested-by' => [
+      'systemName' => 'send-sms-to-requested-by',
+      'parentSystemName' => 'client-communication', //from parent
+      'en' => ['title' => 'Send SMS'],
+      'es' => ['title' => 'Enviar sms'],
+      'formFields' => [
+        'message' => [
+          'value' => null,
+          'name' => 'message',
+          'type' => 'expression',
+          'isTranslatable' => true,
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'props' => [
+            'label' => 'requestable::common.formFields.message',
+            'type' => 'textarea',
+            'rows' => 3,
+          ]
+        ]
+      ]
+    ],
+    //Child Category - send-telegram-to-requested-by
+    'send-telegram-to-requested-by' => [
+      'systemName' => 'send-telegram-to-requested-by',
+      'parentSystemName' => 'client-communication', //from parent
+      'en' => ['title' => 'Send telegram'],
+      'es' => ['title' => 'Enviar telegram'],
+      'formFields' => [
+        'message' => [
+          'value' => null,
+          'name' => 'message',
+          'type' => 'expression',
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'isTranslatable' => true,
+          'props' => [
+            'label' => 'requestable::common.formFields.message',
+            'type' => 'textarea',
+            'rows' => 3,
+          ]
+        ]
+      ]
+    ],
+    //Child Category - send-whatsapp-to-requested-by
+    'send-whatsapp-to-requested-by' => [
+      'systemName' => 'send-whatsapp-to-requested-by',
+      'parentSystemName' => 'client-communication', //from parent
+      'en' => ['title' => 'Send whatsapp'],
+      'es' => ['title' => 'Enviar whatsapp'],
+      'formFields' => [
+        'message' => [
+          'value' => null,
+          'name' => 'message',
+          'type' => 'expression',
+          'loadOptions' => [
+            'apiRoute' => 'apiRoutes.qrequestable.categoriesFormFields',
+            'select' => ['label' => 'label', 'id' => 'value'],
+            'parametersUrl' => [
+              'categoryId' => 1
+            ]
+          ],
+          'isTranslatable' => true,
+          'props' => [
+            'label' => 'requestable::common.formFields.message',
+            'type' => 'textarea',
+            'rows' => 3,
+          ]
+        ]
+      ]
+    ],
+
+
   ],
+
 
   /*
   |--------------------------------------------------------------------------
