@@ -43,15 +43,15 @@ class CategoryApiController extends BaseCrudController
       //Get Parameters from URL.
       $params = $this->getParamsRequest($request);
 
-      // Search
+      // Search Category Repository 
       $model = $this->modelRepository->getItem($criteria);
 
       //Break if no found item
       if (!$model) throw new \Exception('Item not found', 404);
 
       // Get form from Model
-      $form = $model->form;
-     
+      $form = $model->form->first();
+
       if(!is_null($form->id)){
 
         $params->filter->formId = $form->id;
@@ -72,7 +72,7 @@ class CategoryApiController extends BaseCrudController
       
       
     } catch (\Exception $e) {
-      //dd($e);
+      dd($e);
       $status = $this->getStatusError($e->getCode());
       $response = ["messages" => [["message" => $e->getMessage(), "type" => "error", "timeOut" => 10000 ]]];
   
