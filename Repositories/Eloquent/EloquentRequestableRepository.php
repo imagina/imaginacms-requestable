@@ -307,22 +307,33 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
   function validateIndexAllPermission(&$query, $params)
   {
     // filter by permission: index all leads
-
+   
     if (!isset($params->permissions['requestable.requestables.index-all']) ||
       (isset($params->permissions['requestable.requestables.index-all']) &&
         !$params->permissions['requestable.requestables.index-all'])) {
 
       if (isset($params->user)) {
         $user = $params->user;
-
+      
         $query->where(function ($query) use ($user) {
-          $query->where('requested_by', $user->id);
+          $query->where('requested_by_id', $user->id);
           $query->orWhere('created_by', $user->id);
+
+          //Or WHERE | Not permission Source index all | | exist but is false | Get only source for the same user logged
+          if (!isset($params->permissions['requestable.sources.index-all']) || (!$params->permissions['requestable.sources.index-all'])) {
+
+            $query->orWhereRaw("requestable__requestables.id IN (SELECT id from requestable__requestables where source_id IN (
+            (SELECT source_id from requestable__user_source where user_id = ".$user->id . ")))");
+
+          }
+         
+          
         });
       }
 
 
     }
+    
   }
 
   public function moduleConfigs()

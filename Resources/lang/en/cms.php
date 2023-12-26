@@ -6,7 +6,8 @@ return [
     "status" => "Status",
     "categories" => "Categories",
     "mainRequestable" => "Request",
-    "mainRequestableCreate" => "New Request"
+    "mainRequestableCreate" => "New Request",
+    "sources" => "Sources"
   ],
   "newRequestedBy" => "New Contact",
   "newRequest" => "New Request",
@@ -42,6 +43,12 @@ return [
     "analytics" => "Analytics",
     "automationRules" => "Automation Rules",
     "responsible" => "Responsible",
+  ],
+  "requestables" => [
+    "table" => [
+      "requestedBy" => "Requested by",
+      "createdBy" => "Created by",
+    ]
   ],
 ];
 

@@ -4,15 +4,11 @@ namespace Modules\Requestable\Http\Requests;
 
 use Modules\Core\Internationalisation\BaseFormRequest;
 
-class CreateAutomationRuleRequest extends BaseFormRequest
+class UpdateSourceRequest extends BaseFormRequest
 {
     public function rules()
     {
-        return [
-            'name' => 'required',
-            'run_type' => 'required',
-            //'to' => 'required',
-        ];
+        return [];
     }
 
     public function translationRules()
@@ -27,11 +23,7 @@ class CreateAutomationRuleRequest extends BaseFormRequest
 
     public function messages()
     {
-        return [
-            'name.required' => trans('requestable::common.messages.field required'),
-            'run_type.required' => trans('requestable::common.messages.field required'),
-            //'to.required' => trans('requestable::common.messages.field required'),
-        ];
+        return [];
     }
 
     public function translationMessages()
@@ -42,5 +34,4 @@ class CreateAutomationRuleRequest extends BaseFormRequest
     public function getValidator(){
         return $this->getValidatorInstance();
     }
-    
 }

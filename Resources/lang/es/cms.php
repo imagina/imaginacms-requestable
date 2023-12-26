@@ -6,7 +6,8 @@ return [
     "status" => "Estados",
     "categories" => "Categorias",
     "mainRequestable" => "Peticiones",
-    "mainRequestableCreate" => "Nueva Petición"
+    "mainRequestableCreate" => "Nueva Petición",
+    "sources" => "Fuentes"
   ],
   "newRequestedBy" => "Nuevo Contacto",
   "newRequest" => "Nueva Petición",
@@ -42,6 +43,12 @@ return [
     "analytics" => "Analítica",
     "automationRules" => "Reglas De Automatización",
     "responsible" => "Responsable",
+  ],
+  "requestables" => [
+    "table" => [
+      "requestedBy" => "Solicitado Por",
+      "createdBy" => "Creado por",
+    ]
   ],
 ];
 

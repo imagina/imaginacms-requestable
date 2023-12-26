@@ -4,14 +4,12 @@ namespace Modules\Requestable\Http\Requests;
 
 use Modules\Core\Internationalisation\BaseFormRequest;
 
-class CreateAutomationRuleRequest extends BaseFormRequest
+class CreateSourceRequest extends BaseFormRequest
 {
     public function rules()
     {
         return [
-            'name' => 'required',
-            'run_type' => 'required',
-            //'to' => 'required',
+            'title' => 'required',
         ];
     }
 
@@ -28,9 +26,7 @@ class CreateAutomationRuleRequest extends BaseFormRequest
     public function messages()
     {
         return [
-            'name.required' => trans('requestable::common.messages.field required'),
-            'run_type.required' => trans('requestable::common.messages.field required'),
-            //'to.required' => trans('requestable::common.messages.field required'),
+            'title.required' => trans('requestable::common.messages.field required'),
         ];
     }
 

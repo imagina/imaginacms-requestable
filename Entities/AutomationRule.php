@@ -12,14 +12,14 @@ class AutomationRule extends CrudModel
 {
   
   use isFillable;
-
+  
   protected $table = 'requestable__automation_rules';
   public $transformer = 'Modules\Requestable\Transformers\AutomationRuleTransformer';
   public $repository = 'Modules\Requestable\Repositories\AutomationRuleRepository';
   public $requestValidation = [
-      'create' => 'Modules\Requestable\Http\Requests\CreateAutomationRuleRequest',
-      'update' => 'Modules\Requestable\Http\Requests\UpdateAutomationRuleRequest',
-    ];
+    'create' => 'Modules\Requestable\Http\Requests\CreateAutomationRuleRequest',
+    'update' => 'Modules\Requestable\Http\Requests\UpdateAutomationRuleRequest',
+  ];
   //Instance external/internal events to dispatch with extraData
   public $dispatchesEventsWithBindings = [
     //eg. ['path' => 'path/module/event', 'extraData' => [/*...optional*/]]
@@ -41,46 +41,65 @@ class AutomationRule extends CrudModel
     'to',
     'status'
   ];
-
+  
   protected $with = [
     "fields"
   ];
-
+  
   protected $casts = [
-    'run_config' => 'array'
+    'run_config' => 'array',
+    'to' => 'array'
   ];
-
-
+  
+  
   //============== RELATIONS ==============//
-
-  public function requestStatus(){
-    return $this->belongsTo(Status::class,'status_id');
+  
+  public function requestStatus()
+  {
+    return $this->belongsTo(Status::class, 'status_id');
   }
-
-  public function categoryRule(){
+  
+  public function categoryRule()
+  {
     return $this->belongsTo(CategoryRule::class);
   }
-
+  
   public function getStatusNameAttribute()
   {
     $status = new StatusGeneral();
     return $status->get($this->status);
   }
-
+  
   //==================== ACCESORS ==============//
-
+  
   public function getRunConfigAttribute($value)
   {
     return json_decode($value);
   }
+  
+  public function getToAttribute($value)
+  {
+    $to = json_decode($value);
 
+    //Validation to old case - data saved as string
+    if(is_null($to))
+      $to[] = $value;
 
+    return $to;
+  }
+  
+  
   //==================== MUTATORS ==============//
   
   public function setRunConfigAttribute($value)
   {
     $this->attributes['run_config'] = json_encode($value);
   }
-
-
+  
+  public function setToAttribute($value)
+  {
+    $this->attributes['to'] = json_encode($value);
+  }
+  
+  
 }
