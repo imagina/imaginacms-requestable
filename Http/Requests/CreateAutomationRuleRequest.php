@@ -11,7 +11,7 @@ class CreateAutomationRuleRequest extends BaseFormRequest
         return [
             'name' => 'required',
             'run_type' => 'required',
-            'to' => 'required',
+            //'to' => 'required',
         ];
     }
 
@@ -30,7 +30,7 @@ class CreateAutomationRuleRequest extends BaseFormRequest
         return [
             'name.required' => trans('requestable::common.messages.field required'),
             'run_type.required' => trans('requestable::common.messages.field required'),
-            'to.required' => trans('requestable::common.messages.field required'),
+            //'to.required' => trans('requestable::common.messages.field required'),
         ];
     }
 
