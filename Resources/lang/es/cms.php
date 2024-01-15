@@ -50,5 +50,7 @@ return [
       "createdBy" => "Creado por",
     ]
   ],
+  "updateSource" => "Actualizar Fuente",
+  "newSource" => "Nueva Fuente",
 ];
 
