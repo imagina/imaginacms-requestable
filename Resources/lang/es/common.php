@@ -33,7 +33,8 @@ return [
     "MessageReportNewDocument" => 'Documento Asignado: ',
   ],
   'notFound' => 'Item no encontrado',
-  'erros' => [
+  'errors' => [
     'nonExistentFunction' => 'Función inexistente',
+    'fieldProtect' => 'Estos campos están protegidos por el modulo CRM',
   ],
 ];
