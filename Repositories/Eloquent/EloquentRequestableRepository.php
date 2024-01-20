@@ -195,12 +195,12 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
       ->whereNotIn("status_id", Status::where("final", 1)->get()->pluck("id")->toArray())
       ->with("category")
       ->first();
-
+  
     //Si no se consigue un modelo que coincida con la búsqueda o el modelo que se consiga ya está en estado final
     //o si el request pertenece a una categoría abierta: !internal, esto significa que son categorías creadas desde
     // frontend y permiten crear mas de un request al tiempo
     if (!isset($model->id) || $model->status->final || !$model->category->internal) {
-
+    
       $model = $this->model->create($data);
 
       if (isset($data["created_by"]) && $data["created_by"] != $model->created_by) {

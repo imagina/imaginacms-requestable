@@ -2,6 +2,7 @@
 
 namespace Modules\Requestable\Events\Handlers;
 
+use Illuminate\Support\Str;
 use Modules\Iforms\Events\FieldIsDeleting;
 
 class ValidateFieldIsDeleting
@@ -16,8 +17,8 @@ class ValidateFieldIsDeleting
     $entity = $event->getEntity();
     $field = \DB::table('iforms__fields')->where('id', $entity->id)->first();
     if (isset($field->system_type) && !is_null($field->system_type) &&
-      preg_match('/requestableHiddenField/i', $field->system_type) || preg_match('/requestableField/i', $field->system_type)) {
-      throw new \Exception(trans('requestable::common.errors.fieldProtect'), 406);
+      Str::startsWith($field->system_type,"requestable-internalHidden")) {
+      throw new \Exception(trans('requestable::common.errors.fieldProtect'), 409);
     }
   }
 }

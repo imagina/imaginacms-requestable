@@ -50,6 +50,9 @@ return [
       "createdBy" => "Creado por",
     ]
   ],
+  'hints' => [
+    'categoryFormField' => 'Si dejas este campo vacío nosotros crearemos un formulario inicial para tu embudo.'
+  ],
   "updateSource" => "Actualizar Fuente",
   "newSource" => "Nueva Fuente",
 ];

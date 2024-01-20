@@ -29,7 +29,7 @@ class CreateFormAndStatusesToCategory
 
     
     // Process to create and sync Form with category
-    if(is_null($data['form_id'])){
+    if(!isset($data['form_id'])){
 
         \Log::info($this->log."Create FORM to category: ".$model->title);
 

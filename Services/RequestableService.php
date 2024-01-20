@@ -59,7 +59,7 @@ class RequestableService extends BaseApiController
         "fields" => [],
       ];
       $category = $this->category->getItem($data["category_id"], json_decode(json_encode($params)));
-    }else{
+    }elseif(isset($data["type"]) && !empty($data["type"])){
       $params = [
         "filter" => [
           "field" => "type",
@@ -81,7 +81,7 @@ class RequestableService extends BaseApiController
     
     if ($data["requestable_type"] == "Modules\User\Entities\Sentinel\User")
       $data["requestable_id"] = $data["requestable_id"] ?? \Auth::id() ?? null;
-    
+
     //Create item
     $model = $this->requestableRepository->create($data);
  

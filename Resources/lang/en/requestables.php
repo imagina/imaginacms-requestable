@@ -27,7 +27,7 @@ return [
     'messages' => [
       "creatingSameRequestError" => "The user already has a request in progress"
     ],
-    'validation' => [
+    'validations' => [
       'chatRequestableIdRequired' => "The lead id is not valid"
     ],
     'responsible' => [

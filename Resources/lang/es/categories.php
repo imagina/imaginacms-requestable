@@ -24,5 +24,8 @@ return [
     ],
     'leads' => [
         'title' => 'Prospectos'
+    ],
+    'hints' => [
+      'categoryFormField' => 'Si dejas este campo vacío nosotros crearemos un formulario inicial para tu embudo.'
     ]
 ];

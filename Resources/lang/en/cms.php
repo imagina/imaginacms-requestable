@@ -50,6 +50,9 @@ return [
       "createdBy" => "Created by",
     ]
   ],
+  'hints' => [
+    'categoryFormField' => 'If you leave this field empty we will create an initial form for your funnel.'
+  ],
   "updateSource" => "Update Source",
   "newSource" => "New Source",
 ];

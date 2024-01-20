@@ -28,7 +28,7 @@ class FormService
 
         // Create Form
         $form = $formRepository->create([
-          "title" => trans("requestable::forms.lead.title"),
+          "title" => "CRM: $systemName - ".trans("requestable::forms.lead.title"),
           "system_name" => $systemName,
           "active" => true
         ]);
@@ -96,10 +96,22 @@ class FormService
     // Create Field
     $fieldCreated = $fieldRepository->create($dataToCreate);
 
-    if ($fieldCreated->name == 'comment' || $fieldCreated->name == 'value') {
-      \DB::table('iforms__fields')->where('id', $fieldCreated->id)->update(['system_type' => 'requestableField-' . $fieldCreated->name]);
+    if($fieldCreated->name == 'value'){
+      \DB::table('iforms__fields')->where('id', $fieldCreated->id)->update([
+        'visibility' => 'internal',
+        'system_type' => 'requestable-internal-' . $name
+      ]);
+    }
+    if ($fieldCreated->name == 'comment') {
+      \DB::table('iforms__fields')->where('id', $fieldCreated->id)->update([
+        'visibility' => 'full',
+        'system_type' => 'requestable-full-' . $name
+      ]);
     } else {
-      \DB::table('iforms__fields')->where('id', $fieldCreated->id)->update(['system_type' => 'requestableHiddenField-' . $fieldCreated->name]);
+      \DB::table('iforms__fields')->where('id', $fieldCreated->id)->update([
+        'visibility' => 'internalHidden',
+        'system_type' => 'requestable-internalHiddenField-' . $name
+      ]);
     }
 
     return $fieldCreated;

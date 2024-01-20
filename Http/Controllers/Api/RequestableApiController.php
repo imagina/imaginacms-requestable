@@ -304,16 +304,16 @@ class RequestableApiController extends BaseCrudController
       $requestable = $this->requestable->getItem($criteria);
       
       if(!isset($requestable->id)){
-        throw new \Exception(trans("requestable::requestables.validations.chatRequestableIdRequired"),400);
+        throw new \Exception(trans("requestable::requestables.validations.chatRequestableIdRequired"),409);
       }
       $requestedBy = $requestable->requestedBy;
   
       if(!isset($requestedBy->id)){
-        throw new \Exception(trans("requestable::requestables.validations.chatRequestedByIdRequired"),400);
+        throw new \Exception(trans("requestable::requestables.validations.chatRequestedByIdRequired"),409);
       }
   
       if(empty($requestedBy->phone)){
-        throw new \Exception(trans("requestable::requestables.validations.chatRequestedByPhoneNumberRequired"),400);
+        throw new \Exception(trans("requestable::requestables.validations.chatRequestedByPhoneNumberRequired"),409);
       }
       
       if(isset($requestable->conversation->id)){

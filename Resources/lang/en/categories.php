@@ -24,5 +24,8 @@ return [
     ],
     'leads' => [
         'title' => 'Leads'
-    ]
+    ],
+  'hints' => [
+    'categoryFormField' => 'If you leave this field empty we will create an initial form for your funnel.'
+  ]
 ];
