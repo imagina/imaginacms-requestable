@@ -110,7 +110,7 @@ class FormService
     } else {
       \DB::table('iforms__fields')->where('id', $fieldCreated->id)->update([
         'visibility' => 'internalHidden',
-        'system_type' => 'requestable-internalHiddenField-' . $name
+        'system_type' => 'requestable-internalHidden-' . $name
       ]);
     }
 
