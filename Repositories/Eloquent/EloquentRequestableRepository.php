@@ -18,7 +18,7 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
     $query = $this->model->query();
 
     /*== RELATIONSHIPS ==*/
-    if (in_array('*', $params->include)) {//If Request all relationships
+    if (in_array('*', $params->include ?? [])) {//If Request all relationships
       $query->with([]);
     } else {//Especific relationships
       $includeDefault = [];//Default relationships
@@ -318,6 +318,7 @@ class EloquentRequestableRepository extends EloquentBaseRepository implements Re
         $query->where(function ($query) use ($user) {
           $query->where('requested_by_id', $user->id);
           $query->orWhere('created_by', $user->id);
+          $query->orWhere('responsible_id', $user->id);
 
           //Or WHERE | Not permission Source index all | | exist but is false | Get only source for the same user logged
           if (!isset($params->permissions['requestable.sources.index-all']) || (!$params->permissions['requestable.sources.index-all'])) {
