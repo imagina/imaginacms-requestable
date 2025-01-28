@@ -65,11 +65,10 @@ class CategoryApiController extends BaseCrudController
                     //If request pagination add meta-page
                     $params->page ? $response['meta'] = ['page' => $this->pageTransformer($data)] : false;
                 } else {
-                    throw new \Exception(trans('requestable::categories.messages.phoneFieldError', ['fieldType' => $params->filter->type, 'formTitle' => $form->title, 'formFieldsUrl' => url("/iadmin/#/form/fields/$form->id/")]), 400);
+                    throw new \Exception(trans('requestable::categories.messages.phoneFieldError', ['fieldType' => $params->filter->type, 'formTitle' => $form->title, 'formFieldsUrl' => url("/iadmin/#/form/fields/$form->id/")]), 500);
                 }
             }
         } catch (\Exception $e) {
-            //dd($e);
             $status = $this->getStatusError($e->getCode());
             $response = ['messages' => [['message' => $e->getMessage(), 'type' => 'error', 'timeOut' => 10000]]];
         }
