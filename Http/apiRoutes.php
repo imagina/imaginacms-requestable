@@ -44,7 +44,8 @@ Route::prefix('/requestable/v1')->group(function (Router $router) {
 
     $router->apiCrud([
         'module' => 'requestable',
-        'prefix' => 'category-rule',
+        'prefix' => 'category-rule
+        'permission' => 'requestable.categoryrules',
         'controller' => 'CategoryRuleApiController',
         'middleware' => [
             'create' => ['auth:api', 'auth-can:requestable.categoryrules.create'],
@@ -56,6 +57,7 @@ Route::prefix('/requestable/v1')->group(function (Router $router) {
     $router->apiCrud([
         'module' => 'requestable',
         'prefix' => 'automation-rule',
+        'permission' => 'requestable.automationrules',
         'controller' => 'AutomationRuleApiController',
         'middleware' => [
             'create' => ['auth:api', 'auth-can:requestable.automationrules.create'],
