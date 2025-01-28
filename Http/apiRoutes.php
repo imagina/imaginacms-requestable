@@ -46,6 +46,7 @@ $router->group(['prefix' => '/requestable/v1'], function (Router $router) {
   $router->apiCrud([
     'module' => 'requestable',
     'prefix' => 'category-rule',
+    'permission' => 'requestable.categoryrules',
     'controller' => 'CategoryRuleApiController',
     'middleware' => [
       'create' => ['auth:api', 'auth-can:requestable.categoryrules.create'],
@@ -57,6 +58,7 @@ $router->group(['prefix' => '/requestable/v1'], function (Router $router) {
   $router->apiCrud([
     'module' => 'requestable',
     'prefix' => 'automation-rule',
+    'permission' => 'requestable.automationrules',
     'controller' => 'AutomationRuleApiController',
     'middleware' => [
       'create' => ['auth:api', 'auth-can:requestable.automationrules.create'],
@@ -80,13 +82,13 @@ $router->group(['prefix' => '/requestable/v1'], function (Router $router) {
       ]
     ]);
   }
-  
+
   $router->apiCrud([
     'module' => 'requestable',
     'prefix' => 'status-types',
     'staticEntity' => 'Modules\Requestable\Entities\StatusType'
   ]);
-  
+
   $router->apiCrud([
     'module' => 'requestable',
     'prefix' => 'sources',
@@ -99,20 +101,20 @@ $router->group(['prefix' => '/requestable/v1'], function (Router $router) {
   ]);
 // append
 
-  
+
   $router->get('requestable/analytics/{criteria}', [
     'module' => 'requestable',
     'uses' => 'RequestableApiController@analytics',
     'middleware' => ['auth:api']
   ]);
-  
+
   $router->post('requestable/{criteria}/chat', [
     'module' => 'requestable',
     'uses' => 'RequestableApiController@createConversation',
     'middleware' => ['auth:api']
   ]);
-  
-  
+
+
   //======  REQUESTS
   require('ApiRoutes/requestablesRoutes.php');
 
