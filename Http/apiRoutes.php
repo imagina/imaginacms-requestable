@@ -44,7 +44,7 @@ Route::prefix('/requestable/v1')->group(function (Router $router) {
 
     $router->apiCrud([
         'module' => 'requestable',
-        'prefix' => 'category-rule
+        'prefix' => 'category-rule',
         'permission' => 'requestable.categoryrules',
         'controller' => 'CategoryRuleApiController',
         'middleware' => [
